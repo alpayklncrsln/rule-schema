@@ -3,14 +3,21 @@
 use Alpayklncrsln\RuleSchema\Rule;
 use Alpayklncrsln\RuleSchema\RuleSchema;
 
-it('get attribute of rule ', function () {
+test('get attribute of rule ', function () {
     $rule=Rule::make('name');
 
     expect($rule)->toBeInstanceOf(Rule::class)
         ->and($rule)
         ->getAttribute()
-        ->toBe('name');
+        ->toBe('name')
+    ->toBeString();
 
 });
 
-
+test('is rule check', function () {
+    $rule=Rule::make('name')->required()
+        ->getRule();
+    expect($rule['name'])->toBeArray()
+        ->each
+        ->toBeString();
+});
