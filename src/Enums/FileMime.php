@@ -199,8 +199,6 @@ enum FileMime: string implements MimeEnumInterface
             self::_3GP => 'video/3gpp',
             self::_3G2 => 'video/3gpp2',
             self::_7Z => 'application/x-7z-compressed',
-            self::XZ => throw new \Exception('To be implemented'),
-
         };
     }
 }
