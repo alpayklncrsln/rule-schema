@@ -66,7 +66,7 @@ enum FileMime: string implements MimeEnumInterface
     case JSONLD = 'jsonld';
 
     case MID = 'mid';
-    case  MIDI = 'midi';
+    case MIDI = 'midi';
     case MJS = 'mjs';
     case MP3 = 'mp3';
     case MP4 = 'mp4';
@@ -90,7 +90,7 @@ enum FileMime: string implements MimeEnumInterface
     case RTF = 'rtf';
     case SH = 'sh';
     case SVG = 'svg';
-//    case SWF = 'swf';
+    //    case SWF = 'swf';
     case TAR = 'tar';
     case TIFF = 'tiff';
     case TS = 'ts';
@@ -113,7 +113,6 @@ enum FileMime: string implements MimeEnumInterface
     case _3GP = '3gp';
     case _3G2 = '3g2';
     case _7Z = '7z';
-
 
     public function type(): string
     {

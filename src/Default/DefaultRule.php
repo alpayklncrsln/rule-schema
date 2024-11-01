@@ -6,7 +6,8 @@ use Alpayklncrsln\RuleSchema\Rule;
 
 class DefaultRule
 {
-    public static function name(string $attribute = 'name'): Rule {
+    public static function name(string $attribute = 'name'): Rule
+    {
         return Rule::make($attribute)->required()->max();
     }
 
@@ -34,6 +35,4 @@ class DefaultRule
     {
         return Rule::make($attribute)->numeric();
     }
-
-
 }

@@ -1,21 +1,20 @@
 <?php
 
 use Alpayklncrsln\RuleSchema\Rule;
-use Alpayklncrsln\RuleSchema\RuleSchema;
 
 test('get attribute of rule ', function () {
-    $rule=Rule::make('name');
+    $rule = Rule::make('name');
 
     expect($rule)->toBeInstanceOf(Rule::class)
         ->and($rule)
         ->getAttribute()
         ->toBe('name')
-    ->toBeString();
+        ->toBeString();
 
 });
 
 test('is rule check', function () {
-    $rule=Rule::make('name')->required()
+    $rule = Rule::make('name')->required()
         ->getRule();
     expect($rule['name'])->toBeArray()
         ->each

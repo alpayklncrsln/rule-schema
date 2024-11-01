@@ -5,7 +5,6 @@ namespace Alpayklncrsln\RuleSchema;
 use Alpayklncrsln\RuleSchema\Interfaces\RuleSchemaInterface;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
@@ -13,14 +12,15 @@ class RuleSchema implements RuleSchemaInterface
 {
     protected array $rules = [];
 
-    public function __construct( ...$rules) {
+    public function __construct(...$rules)
+    {
 
         foreach ($rules as $rule) {
             $this->rules = array_merge($this->rules, $rule->getRule());
         }
     }
 
-    public static function create( Rule...$rules) : self
+    public static function create(Rule ...$rules): self
     {
         return new RuleSchema(...$rules);
     }
@@ -35,12 +35,14 @@ class RuleSchema implements RuleSchemaInterface
         foreach ($rules as $rule) {
             $this->rules = array_merge($this->rules, $rule->getRule());
         }
+
         return $this;
     }
 
-    public function ruleClass(string $attribute,ValidationRule $class): self
+    public function ruleClass(string $attribute, ValidationRule $class): self
     {
         $this->rules[$attribute][] = $class;
+
         return $this;
     }
 
@@ -49,14 +51,16 @@ class RuleSchema implements RuleSchemaInterface
         if ($condition) {
             $this->merge(...$rules);
         }
+
         return $this;
     }
 
     public function expect(string ...$attributes): self
     {
-        foreach ($attributes as$attribute ) {
+        foreach ($attributes as $attribute) {
             unset($this->rules[$attribute]);
         }
+
         return $this;
     }
 
@@ -65,25 +69,34 @@ class RuleSchema implements RuleSchemaInterface
         if (isset($this->rules[$attribute])) {
             $this->merge(...$rules);
         }
-        return $this;
-    }
-    public function auth(Rule ...$rules): self
-    {
-        if (Auth::check()) $this->merge(...$rules);
-        return $this;
-    }
-    public function notAuth(Rule ...$rules): self
-    {
-        if (!Auth::check()) $this->merge(...$rules);
+
         return $this;
     }
 
-    public static function model(string $table) : RuleSchema
+    public function auth(Rule ...$rules): self
+    {
+        if (Auth::check()) {
+            $this->merge(...$rules);
+        }
+
+        return $this;
+    }
+
+    public function notAuth(Rule ...$rules): self
+    {
+        if (! Auth::check()) {
+            $this->merge(...$rules);
+        }
+
+        return $this;
+    }
+
+    public static function model(string $table): RuleSchema
     {
         $ruleSchema = RuleSchema::create();
         $columns = collect(Schema::getColumns($table))
-            ->filter(function($column) {
-                return !in_array($column['name'], ['id', 'created_at', 'updated_at']) ? $column : null;
+            ->filter(function ($column) {
+                return ! in_array($column['name'], ['id', 'created_at', 'updated_at']) ? $column : null;
             });
         $rule = null;
         foreach ($columns as $column) {
@@ -136,6 +149,7 @@ class RuleSchema implements RuleSchemaInterface
             }
             $ruleSchema->merge($rule);
         }
-            return $ruleSchema;
+
+        return $ruleSchema;
     }
 }

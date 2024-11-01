@@ -6,7 +6,7 @@ trait MimeTrait
 {
     public static function toArray(): array
     {
-        return array_map(fn(self $type) => $type->value, self::cases());
+        return array_map(fn (self $type) => $type->value, self::cases());
     }
 
     public static function values(): array
@@ -18,5 +18,4 @@ trait MimeTrait
     {
         return array_column(self::cases(), 'label');
     }
-
 }

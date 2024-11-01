@@ -2,9 +2,9 @@
 
 namespace Alpayklncrsln\RuleSchema\Tests;
 
+use Alpayklncrsln\RuleSchema\RuleSchemaServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Alpayklncrsln\RuleSchema\RuleSchemaServiceProvider;
 
 class TestCase extends Orchestra
 {

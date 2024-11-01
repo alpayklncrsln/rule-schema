@@ -35,5 +35,4 @@ enum ImageMime: string implements MimeEnumInterface
             self::AVIF => 'image/avif'
         };
     }
-
 }

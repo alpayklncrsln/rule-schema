@@ -2,7 +2,7 @@
 
 namespace Alpayklncrsln\RuleSchema\Interfaces;
 
-interface MimeEnumInterface{
-
+interface MimeEnumInterface
+{
     public function type(): string;
 }
