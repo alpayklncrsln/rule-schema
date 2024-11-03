@@ -20,15 +20,9 @@ We highly appreciate you sending us a postcard from your hometown, mentioning wh
 You can install the package via composer:
 
 ```bash
-composer require /rule-schema
+composer require alpayklncrsln/rule-schema
 ```
 
-You can publish and run the migrations with:
-
-```bash
-php artisan vendor:publish --tag="rule-schema-migrations"
-php artisan migrate
-```
 
 You can publish the config file with:
 
@@ -43,18 +37,75 @@ return [
 ];
 ```
 
-Optionally, you can publish the views using
-
-```bash
-php artisan vendor:publish --tag="rule-schema-views"
-```
-
 ## Usage
 
+### Create Rule Schema
+
 ```php
-$ruleSchema = new Alpayklncrsln\RuleSchema();
-echo $ruleSchema->echoPhrase('Hello, Alpayklncrsln!');
+$ruleSchema = new Alpayklncrsln\RuleSchema\RuleSchema::create(
+    Alpayklncrsln\RuleSchema\Rule::make('name'),
+    Alpayklncrsln\RuleSchema\Rule::make('slug'),
+    .
+    .
+)->getRules();
 ```
+Output:
+```php
+$ruleSchema = [
+    'name' => [],
+    'slug' => [],
+]
+```
+
+### Create Rule
+
+```php
+$rule = new Alpayklncrsln\RuleSchema\Rule::make('name')->reqired()->max()->getRule();
+```
+
+Output:
+```php
+'name' => ['required','max:255']
+```
+
+### Auth Rule Schema
+#### Login
+
+```php
+\Alpayklncrsln\RuleSchema\RuleSchema::create(
+      Alpayklncrsln\RuleSchema\Rule::make('email')->required()->email()->max()->exists('users', 'email'),
+      Alpayklncrsln\RuleSchema\Rule::make('password')->required()->min(8)->max(),
+)->fetchRules();
+```
+
+Or
+
+```php
+use Alpayklncrsln\RuleSchema\Default\DefaultRuleSchema;
+$ruleSchema = DefaultRuleSchema::login()->getRules();
+```
+
+
+#### Register
+
+```php
+\Alpayklncrsln\RuleSchema\RuleSchema::create(
+      Alpayklncrsln\RuleSchema\Rule::make('name')->required()->max(),
+      Alpayklncrsln\RuleSchema\Rule::make('email')->required()->email()->max()->unique('users', 'email'),
+      Alpayklncrsln\RuleSchema\Rule::make('password')->required()->min(8)->max()->confirmed(),
+)->fetchRules();
+```
+
+Or
+
+```php
+use Alpayklncrsln\RuleSchema\Default\DefaultRuleSchema;
+$ruleSchema = DefaultRuleSchema::register()->getRules();
+```
+
+## Available Rules
+
+Laravel Validation Docs: [Rules](https://laravel.com/docs/.x/validation#available-validation-rules) all rules are available.
 
 ## Testing
 
