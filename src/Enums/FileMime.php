@@ -157,19 +157,14 @@ enum FileMime: string implements MimeEnumInterface
             self::ODP => 'application/vnd.oasis.opendocument.presentation',
             self::ODS => 'application/vnd.oasis.opendocument.spreadsheet',
             self::ODT => 'application/vnd.oasis.opendocument.text',
-
             self::OPUS,
             self::OGA => 'audio/ogg',
             self::OGV => 'video/ogg',
             self::OGX => 'application/ogg',
-
             self::OTF => 'font/otf',
-
             self::PNG => 'image/png',
             self::PDF => 'application/pdf',
-
             self::PHP => 'application/x-httpd-php',
-
             self::PPT => 'application/vnd.ms-powerpoint',
             self::PPTX => 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
             self::RAR => 'application/vnd.rar',
@@ -194,7 +189,6 @@ enum FileMime: string implements MimeEnumInterface
             self::XML => 'application/xml',
             self::XUL => 'application/vnd.mozilla.xul+xml',
             self::ZIP => 'application/zip',
-
             self::_3GP => 'video/3gpp',
             self::_3G2 => 'video/3gpp2',
             self::_7Z => 'application/x-7z-compressed',
