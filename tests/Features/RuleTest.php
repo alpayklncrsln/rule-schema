@@ -66,4 +66,3 @@ test('rule alpha check', function () {
     expect($rule['name'])->toBeArray()
         ->toBeArray('alpha:ascii');
 });
-
