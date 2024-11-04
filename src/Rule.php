@@ -224,7 +224,7 @@ class Rule
         return $this;
     }
 
-    public function decimal(int $min, ?int $max = null): self
+    public function decimal(int $min = 0, ?int $max = 2): self
     {
         $this->rule['decimal'] = "$min".($max ? ",$max" : '');
 

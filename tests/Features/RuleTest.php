@@ -197,3 +197,18 @@ test('dateFormat', function (string $value) {
     'Y-m-d H:i:s x',
     'Y-m-d H:i:s u',
 ]);
+test('decimal', function ($min, $max) {
+    $rule = Rule::make('price')->decimal($min, $max)->getRule();
+    expect($rule['price'])->toBeArray()
+        ->toBeArray('decimal:'.$min.($max ? ','.$max : ''));
+})->with([
+    [2,null],
+    [2, 3],
+    [2, null],
+]);
+
+test('declined', function () {
+    $rule = Rule::make('name')->declined()->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('declined');
+});
