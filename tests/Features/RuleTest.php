@@ -127,3 +127,17 @@ test('rule beforeDateTomorrow', function () {
         ->toBeArray('date');
 });
 
+test('rule between', function () {
+    $rule = Rule::make('name')->between(1, 10)->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('between:1,10');
+});
+
+test('rule boolean', function () {
+    $rule = Rule::make('is_admin')->boolean()->getRule();
+    expect($rule['is_admin'])->toBeArray()
+        ->toBeArray('boolean');
+});
+
+
+
