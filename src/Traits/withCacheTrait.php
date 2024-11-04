@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Cache;
 trait withCacheTrait
 {
     protected ?string $cacheName = null;
+
     protected ?Carbon $cacheTime = null;
 
     public static function cache(string $cacheName, Carbon $time, Rule ...$rules): self|array
@@ -18,8 +19,9 @@ trait withCacheTrait
         $ruleSchema->setCache($cacheName, $time);
         if ($ruleSchema->existsCacheData()) {
             ray('exists cache data');
+
             return $ruleSchema->getCache();
-        }else{
+        } else {
             return $ruleSchema;
         }
     }
@@ -28,10 +30,12 @@ trait withCacheTrait
     {
         return $this->cacheName;
     }
+
     public function setCache(string $name, Carbon $time): self
     {
         $this->cacheName = $name;
         $this->cacheTime = $time;
+
         return $this;
     }
 
@@ -50,14 +54,14 @@ trait withCacheTrait
         $this->cacheName = $name;
     }
 
-    public function clearCache():void
+    public function clearCache(): void
     {
-            Cache::forget($this->getCacheName());
+        Cache::forget($this->getCacheName());
     }
 
     public function getCache(): RuleSchema
     {
-        return  Cache::get($this->getCacheName());
+        return Cache::get($this->getCacheName());
     }
 
     protected function setCacheData(): void
@@ -65,14 +69,14 @@ trait withCacheTrait
         Cache::put($this->getCacheName(), $this, $this->getCacheTime());
     }
 
-    protected function isCaching():bool
+    protected function isCaching(): bool
     {
-        return !is_null($this->getCacheName());
+        return ! is_null($this->getCacheName());
 
     }
-    protected function existsCacheData():bool
+
+    protected function existsCacheData(): bool
     {
         return $this->isCaching() && Cache::has($this->getCacheName());
     }
-
 }
