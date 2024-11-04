@@ -3,153 +3,99 @@
 namespace Alpayklncrsln\RuleSchema;
 
 use Alpayklncrsln\RuleSchema\Interfaces\RuleSchemaInterface;
+use Alpayklncrsln\RuleSchema\Table\TableBuilder;
+use Alpayklncrsln\RuleSchema\Traits\withCacheTrait;
 use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Str;
 
 class RuleSchema implements RuleSchemaInterface
 {
+    use withCacheTrait;
+
     protected array $rules = [];
 
-    public function __construct(...$rules)
+    public function __construct(Rule ...$rules)
     {
-
-        foreach ($rules as $rule) {
-            $this->rules = array_merge($this->rules, $rule->getRule());
-        }
+        if (count($rules) > 0) $this->merge(...$rules);
     }
 
-    public static function create(Rule ...$rules): self
+    public static function create(Rule...$rules): self
     {
         return new RuleSchema(...$rules);
     }
 
     public function getRules(): array
     {
+        if ($this->isCaching()) {
+            if ($this->existsCacheData()) {
+                return $this->getCache()->rules;
+            } else {
+                $this->setCacheData();
+            }
+        }
         return $this->rules;
     }
 
     public function merge(Rule ...$rules): self
     {
-        foreach ($rules as $rule) {
-            $this->rules = array_merge($this->rules, $rule->getRule());
+        if (!$this->existsCacheData()){
+            foreach ($rules as $rule) {
+                $this->rules = array_merge($this->rules, $rule->getRule());
+            }
         }
-
         return $this;
     }
 
     public function ruleClass(string $attribute, ValidationRule $class): self
     {
-        $this->rules[$attribute][] = $class;
-
+        if (!$this->existsCacheData()){
+            $this->rules[$attribute][] = $class;
+        }
         return $this;
     }
 
     public function when(bool $condition, Rule ...$rules): self
     {
-        if ($condition) {
+        if ($condition && !$this->existsCacheData()) {
             $this->merge(...$rules);
         }
-
         return $this;
     }
 
     public function expect(string ...$attributes): self
     {
-        foreach ($attributes as $attribute) {
-            unset($this->rules[$attribute]);
+        if (!$this->existsCacheData()) {
+            foreach ($attributes as $attribute) {
+                unset($this->rules[$attribute]);
+            }
         }
-
         return $this;
     }
 
     public function existsMerge($attribute, Rule ...$rules): self
     {
-        if (isset($this->rules[$attribute])) {
+        if (isset($this->rules[$attribute]) && !$this->existsCacheData()) {
             $this->merge(...$rules);
         }
-
         return $this;
     }
 
     public function auth(Rule ...$rules): self
     {
-        if (Auth::check()) {
-            $this->merge(...$rules);
-        }
-
+        if (Auth::check() && !$this->existsCacheData()) $this->merge(...$rules);
         return $this;
     }
 
     public function notAuth(Rule ...$rules): self
     {
-        if (! Auth::check()) {
-            $this->merge(...$rules);
-        }
-
+        if (!Auth::check() && !$this->existsCacheData()) $this->merge(...$rules);
         return $this;
     }
 
-    public static function model(string $table): RuleSchema
+    public static function model(string|Model $table): RuleSchema
     {
-        $ruleSchema = RuleSchema::create();
-        $columns = collect(Schema::getColumns($table))
-            ->filter(function ($column) {
-                return ! in_array($column['name'], ['id', 'created_at', 'updated_at']) ? $column : null;
-            });
-        $rule = null;
-        foreach ($columns as $column) {
-            $rule = Rule::make($column['name']);
-            if (Str::StartsWith($column['type'], 'varchar')) {
-                $rule->string()->max((int) Str::between($column['type'], '(', ')'));
-            }
-            if ($column['type'] === 'int') {
-                $rule->numeric();
-            }
+        return TableBuilder::create($table)->getTableRuleSchema();
 
-            if ($column['type'] === 'text') {
-                $rule->string();
-            }
-
-            if ($column['type'] === 'tinyint') {
-                $rule->boolean();
-            }
-
-            if ($column['type'] === 'date') {
-                $rule->date();
-            }
-
-            if ($column['type'] === 'datetime') {
-                $rule->dateTime();
-            }
-
-            if ($column['type'] === 'timestamp') {
-                $rule->dateTime();
-            }
-
-            if ($column['type'] === 'json') {
-                $rule->json();
-            }
-
-            if ($column['type'] === 'jsonb') {
-                $rule->json();
-            }
-
-            if ($column['type'] === 'float') {
-                $rule->numeric();
-            }
-
-            if ($column['type'] === 'decimal') {
-                $rule->decimal(8);
-            }
-
-            if ($column['type'] === 'bigint') {
-                $rule->numeric();
-            }
-            $ruleSchema->merge($rule);
-        }
-
-        return $ruleSchema;
     }
 }
