@@ -138,3 +138,9 @@ test('rule boolean', function () {
     expect($rule['is_admin'])->toBeArray()
         ->toBeArray('boolean');
 });
+
+test('rule confirmed', function () {
+    $rule = Rule::make('password')->confirmed()->getRule();
+    expect($rule['password'])->toBeArray()
+        ->toBeArray('confirmed');
+});
