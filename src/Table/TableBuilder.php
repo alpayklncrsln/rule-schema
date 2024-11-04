@@ -15,9 +15,10 @@ class TableBuilder
     protected array $tableColumns = [];
 
     protected array $expectedColumns = [];
-    protected null|RuleSchema $ruleSchema = null;
 
-    protected null|Rule $rule = null;
+    protected ?RuleSchema $ruleSchema = null;
+
+    protected ?Rule $rule = null;
 
     public function __construct(string|Model $table)
     {
@@ -31,7 +32,8 @@ class TableBuilder
         $this->createTableSchema();
         $this->generateRuleSchema();
     }
-    public static function create(string|Model $table):self
+
+    public static function create(string|Model $table): self
     {
         return new self($table);
     }
@@ -44,13 +46,13 @@ class TableBuilder
     public function setTable(string $table): self
     {
         $this->table = $table;
+
         return $this;
     }
 
-
     private function modelTableName(Model $model): void
     {
-        $mode = new $model();
+        $mode = new $model;
         $this->setTable($mode->getTable());
         unset($mode);
     }
@@ -65,7 +67,6 @@ class TableBuilder
         $this->tableColumns = $columns;
     }
 
-
     public function getExpectedColumns(): array
     {
         return $this->expectedColumns;
@@ -74,6 +75,7 @@ class TableBuilder
     public function setExpectedColumns(array $columns): self
     {
         $this->expectedColumns = $columns;
+
         return $this;
     }
 
@@ -82,6 +84,7 @@ class TableBuilder
         if (is_null($this->ruleSchema)) {
             $this->ruleSchema = RuleSchema::model($this->table);
         }
+
         return $this->ruleSchema;
     }
 
@@ -89,7 +92,7 @@ class TableBuilder
     {
         $this->setTableColumns(collect(Schema::getColumns($this->getTable()))
             ->filter(function ($column) {
-                return !in_array($column['name'], $this->getExpectedColumns()) ? $column : null;
+                return ! in_array($column['name'], $this->getExpectedColumns()) ? $column : null;
             })->toArray());
     }
 
@@ -127,7 +130,7 @@ class TableBuilder
             case 'tinyint':
                 if ((int) Str::between($column->type, '(', ')') === 1) {
                     $rule->boolean();
-                }else{
+                } else {
                     $rule->numeric();
                 }
                 break;
@@ -140,26 +143,26 @@ class TableBuilder
                 break;
             case 'double':
             case 'float':
-                case 'decimal':
+            case 'decimal':
                 $rule->decimal(8);
                 break;
             default:
                 $rule->string();
                 break;
-                case 'json':
-                    $rule->json();
-                    break;
+            case 'json':
+                $rule->json();
+                break;
         }
         if ($column->nullable) {
             $rule->nullable();
         }
         unset($column);
+
         return $rule;
     }
 
-    public function getTableRuleSchema():RuleSchema
+    public function getTableRuleSchema(): RuleSchema
     {
         return $this->getRuleSchema();
     }
-
 }
