@@ -291,3 +291,11 @@ test('email', function () {
     expect($rule['name'])->toBeArray()
         ->toBeArray('email');
 });
+
+test('endsWith', function () {
+    $rule = Rule::make('name')->endsWith('admin')->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('ends_with:admin');
+});
+
+
