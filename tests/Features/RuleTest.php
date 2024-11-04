@@ -202,7 +202,7 @@ test('decimal', function ($min, $max) {
     expect($rule['price'])->toBeArray()
         ->toBeArray('decimal:'.$min.($max ? ','.$max : ''));
 })->with([
-    [2,null],
+    [2, null],
     [2, 3],
     [2, null],
 ]);
