@@ -237,3 +237,9 @@ test('digits', function () {
     expect($rule['name'])->toBeArray()
         ->toBeArray('digits:10');
 });
+
+test('digitsBetween', function () {
+    $rule = Rule::make('name')->digitsBetween(1, 10)->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('digits_between:1,10');
+});
