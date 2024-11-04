@@ -156,7 +156,7 @@ test('contains', function (string $value) {
     'test 123 test',
 ]);
 
-test('currentPassword', function (string $guard) {
+test('currentPassword', function (bool|string $guard) {
     $rule = Rule::make('name')->currentPassword($guard)->getRule();
     expect($rule['name'])->toBeArray()
         ->toBeArray('current_password:'.$guard);
@@ -165,6 +165,7 @@ test('currentPassword', function (string $guard) {
     'api',
     'admin',
     'user',
+    true
 ]);
 
 
@@ -173,3 +174,9 @@ test('date', function () {
     expect($rule['date'])->toBeArray()
         ->toBeArray('date');
 });
+test('dateEquals', function () {
+    $rule = Rule::make('date')->dateEquals('2020-01-01')->getRule();
+    expect($rule['date'])->toBeArray()
+        ->toBeArray('date_equals:2020-01-01');
+});
+
