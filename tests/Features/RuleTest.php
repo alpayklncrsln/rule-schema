@@ -298,4 +298,8 @@ test('endsWith', function () {
         ->toBeArray('ends_with:admin');
 });
 
-
+test('exists', function () {
+    $rule = Rule::make('name')->exists('users')->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('exists:users');
+});
