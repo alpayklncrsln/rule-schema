@@ -303,3 +303,9 @@ test('exists', function () {
     expect($rule['name'])->toBeArray()
         ->toBeArray('exists:users');
 });
+
+test('hexColor', function () {
+    $rule = Rule::make('name')->hexColor()->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('hex_color');
+});
