@@ -19,6 +19,12 @@ test('rule accepted check', function () {
         ->toBeArray('accepted');
 });
 
+test('active_url ', function () {
+    $rule = Rule::make('name')->activeUrl()->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('active_url');
+});
+
 test('rule acceptedIf check', function () {
     $rule = Rule::make('name')->acceptedIf('field', 'value')
         ->getRule();
@@ -76,3 +82,10 @@ test('rule alphaNumeric check', function (string $value) {
     'ascii',
 ]);
 
+test('rule alphaDash check', function (string $value) {
+    $rule = Rule::make('name')->alphaDash($value)->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('alpha_dash:'.$value);
+})->with([
+    'ascii',
+]);
