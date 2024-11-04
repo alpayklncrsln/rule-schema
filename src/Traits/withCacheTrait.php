@@ -18,8 +18,6 @@ trait withCacheTrait
         $ruleSchema = new RuleSchema(...$rules);
         $ruleSchema->setCache($cacheName, $time);
         if ($ruleSchema->existsCacheData()) {
-            ray('exists cache data');
-
             return $ruleSchema->getCache();
         } else {
             return $ruleSchema;

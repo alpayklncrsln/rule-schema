@@ -90,7 +90,7 @@ enum FileMime: string implements MimeEnumInterface
     case RTF = 'rtf';
     case SH = 'sh';
     case SVG = 'svg';
-    //    case SWF = 'swf';
+    // -   case SWF = 'swf';
     case TAR = 'tar';
     case TIFF = 'tiff';
     case TS = 'ts';
@@ -189,6 +189,7 @@ enum FileMime: string implements MimeEnumInterface
             self::XML => 'application/xml',
             self::XUL => 'application/vnd.mozilla.xul+xml',
             self::ZIP => 'application/zip',
+            self::XZ => 'application/x-xz',
             self::_3GP => 'video/3gpp',
             self::_3G2 => 'video/3gpp2',
             self::_7Z => 'application/x-7z-compressed',
