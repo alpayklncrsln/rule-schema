@@ -156,3 +156,13 @@ test('contains', function (string $value) {
     'test 123 test',
 ]);
 
+test('currentPassword', function (string $guard) {
+    $rule = Rule::make('name')->currentPassword($guard)->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('current_password:'.$guard);
+})->with([
+    'web',
+    'api',
+    'admin',
+    'user',
+]);
