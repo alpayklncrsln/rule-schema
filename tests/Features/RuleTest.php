@@ -145,8 +145,14 @@ test('rule confirmed', function () {
         ->toBeArray('confirmed');
 });
 
-test('contains', function () {
-    $rule = Rule::make('name')->contains('test')->getRule();
+test('contains', function (string $value) {
+    $rule = Rule::make('name')->contains($value)->getRule();
     expect($rule['name'])->toBeArray()
-        ->toBeArray('contains:test');
-});
+        ->toBeArray('contains:'.$value);
+})->with([
+    'test',
+    'test123',
+    'test 123',
+    'test 123 test',
+]);
+
