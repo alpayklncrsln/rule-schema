@@ -41,3 +41,21 @@ test('rule afterDate check', function () {
         ->toBeArray('after')
         ->toBeArray('date');
 });
+
+test('rule afterDateYesterday check', function () {
+    $rule = Rule::make('date')->afterDateYesterday()->getRule();
+
+    expect($rule['date'])
+        ->toBeArray()
+        ->toBeArray('after:yesterday')
+        ->toBeArray('date');
+});
+
+test('rule afterDateTomorrow check', function () {
+    $rule = Rule::make('date')->afterDateTomorrow()->getRule();
+
+    expect($rule['date'])
+        ->toBeArray()
+        ->toBeArray('after:tomorrow')
+        ->toBeArray('date');
+});
