@@ -222,3 +222,12 @@ test('declinedIf', function ( string $field, string $value) {
     ['is_admin', false],
     ['email', 'admin@example.com'],
 ]);
+
+test('different', function (string $field) {
+    $rule = Rule::make('name')->different($field)->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('different:'.$field);
+})->with([
+    'email',
+    'password',
+]);
