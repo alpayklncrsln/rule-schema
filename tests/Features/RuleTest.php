@@ -88,3 +88,14 @@ test('rule alphaDash check', function (string $value) {
 })->with([
     'ascii',
 ]);
+
+test('array check', function () {
+    $rule = Rule::make('content')->array()->getRule();
+    expect($rule['content'])->toBeArray()
+        ->toBeArray('array');
+});
+test('rule bail', function () {
+    $rule = Rule::make('name')->bail()->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('bail');
+});
