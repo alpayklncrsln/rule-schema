@@ -18,3 +18,10 @@ test('rule accepted check', function () {
     expect($rule['name'])->toBeArray()
         ->toBeArray('accepted');
 });
+
+test('rule acceptedIf check', function () {
+    $rule = Rule::make('name')->acceptedIf('field','value')
+        ->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('accepted_if');
+});
