@@ -168,7 +168,6 @@ test('currentPassword', function (bool|string $guard) {
     true
 ]);
 
-
 test('date', function () {
     $rule = Rule::make('date')->date()->getRule();
     expect($rule['date'])->toBeArray()
