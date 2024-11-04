@@ -213,7 +213,7 @@ test('declined', function () {
         ->toBeArray('declined');
 });
 
-test('declinedIf', function ( string $field, string $value) {
+test('declinedIf', function (string $field, string $value) {
     $rule = Rule::make('name')->declinedIf($field, $value)->getRule();
     expect($rule['name'])->toBeArray()
         ->toBeArray('declined_if:'.$field.','.$value);
