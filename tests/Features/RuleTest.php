@@ -20,7 +20,7 @@ test('rule accepted check', function () {
 });
 
 test('rule acceptedIf check', function () {
-    $rule = Rule::make('name')->acceptedIf('field','value')
+    $rule = Rule::make('name')->acceptedIf('field', 'value')
         ->getRule();
     expect($rule['name'])->toBeArray()
         ->toBeArray('accepted_if');
