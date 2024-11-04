@@ -309,3 +309,15 @@ test('hexColor', function () {
     expect($rule['name'])->toBeArray()
         ->toBeArray('hex_color');
 });
+
+test('string', function () {
+    $rule = Rule::make('name')->string()->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('string');
+});
+
+test('max', function () {
+    $rule = Rule::make('name')->max(10)->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('max:10');
+});
