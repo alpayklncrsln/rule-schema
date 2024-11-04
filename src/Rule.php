@@ -119,6 +119,12 @@ class Rule
         return $this;
     }
 
+    public function bail(bool $check = true): self
+    {
+        $this->rule['bail'] = $check;
+        return $this;
+    }
+
     public function before(string $before): self
     {
         $this->rule['before'] = $before;
