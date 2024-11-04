@@ -131,14 +131,16 @@ class RuleSchema implements RuleSchemaInterface
                 $this->rules[$attribute.'.'.$rule->getAttribute()] = $rule->getRule()[$rule->getAttribute()];
             }
         }
+
         return $this;
     }
 
     public function add(Rule $rule): self
     {
         if (! $this->existsCacheData()) {
-           $this->rules[$rule->getAttribute()] = $rule->getRule()[$rule->getAttribute()];
+            $this->rules[$rule->getAttribute()] = $rule->getRule()[$rule->getAttribute()];
         }
+
         return $this;
     }
 }
