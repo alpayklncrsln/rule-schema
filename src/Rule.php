@@ -122,6 +122,7 @@ class Rule
     public function bail(bool $check = true): self
     {
         $this->rule['bail'] = $check;
+
         return $this;
     }
 
