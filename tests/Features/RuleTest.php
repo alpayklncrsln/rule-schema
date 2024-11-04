@@ -126,4 +126,3 @@ test('rule beforeDateTomorrow', function () {
         ->toBeArray('before:tomorrow')
         ->toBeArray('date');
 });
-
