@@ -138,6 +138,3 @@ test('rule boolean', function () {
     expect($rule['is_admin'])->toBeArray()
         ->toBeArray('boolean');
 });
-
-
-
