@@ -166,3 +166,10 @@ test('currentPassword', function (string $guard) {
     'admin',
     'user',
 ]);
+
+
+test('date', function () {
+    $rule = Rule::make('date')->date()->getRule();
+    expect($rule['date'])->toBeArray()
+        ->toBeArray('date');
+});
