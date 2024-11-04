@@ -267,3 +267,15 @@ test('distinct', function () {
     expect($rule['name'])->toBeArray()
         ->toBeArray('distinct');
 });
+
+test('distinctIgnoreCase', function () {
+    $rule = Rule::make('name')->distinctIgnoreCase()->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('distinct:ignore_case');
+});
+
+test('doesntStartWith', function () {
+    $rule = Rule::make('name')->doesntStartWith('admin')->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('doesnt_start_with:admin');
+});
