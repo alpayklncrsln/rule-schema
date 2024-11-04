@@ -218,8 +218,8 @@ test('declinedIf', function (string $field, string $value) {
     expect($rule['name'])->toBeArray()
         ->toBeArray('declined_if:'.$field.','.$value);
 })->with([
-    ['is_admin', true],
-    ['is_admin', false],
+    ['is_admin', 'true'],
+    ['is_admin', 'false'],
     ['email', 'admin@example.com'],
 ]);
 
@@ -243,3 +243,21 @@ test('digitsBetween', function () {
     expect($rule['name'])->toBeArray()
         ->toBeArray('digits_between:1,10');
 });
+
+test('demensions', function (string $value) {
+    $rule = Rule::make('name')->demensions($value)->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('demensions:'.$value);
+})->with([
+    'width',
+    'height',
+]);
+
+test('demensionsImageWidthHeight', function (int $width, int $height) {
+    $rule = Rule::make('name')->demensionsImageWidthHeight($width, $height)->getRule();
+    expect($rule['name'])->toBeArray('demensions:width'.$width.',height:'.$height);
+
+})->with([
+    [100, 100],
+    [200, 200],
+]);
