@@ -59,3 +59,11 @@ test('rule afterDateTomorrow check', function () {
         ->toBeArray('after:tomorrow')
         ->toBeArray('date');
 });
+
+test('rule alpha check', function () {
+    $rule = Rule::make('name')->alpha('ascii')
+        ->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('alpha:ascii');
+});
+
