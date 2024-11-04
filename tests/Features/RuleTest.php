@@ -1,5 +1,6 @@
 <?php
 
+use Alpayklncrsln\RuleSchema\Enums\FileMime;
 use Alpayklncrsln\RuleSchema\Rule;
 
 test('get attribute of rule ', function () {
@@ -320,4 +321,159 @@ test('max', function () {
     $rule = Rule::make('name')->max(10)->getRule();
     expect($rule['name'])->toBeArray()
         ->toBeArray('max:10');
+});
+
+
+test('min', function () {
+    $rule = Rule::make('name')->min(10)->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('min:10');
+});
+
+test('array', function () {
+    $rule = Rule::make('name')->array()->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('array');
+});
+
+test('in', function () {
+    $rule = Rule::make('name')->in(['admin', 'user'])->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('in:admin,user');
+});
+
+test('unique', function () {
+    $rule = Rule::make('name')->unique('users')->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('unique:users');
+});
+test('nullable', function () {
+    $rule = Rule::make('name')->nullable()->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('nullable');
+});
+
+test('image', function () {
+    $rule = Rule::make('image')->image()->getRule();
+    expect($rule['image'])->toBeArray()
+        ->toBeArray('image');
+});
+
+test('file', function () {
+    $rule = Rule::make('file')->file()->getRule();
+    expect($rule['file'])->toBeArray()
+        ->toBeArray('file');
+});
+
+test('regex', function () {
+    $rule = Rule::make('name')->regex('/^admin$/')->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('regex:/^admin$/');
+});
+
+test('notRegex', function () {
+    $rule = Rule::make('name')->notRegex('/^admin$/')->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('nopt_regex:/^admin$/');
+});
+
+test('gt', function () {
+    $rule = Rule::make('name')->gt(10)->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('gt:10');
+});
+
+test('gte', function () {
+    $rule = Rule::make('name')->gte(10)->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('gte:10');
+});
+
+test('lt', function () {
+    $rule = Rule::make('name')->lt(10)->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('lt:10');
+});
+
+test('lte', function () {
+    $rule = Rule::make('name')->lte(10)->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('lte:10');
+});
+test('json', function () {
+    $rule = Rule::make('name')->json()->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('json');
+});
+
+test('ip', function () {
+    $rule = Rule::make('ip')->ip()->getRule();
+    expect($rule['ip'])->toBeArray()
+        ->toBeArray('ip');
+});
+
+test('ipv4', function () {
+    $rule = Rule::make('ip')->ipv4()->getRule();
+    expect($rule['ip'])->toBeArray()
+        ->toBeArray('ipv4');
+});
+
+test('ipv6', function () {
+    $rule = Rule::make('ip')->ipv6()->getRule();
+    expect($rule['ip'])->toBeArray()
+        ->toBeArray('ipv6');
+});
+
+
+test('mimes string', function () {
+    $rule = Rule::make('image')->mimes('png', 'jpg')->getRule();
+    expect($rule['image'])->toBeArray()
+        ->toBeArray('mimes:png,jpg');
+});
+
+test('mimes enum', function (FileMime $fileMime) {
+    $rule = Rule::make('image')->mimes($fileMime)->getRule();
+    expect($rule['image'])->toBeArray()
+        ->toBeArray('mimes:'. $fileMime->value);
+})->with(FileMime::cases());
+
+test('mimetypes string', function () {
+    $rule = Rule::make('image')->mimetypes('image/png', 'image/jpeg')->getRule();
+    expect($rule['image'])->toBeArray()
+        ->toBeArray('mimetypes:image/png,image/jpeg');
+});
+
+test('mimetypes enum', function (FileMime $fileMime) {
+    $rule = Rule::make('image')->mimetypes($fileMime)->getRule();
+    expect($rule['image'])->toBeArray()
+        ->toBeArray('mimetypes:'. $fileMime->type());
+})->with(FileMime::cases());
+
+test('enum', function () {
+
+})->todo();
+
+test('mimeAndMimetypes', function (FileMime $fileMime) {
+    $rule = Rule::make('image')->mimeAndMimetypes()->getRule();
+    expect($rule['image'])->toBeArray()
+        ->toBeArray('mimetypes:'. $fileMime->type())
+        ->toBeArray('mimes:'. $fileMime->value);
+})->with(FileMime::cases());
+
+test('maxDigits', function () {
+    $rule = Rule::make('name')->maxDigits(10)->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('max_digits:10');
+});
+
+test('minDigits', function () {
+    $rule = Rule::make('name')->minDigits(10)->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('min_digits:10');
+});
+
+test('multipleOf', function () {
+    $rule = Rule::make('name')->multipleOf(10)->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('multiple_of:10');
 });
