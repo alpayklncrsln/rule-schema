@@ -155,4 +155,3 @@ test('contains', function (string $value) {
     'test 123',
     'test 123 test',
 ]);
-
