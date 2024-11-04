@@ -25,3 +25,19 @@ test('rule acceptedIf check', function () {
     expect($rule['name'])->toBeArray()
         ->toBeArray('accepted_if');
 });
+
+test('rule after check', function () {
+    $rule = Rule::make('name')->after('2020-01-01')
+        ->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('after');
+});
+
+test('rule afterDate check', function () {
+    $rule = Rule::make('name')->afterDate('2020-01-01')
+        ->getRule();
+    expect($rule['name'])
+        ->toBeArray()
+        ->toBeArray('after')
+        ->toBeArray('date');
+});
