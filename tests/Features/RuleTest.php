@@ -261,3 +261,9 @@ test('demensionsImageWidthHeight', function (int $width, int $height) {
     [100, 100],
     [200, 200],
 ]);
+
+test('distinct', function () {
+    $rule = Rule::make('name')->distinct()->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('distinct');
+});
