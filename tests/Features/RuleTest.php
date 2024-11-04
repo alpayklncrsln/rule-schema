@@ -179,3 +179,21 @@ test('dateEquals', function () {
         ->toBeArray('date_equals:2020-01-01');
 });
 
+test('dateFormat', function (string $value) {
+    $rule = Rule::make('date')->dateFormat($value)->getRule();
+    expect($rule['date'])->toBeArray()
+        ->toBeArray('date_format:'.$value);
+})->with([
+    'Y-m-d',
+    'Y-m-d H:i',
+    'Y-m-d H:i:s',
+    'Y-m-d H:i:s.u',
+    'Y-m-d H:i:s P',
+    'Y-m-d H:i:s T',
+    'Y-m-d H:i:s O',
+    'Y-m-d H:i:s e',
+    'Y-m-d H:i:s c',
+    'Y-m-d H:i:s v',
+    'Y-m-d H:i:s x',
+    'Y-m-d H:i:s u',
+]);
