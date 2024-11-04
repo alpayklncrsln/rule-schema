@@ -165,7 +165,7 @@ test('currentPassword', function (bool|string $guard) {
     'api',
     'admin',
     'user',
-    true
+    true,
 ]);
 
 test('date', function () {
