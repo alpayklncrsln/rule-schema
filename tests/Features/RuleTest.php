@@ -144,3 +144,9 @@ test('rule confirmed', function () {
     expect($rule['password'])->toBeArray()
         ->toBeArray('confirmed');
 });
+
+test('contains', function () {
+    $rule = Rule::make('name')->contains('test')->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('contains:test');
+});
