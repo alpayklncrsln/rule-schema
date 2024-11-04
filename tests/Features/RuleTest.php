@@ -212,3 +212,13 @@ test('declined', function () {
     expect($rule['name'])->toBeArray()
         ->toBeArray('declined');
 });
+
+test('declinedIf', function ( string $field, string $value) {
+    $rule = Rule::make('name')->declinedIf($field, $value)->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('declined_if:'.$field.','.$value);
+})->with([
+    ['is_admin', true],
+    ['is_admin', false],
+    ['email', 'admin@example.com'],
+]);

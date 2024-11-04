@@ -238,7 +238,7 @@ class Rule
         return $this;
     }
 
-    public function declinedIf(string $field, bool $value): self
+    public function declinedIf(string $field, string $value): self
     {
         $this->rule['declined_if'] = $field.','.$value;
 
