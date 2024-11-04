@@ -231,3 +231,9 @@ test('different', function (string $field) {
     'email',
     'password',
 ]);
+
+test('digits', function () {
+    $rule = Rule::make('name')->digits(10)->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('digits:10');
+});
