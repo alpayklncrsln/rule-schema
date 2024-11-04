@@ -165,7 +165,7 @@ test('currentPassword', function (bool|string $guard) {
     'api',
     'admin',
     'user',
-    true
+    true,
 ]);
 
 test('date', function () {
@@ -178,4 +178,3 @@ test('dateEquals', function () {
     expect($rule['date'])->toBeArray()
         ->toBeArray('date_equals:2020-01-01');
 });
-

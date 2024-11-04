@@ -185,7 +185,7 @@ class Rule
         return $this;
     }
 
-    public function currentPassword(bool|string $guard=true): self
+    public function currentPassword(bool|string $guard = true): self
     {
         $this->rule['current_password'] = $guard;
 
