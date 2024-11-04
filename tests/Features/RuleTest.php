@@ -279,8 +279,15 @@ test('doesntStartWith', function () {
     expect($rule['name'])->toBeArray()
         ->toBeArray('doesnt_start_with:admin');
 });
+
 test('doesntEndWith', function () {
     $rule = Rule::make('name')->doesntEndWith('admin')->getRule();
     expect($rule['name'])->toBeArray()
         ->toBeArray('doesnt_end_with:admin');
+});
+
+test('email', function () {
+    $rule = Rule::make('name')->email()->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('email');
 });
