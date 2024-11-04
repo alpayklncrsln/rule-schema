@@ -42,7 +42,7 @@ class RuleSchema implements RuleSchemaInterface
 
     public function merge(Rule ...$rules): self
     {
-        if (! $this->existsCacheData()) {
+        if (!$this->existsCacheData()) {
             foreach ($rules as $rule) {
                 $this->rules = array_merge($this->rules, $rule->getRule());
             }
@@ -53,7 +53,7 @@ class RuleSchema implements RuleSchemaInterface
 
     public function ruleClass(string $attribute, ValidationRule $class): self
     {
-        if (! $this->existsCacheData()) {
+        if (!$this->existsCacheData()) {
             $this->rules[$attribute][] = $class;
         }
 
@@ -62,7 +62,7 @@ class RuleSchema implements RuleSchemaInterface
 
     public function when(bool $condition, Rule ...$rules): self
     {
-        if ($condition && ! $this->existsCacheData()) {
+        if ($condition && !$this->existsCacheData()) {
             $this->merge(...$rules);
         }
 
@@ -71,7 +71,7 @@ class RuleSchema implements RuleSchemaInterface
 
     public function expect(string ...$attributes): self
     {
-        if (! $this->existsCacheData()) {
+        if (!$this->existsCacheData()) {
             foreach ($attributes as $attribute) {
                 unset($this->rules[$attribute]);
             }
@@ -82,7 +82,7 @@ class RuleSchema implements RuleSchemaInterface
 
     public function existsMerge($attribute, Rule ...$rules): self
     {
-        if (isset($this->rules[$attribute]) && ! $this->existsCacheData()) {
+        if (isset($this->rules[$attribute]) && !$this->existsCacheData()) {
             $this->merge(...$rules);
         }
 
@@ -91,7 +91,7 @@ class RuleSchema implements RuleSchemaInterface
 
     public function auth(Rule ...$rules): self
     {
-        if (Auth::check() && ! $this->existsCacheData()) {
+        if (Auth::check() && !$this->existsCacheData()) {
             $this->merge(...$rules);
         }
 
@@ -100,7 +100,7 @@ class RuleSchema implements RuleSchemaInterface
 
     public function notAuth(Rule ...$rules): self
     {
-        if (! Auth::check() && ! $this->existsCacheData()) {
+        if (!Auth::check() && !$this->existsCacheData()) {
             $this->merge(...$rules);
         }
 
@@ -111,5 +111,15 @@ class RuleSchema implements RuleSchemaInterface
     {
         return TableBuilder::create($table)->getTableRuleSchema();
 
+    }
+
+    public function bailed(): self
+    {
+        if (!$this->existsCacheData()) {
+            foreach ($this->rules as $key => $rule) {
+                $this->rules[$key]['bail'] = true;
+            }
+        }
+        return $this;
     }
 }
