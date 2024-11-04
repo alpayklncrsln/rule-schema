@@ -167,7 +167,6 @@ test('currentPassword', function (string $guard) {
     'user',
 ]);
 
-
 test('date', function () {
     $rule = Rule::make('date')->date()->getRule();
     expect($rule['date'])->toBeArray()
