@@ -123,4 +123,22 @@ class RuleSchema implements RuleSchemaInterface
 
         return $this;
     }
+
+    public function arraySchema(string $attribute, Rule ...$rules): self
+    {
+        if (! $this->existsCacheData()) {
+            foreach ($rules as $rule) {
+                $this->rules[$attribute.'.'.$rule->getAttribute()] = $rule->getRule()[$rule->getAttribute()];
+            }
+        }
+        return $this;
+    }
+
+    public function add(Rule $rule): self
+    {
+        if (! $this->existsCacheData()) {
+           $this->rules[$rule->getAttribute()] = $rule->getRule()[$rule->getAttribute()];
+        }
+        return $this;
+    }
 }
