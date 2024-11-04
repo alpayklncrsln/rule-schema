@@ -67,3 +67,13 @@ test('rule alpha check', function () {
         ->toBeArray('alpha:ascii');
 });
 
+test('rule alphaNumeric check', function (string $value) {
+    $rule = Rule::make('name')->alphaNumeric($value)->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('alpha_num:'.$value);
+})->with([
+    'ascii',
+]);
+
+
+
