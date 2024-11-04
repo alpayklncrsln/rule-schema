@@ -5,6 +5,7 @@ namespace Alpayklncrsln\RuleSchema;
 use Alpayklncrsln\RuleSchema\Interfaces\MimeEnumInterface;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Database\Eloquent\Model;
+use function DI\string;
 
 class Rule
 {
@@ -530,9 +531,9 @@ class Rule
         return $this;
     }
 
-    public function enum($enum): self
+    public function enum( $enum): self
     {
-        $this->rule['enum'] = implode(',', $enum::cases());
+        $this->rule['enum'] = $enum;
 
         return $this;
     }
@@ -575,7 +576,6 @@ class Rule
     public function missing(bool $check = true): self
     {
         $this->rule['missing'] = $check;
-
         return $this;
     }
 
@@ -821,11 +821,12 @@ class Rule
     {
         $ruleData = [];
         foreach ($this->rule as $key => $value) {
-            if (is_bool($value)) {
-                $ruleData[] = $key;
-            } else {
-                $ruleData[] = "$key:$value";
-            }
+
+            $ruleData[]= match (true) {
+                is_bool($value)=> $key,
+               is_subclass_of($value ,\StringBackedEnum::class)=> "$key:".implode( ',', $value::cases()),
+                default => "$key:$value"
+            };
         }
 
         return [$this->attribute => $ruleData];
