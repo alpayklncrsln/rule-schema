@@ -297,5 +297,3 @@ test('endsWith', function () {
     expect($rule['name'])->toBeArray()
         ->toBeArray('ends_with:admin');
 });
-
-
