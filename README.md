@@ -105,7 +105,7 @@ $ruleSchema = DefaultRuleSchema::register()->getRules();
 
 ## Available Rules
 
-Laravel Validation Docs: [Rules](https://laravel.com/docs/.x/validation#available-validation-rules) all rules are available.
+Laravel Validation Docs: [Rules](https://laravel.com/docs/11.x/validation#available-validation-rules) all rules are available.
 
 ## Testing
 
