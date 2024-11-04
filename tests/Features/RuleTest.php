@@ -99,3 +99,31 @@ test('rule bail', function () {
     expect($rule['name'])->toBeArray()
         ->toBeArray('bail');
 });
+
+test('rule before', function () {
+    $rule = Rule::make('date')->before('2020-01-01')->getRule();
+    expect($rule['date'])->toBeArray()
+        ->toBeArray('before');
+});
+
+test('rule beforeDate', function () {
+    $rule = Rule::make('date')->beforeDate('2020-01-01')->getRule();
+    expect($rule['date'])->toBeArray()
+        ->toBeArray('before')
+        ->toBeArray('date');
+});
+
+test('rule beforeDateYesterday', function () {
+    $rule = Rule::make('date')->beforeDateYesterday()->getRule();
+    expect($rule['date'])->toBeArray()
+        ->toBeArray('before:yesterday')
+        ->toBeArray('date');
+});
+
+test('rule beforeDateTomorrow', function () {
+    $rule = Rule::make('date')->beforeDateTomorrow()->getRule();
+    expect($rule['date'])->toBeArray()
+        ->toBeArray('before:tomorrow')
+        ->toBeArray('date');
+});
+
