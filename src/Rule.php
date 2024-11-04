@@ -46,7 +46,7 @@ class Rule
         return $this;
     }
 
-    public function acceptedIf(string $field, bool $value): self
+    public function acceptedIf(string $field, string $value): self
     {
         $this->rule['accepted_if'] = $field.','.$value;
 
