@@ -758,7 +758,7 @@ class Rule
         return $this;
     }
 
-    public function size(string $size): self
+    public function size(int $size): self
     {
         $this->rule['size'] = $size;
 
