@@ -493,7 +493,7 @@ test('missingUnless', function () {
 });
 
 test('missingWith', function () {
-    $rule = Rule::make('name')->missingWith('value','value1')->getRule();
+    $rule = Rule::make('name')->missingWith('value', 'value1')->getRule();
     expect($rule['name'])->toBeArray()
         ->toBeArray('missing_with:value,value1');
 });
@@ -522,13 +522,13 @@ test('presentUnless', function () {
 });
 
 test('presentWith', function () {
-    $rule = Rule::make('name')->presentWith('value','value1')->getRule();
+    $rule = Rule::make('name')->presentWith('value', 'value1')->getRule();
     expect($rule['name'])->toBeArray()
         ->toBeArray('present_with:value,value1');
 });
 
 test('presentWithAll', function () {
-    $rule = Rule::make('name')->presentWithAll('value','value1')->getRule();
+    $rule = Rule::make('name')->presentWithAll('value', 'value1')->getRule();
     expect($rule['name'])->toBeArray()
         ->toBeArray('present_with_all:value,value1');
 });
@@ -575,13 +575,13 @@ test('requiredUnless', function () {
 });
 
 test('requiredWith', function () {
-    $rule = Rule::make('name')->requiredWith('value','value1')->getRule();
+    $rule = Rule::make('name')->requiredWith('value', 'value1')->getRule();
     expect($rule['name'])->toBeArray()
         ->toBeArray('required_with:value,value1');
 });
 
 test('requiredWithAll', function () {
-    $rule = Rule::make('name')->requiredWithAll('value','value1')->getRule();
+    $rule = Rule::make('name')->requiredWithAll('value', 'value1')->getRule();
     expect($rule['name'])->toBeArray()
         ->toBeArray('required_with_all:value,value1');
 });
@@ -599,7 +599,7 @@ test('size', function () {
 });
 
 test('requiredArrayKeys', function () {
-    $rule = Rule::make('name')->requiredArrayKeys('key','key1')->getRule();
+    $rule = Rule::make('name')->requiredArrayKeys('key', 'key1')->getRule();
     expect($rule['name'])->toBeArray()
         ->toBeArray('required_array_keys:key,key1');
 });
