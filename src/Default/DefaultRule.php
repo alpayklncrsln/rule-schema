@@ -35,4 +35,34 @@ class DefaultRule
     {
         return Rule::make($attribute)->numeric();
     }
+
+    public static function string(string $attribute): Rule
+    {
+        return Rule::make($attribute)->string()->max()->required();
+    }
+
+    public static function image(string $attribute = 'image'): Rule
+    {
+        return Rule::make($attribute)->image()->size(2048);
+    }
+
+    public static function file(string $attribute = 'file'): Rule
+    {
+        return Rule::make($attribute)->file()->size(2048);
+    }
+
+    public static function url(string $attribute = 'url'): Rule
+    {
+        return Rule::make($attribute)->url();
+    }
+
+    public static function uuid(string $attribute = 'uuid'): Rule
+    {
+        return Rule::make($attribute)->required()->string()->uuid();
+    }
+
+    public static function ulid(string $attribute = 'ulid'): Rule
+    {
+        return Rule::make($attribute)->ulid()->string()->required();
+    }
 }
