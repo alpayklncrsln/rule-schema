@@ -57,15 +57,6 @@ class RuleSchema implements RuleSchemaInterface
         return $this;
     }
 
-    //    public function ruleClass(string $attribute, ValidationRule $class): self
-    //    {
-    //        if (! $this->existsCacheData()) {
-    //            $this->rules[$attribute][] = $class;
-    //        }
-    //
-    //        return $this;
-    //    }
-
     public function when(bool $condition, Rule ...$rules): self
     {
         if ($condition && ! $this->existsCacheData()) {
