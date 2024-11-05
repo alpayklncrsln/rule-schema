@@ -5,7 +5,6 @@ namespace Alpayklncrsln\RuleSchema;
 use Alpayklncrsln\RuleSchema\Interfaces\RuleSchemaInterface;
 use Alpayklncrsln\RuleSchema\Table\TableBuilder;
 use Alpayklncrsln\RuleSchema\Traits\withCacheTrait;
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
@@ -14,6 +13,8 @@ class RuleSchema implements RuleSchemaInterface
     use withCacheTrait;
 
     protected array $rules = [];
+
+    protected bool $isBail=false;
 
     public function __construct(Rule ...$rules)
     {
@@ -36,7 +37,11 @@ class RuleSchema implements RuleSchemaInterface
                 $this->setCacheData();
             }
         }
-
+        if ($this->isBail) {
+            foreach ($this->rules as $key => $rule) {
+                $this->rules[$key][] = 'bail';
+            }
+        }
         return $this->rules;
     }
 
@@ -51,14 +56,14 @@ class RuleSchema implements RuleSchemaInterface
         return $this;
     }
 
-    public function ruleClass(string $attribute, ValidationRule $class): self
-    {
-        if (! $this->existsCacheData()) {
-            $this->rules[$attribute][] = $class;
-        }
-
-        return $this;
-    }
+//    public function ruleClass(string $attribute, ValidationRule $class): self
+//    {
+//        if (! $this->existsCacheData()) {
+//            $this->rules[$attribute][] = $class;
+//        }
+//
+//        return $this;
+//    }
 
     public function when(bool $condition, Rule ...$rules): self
     {
@@ -82,8 +87,8 @@ class RuleSchema implements RuleSchemaInterface
 
     public function existsMerge($attribute, Rule ...$rules): self
     {
-        if (isset($this->rules[$attribute]) && ! $this->existsCacheData()) {
-            $this->merge(...$rules);
+        if (! $this->existsCacheData()) {
+            $this->when(isset($this->rules[$attribute]), ...$rules);
         }
 
         return $this;
@@ -91,8 +96,8 @@ class RuleSchema implements RuleSchemaInterface
 
     public function auth(Rule ...$rules): self
     {
-        if (Auth::check() && ! $this->existsCacheData()) {
-            $this->merge(...$rules);
+        if ( ! $this->existsCacheData()) {
+            $this->when(Auth::check(), ...$rules);
         }
 
         return $this;
@@ -100,8 +105,8 @@ class RuleSchema implements RuleSchemaInterface
 
     public function notAuth(Rule ...$rules): self
     {
-        if (! Auth::check() && ! $this->existsCacheData()) {
-            $this->merge(...$rules);
+        if ( ! $this->existsCacheData()) {
+            $this->when(! Auth::check(), ...$rules);
         }
 
         return $this;
@@ -116,9 +121,7 @@ class RuleSchema implements RuleSchemaInterface
     public function bailed(): self
     {
         if (! $this->existsCacheData()) {
-            foreach ($this->rules as $key => $rule) {
-                $this->rules[$key]['bail'] = true;
-            }
+            $this->isBail = true;
         }
 
         return $this;
