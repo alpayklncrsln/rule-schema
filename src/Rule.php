@@ -5,6 +5,7 @@ namespace Alpayklncrsln\RuleSchema;
 use Alpayklncrsln\RuleSchema\Interfaces\MimeEnumInterface;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Validation\Rules\Enum;
 use function DI\string;
 
 class Rule
@@ -181,7 +182,7 @@ class Rule
 
     public function contains(string ...$contains): self
     {
-        $this->rule['contains'] = implode(',', $contains);
+        $this->rule['contains'] = $contains;
 
         return $this;
     }
@@ -306,31 +307,35 @@ class Rule
 
     public function doesntStartWith(string ...$starts): self
     {
-        $this->rule['doesnt_starts_with'] = implode(',', $starts);
+        $this->rule['doesnt_starts_with'] =  $starts;
 
         return $this;
     }
 
     public function doesntEndWith(string ...$ends): self
     {
-        $this->rule['doesnt_ends_with'] = implode(',', $ends);
+        $this->rule['doesnt_ends_with'] =  $ends;
 
         return $this;
     }
 
     public function email(bool $dnsCheck = false, bool $rfcCheck = false, bool $spoofCheck = false, bool $strictCheck = false,
-        ?string $extra = null): self
+        bool|string $extra = false): self
     {
-        $this->rule['email'] = ($dnsCheck || $rfcCheck || $spoofCheck ? '' : true).
-            ($dnsCheck ? 'dns' : '').($rfcCheck ? 'rfc' : '').($spoofCheck ? 'spoof' : '').
-            ($extra ? ','.$extra : '').($strictCheck ? 'strict' : '');
+        if($dnsCheck || $rfcCheck || $spoofCheck || $strictCheck || $extra){
+            $this->rule['email'] = ($dnsCheck ? 'dns' : null).($rfcCheck ? 'rfc' : null).($spoofCheck ? 'spoof' : null).
+                ($extra ? ','.$extra : null).($strictCheck ? 'strict' : null);
+        }
+        else {
+            $this->rule['email'] = true;
+        }
 
         return $this;
     }
 
     public function endsWith(string ...$ends): self
     {
-        $this->rule['ends_with'] = implode(',', $ends);
+        $this->rule['ends_with'] =  $ends;
 
         return $this;
     }
@@ -386,7 +391,7 @@ class Rule
 
     public function in(array $in): self
     {
-        $this->rule['in'] = implode(',', $in);
+        $this->rule['in'] = $in;
 
         return $this;
     }
@@ -595,14 +600,14 @@ class Rule
 
     public function missingWith(string ...$values): self
     {
-        $this->rule['missing_with'] = implode(',', $values);
+        $this->rule['missing_with'] = $values;
 
         return $this;
     }
 
     public function notIn(string ...$values): self
     {
-        $this->rule['not_in'] = implode(',', $values);
+        $this->rule['not_in'] = $values;
 
         return $this;
     }
@@ -630,14 +635,14 @@ class Rule
 
     public function presentWith(string ...$value): self
     {
-        $this->rule['present_with'] = implode(',', $value);
+        $this->rule['present_with'] = $value;
 
         return $this;
     }
 
     public function presentWithAll(string ...$value): self
     {
-        $this->rule['present_with_all'] = implode(',', $value);
+        $this->rule['present_with_all'] = $value;
 
         return $this;
     }
@@ -665,7 +670,7 @@ class Rule
 
     public function prohibits(string ...$field): self
     {
-        $this->rule['prohibits'] = implode(',', $field);
+        $this->rule['prohibits'] = $field;
 
         return $this;
     }
@@ -686,42 +691,42 @@ class Rule
 
     public function requiredIfAccepted(string ...$field): self
     {
-        $this->rule['required_if_accepted'] = implode(',', $field);
+        $this->rule['required_if_accepted'] = $field;
 
         return $this;
     }
 
     public function requiredIfDeclined(string ...$field): self
     {
-        $this->rule['required_if_declined'] = implode(',', $field);
+        $this->rule['required_if_declined'] = $field;
 
         return $this;
     }
 
     public function requiredWith(string ...$field): self
     {
-        $this->rule['required_with'] = implode(',', $field);
+        $this->rule['required_with'] = $field;
 
         return $this;
     }
 
     public function requiredWithAll(string ...$field): self
     {
-        $this->rule['required_with_all'] = implode(',', $field);
+        $this->rule['required_with_all'] = $field;
 
         return $this;
     }
 
     public function requiredWithout(string ...$field): self
     {
-        $this->rule['required_without'] = implode(',', $field);
+        $this->rule['required_without'] = $field;
 
         return $this;
     }
 
     public function requiredWithoutAll(string ...$field): self
     {
-        $this->rule['required_without_all'] = implode(',', $field);
+        $this->rule['required_without_all'] =  $field;
 
         return $this;
     }
@@ -735,7 +740,7 @@ class Rule
 
     public function requiredArrayKeys(string ...$key): self
     {
-        $this->rule['required_array_keys'] = implode(',', $key);
+        $this->rule['required_array_keys'] = $key;
 
         return $this;
     }
@@ -756,7 +761,7 @@ class Rule
 
     public function startsWith(string ...$value): self
     {
-        $this->rule['starts_with'] = implode(',', $value);
+        $this->rule['starts_with'] = $value;
 
         return $this;
     }
@@ -777,7 +782,7 @@ class Rule
 
     public function url(string ...$value): self
     {
-        $this->rule['url'] = implode(',', $value);
+        $this->rule['url'] =  $value;
 
         return $this;
     }
@@ -824,6 +829,8 @@ class Rule
 
             $ruleData[]= match (true) {
                 is_bool($value)=> $key,
+                is_array($value)=> "$key:".implode( ',', $value),
+                $key ==='enum' => new Enum($value),
                is_subclass_of($value ,\StringBackedEnum::class)=> "$key:".implode( ',', $value::cases()),
                 default => "$key:$value"
             };
