@@ -473,3 +473,174 @@ test('multipleOf', function () {
     expect($rule['name'])->toBeArray()
         ->toBeArray('multiple_of:10');
 });
+
+test('missing', function () {
+    $rule = Rule::make('name')->missing()->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('missing');
+});
+
+test('missingIf', function () {
+    $rule = Rule::make('name')->missingIf('field', 'value')->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('missing_if:field,value');
+});
+
+test('missingUnless', function () {
+    $rule = Rule::make('name')->missingUnless('field', 'value')->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('missing_unless:field,value');
+});
+
+test('missingWith', function () {
+    $rule = Rule::make('name')->missingWith('value','value1')->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('missing_with:value,value1');
+});
+
+test('notIn', function () {
+    $rule = Rule::make('name')->notIn('value1', 'value2')->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('not_in:value1,value2');
+});
+
+test('present', function () {
+    $rule = Rule::make('name')->present()->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('present');
+});
+test('presentIf', function () {
+    $rule = Rule::make('name')->presentIf('field', 'value')->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('present_if:field,value');
+});
+
+test('presentUnless', function () {
+    $rule = Rule::make('name')->presentUnless('field', 'value')->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('present_unless:field,value');
+});
+
+test('presentWith', function () {
+    $rule = Rule::make('name')->presentWith('value','value1')->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('present_with:value,value1');
+});
+
+test('presentWithAll', function () {
+    $rule = Rule::make('name')->presentWithAll('value','value1')->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('present_with_all:value,value1');
+});
+test('prohibited', function () {
+    $rule = Rule::make('name')->prohibited()->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('prohibited');
+});
+
+test('prohibitedIf', function () {
+    $rule = Rule::make('name')->prohibitedIf('field', 'value')->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('prohibited_if:field,value');
+});
+
+test('prohibitedUnless', function () {
+    $rule = Rule::make('name')->prohibitedUnless('field', 'value')->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('prohibited_unless:field,value');
+});
+
+test('prohibits', function () {
+    $rule = Rule::make('name')->prohibits('value1', 'value2')->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('prohibits:value1,value2');
+});
+
+test('required', function () {
+    $rule = Rule::make('name')->required()->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('required');
+});
+
+test('requiredIf', function () {
+    $rule = Rule::make('name')->requiredIf('field', 'value')->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('required_if:field,value');
+});
+
+test('requiredUnless', function () {
+    $rule = Rule::make('name')->requiredUnless('field', 'value')->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('required_unless:field,value');
+});
+
+test('requiredWith', function () {
+    $rule = Rule::make('name')->requiredWith('value','value1')->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('required_with:value,value1');
+});
+
+test('requiredWithAll', function () {
+    $rule = Rule::make('name')->requiredWithAll('value','value1')->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('required_with_all:value,value1');
+});
+
+test('same', function () {
+    $rule = Rule::make('name')->same('value1')->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('same:value1');
+});
+
+test('size', function () {
+    $rule = Rule::make('name')->size(10)->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('size:10');
+});
+
+test('requiredArrayKeys', function () {
+    $rule = Rule::make('name')->requiredArrayKeys('key','key1')->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('required_array_keys:key,key1');
+});
+
+test('startsWith', function () {
+    $rule = Rule::make('name')->startsWith('value')->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('starts_with:value');
+});
+test('timezone', function () {
+    $rule = Rule::make('name')->timezone()->getRule();
+    expect($rule['name'])->toBeArray()
+        ->toBeArray('timezone:all');
+});
+
+test('url', function () {
+    $rule = Rule::make('name')->url()->getRule();
+    expect($rule['name'])->toBeArray('url');
+});
+
+test('urlHttp', function () {
+    $rule = Rule::make('name')->urlHttp()->getRule();
+    expect($rule['name'])->toBeArray('url:http');
+});
+
+test('urlHttps', function () {
+    $rule = Rule::make('name')->urlHttps()->getRule();
+    expect($rule['name'])->toBeArray('url:https');
+});
+
+test('urlHttpAndHttps', function () {
+    $rule = Rule::make('name')->urlHttpAndHttps()->getRule();
+    expect($rule['name'])->toBeArray('url:http,https');
+});
+
+test('uuid', function () {
+    $rule = Rule::make('name')->uuid()->getRule();
+    expect($rule['name'])->toBeArray('uuids');
+});
+
+test('ulid', function () {
+    $rule = Rule::make('name')->ulid()->getRule();
+    expect($rule['name'])->toBeArray('ulid');
+});

@@ -765,7 +765,7 @@ class Rule
         return $this;
     }
 
-    public function timezone(string $timezone): self
+    public function timezone(string $timezone = 'all'): self
     {
         $this->rule['timezone'] = $timezone;
 
