@@ -751,6 +751,13 @@ class Rule
         return $this;
     }
 
+    public function sometimes(): self
+    {
+        $this->rule['sometimes'] = true;
+
+        return $this;
+    }
+
     public function size(string $size): self
     {
         $this->rule['size'] = $size;
