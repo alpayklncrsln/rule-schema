@@ -14,7 +14,7 @@ class RuleSchema implements RuleSchemaInterface
 
     protected array $rules = [];
 
-    protected bool $isBail=false;
+    protected bool $isBail = false;
 
     public function __construct(Rule ...$rules)
     {
@@ -42,6 +42,7 @@ class RuleSchema implements RuleSchemaInterface
                 $this->rules[$key][] = 'bail';
             }
         }
+
         return $this->rules;
     }
 
@@ -56,14 +57,14 @@ class RuleSchema implements RuleSchemaInterface
         return $this;
     }
 
-//    public function ruleClass(string $attribute, ValidationRule $class): self
-//    {
-//        if (! $this->existsCacheData()) {
-//            $this->rules[$attribute][] = $class;
-//        }
-//
-//        return $this;
-//    }
+    //    public function ruleClass(string $attribute, ValidationRule $class): self
+    //    {
+    //        if (! $this->existsCacheData()) {
+    //            $this->rules[$attribute][] = $class;
+    //        }
+    //
+    //        return $this;
+    //    }
 
     public function when(bool $condition, Rule ...$rules): self
     {
@@ -96,7 +97,7 @@ class RuleSchema implements RuleSchemaInterface
 
     public function auth(Rule ...$rules): self
     {
-        if ( ! $this->existsCacheData()) {
+        if (! $this->existsCacheData()) {
             $this->when(Auth::check(), ...$rules);
         }
 
@@ -105,7 +106,7 @@ class RuleSchema implements RuleSchemaInterface
 
     public function notAuth(Rule ...$rules): self
     {
-        if ( ! $this->existsCacheData()) {
+        if (! $this->existsCacheData()) {
             $this->when(! Auth::check(), ...$rules);
         }
 

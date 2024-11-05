@@ -6,7 +6,6 @@ use Alpayklncrsln\RuleSchema\Interfaces\MimeEnumInterface;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rules\Enum;
-use function DI\string;
 
 class Rule
 {
@@ -307,14 +306,14 @@ class Rule
 
     public function doesntStartWith(string ...$starts): self
     {
-        $this->rule['doesnt_starts_with'] =  $starts;
+        $this->rule['doesnt_starts_with'] = $starts;
 
         return $this;
     }
 
     public function doesntEndWith(string ...$ends): self
     {
-        $this->rule['doesnt_ends_with'] =  $ends;
+        $this->rule['doesnt_ends_with'] = $ends;
 
         return $this;
     }
@@ -322,11 +321,10 @@ class Rule
     public function email(bool $dnsCheck = false, bool $rfcCheck = false, bool $spoofCheck = false, bool $strictCheck = false,
         bool|string $extra = false): self
     {
-        if($dnsCheck || $rfcCheck || $spoofCheck || $strictCheck || $extra){
+        if ($dnsCheck || $rfcCheck || $spoofCheck || $strictCheck || $extra) {
             $this->rule['email'] = ($dnsCheck ? 'dns' : null).($rfcCheck ? 'rfc' : null).($spoofCheck ? 'spoof' : null).
                 ($extra ? ','.$extra : null).($strictCheck ? 'strict' : null);
-        }
-        else {
+        } else {
             $this->rule['email'] = true;
         }
 
@@ -335,7 +333,7 @@ class Rule
 
     public function endsWith(string ...$ends): self
     {
-        $this->rule['ends_with'] =  $ends;
+        $this->rule['ends_with'] = $ends;
 
         return $this;
     }
@@ -536,7 +534,7 @@ class Rule
         return $this;
     }
 
-    public function enum( $enum): self
+    public function enum($enum): self
     {
         $this->rule['enum'] = $enum;
 
@@ -581,6 +579,7 @@ class Rule
     public function missing(bool $check = true): self
     {
         $this->rule['missing'] = $check;
+
         return $this;
     }
 
@@ -726,7 +725,7 @@ class Rule
 
     public function requiredWithoutAll(string ...$field): self
     {
-        $this->rule['required_without_all'] =  $field;
+        $this->rule['required_without_all'] = $field;
 
         return $this;
     }
@@ -782,7 +781,7 @@ class Rule
 
     public function url(string ...$value): self
     {
-        $this->rule['url'] =  $value;
+        $this->rule['url'] = $value;
 
         return $this;
     }
@@ -827,11 +826,11 @@ class Rule
         $ruleData = [];
         foreach ($this->rule as $key => $value) {
 
-            $ruleData[]= match (true) {
-                is_bool($value)=> $key,
-                is_array($value)=> "$key:".implode( ',', $value),
-                $key ==='enum' => new Enum($value),
-               is_subclass_of($value ,\StringBackedEnum::class)=> "$key:".implode( ',', $value::cases()),
+            $ruleData[] = match (true) {
+                is_bool($value) => $key,
+                is_array($value) => "$key:".implode(',', $value),
+                $key === 'enum' => new Enum($value),
+                is_subclass_of($value, \StringBackedEnum::class) => "$key:".implode(',', $value::cases()),
                 default => "$key:$value"
             };
         }

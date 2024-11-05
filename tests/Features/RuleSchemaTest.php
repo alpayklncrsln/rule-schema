@@ -54,7 +54,7 @@ test('existsMerge', function () {
 });
 
 test('auth', function () {
-    \Illuminate\Support\Facades\Auth::shouldReceive('check')->once() ->andReturn(true);
+    \Illuminate\Support\Facades\Auth::shouldReceive('check')->once()->andReturn(true);
     $rule = RuleSchema::create()->auth(
         Rule::make('name')->required(),
         Rule::make('email')->email(true),
@@ -66,7 +66,7 @@ test('auth', function () {
     ]);
 });
 test('notAuth', function () {
-    \Illuminate\Support\Facades\Auth::shouldReceive('check')->once() ->andReturn(false);
+    \Illuminate\Support\Facades\Auth::shouldReceive('check')->once()->andReturn(false);
 
     $rule = RuleSchema::create()->notAuth(
         Rule::make('name')->required(),
@@ -80,11 +80,11 @@ test('notAuth', function () {
 });
 
 test('model', function () {
-//    $rule = RuleSchema::create()->model(User::class)->getRules();
-//    expect($rule)->toBe([
-//        'name' => ['required'],
-//        'email' => ['email:dns'],
-//    ]);
+    //    $rule = RuleSchema::create()->model(User::class)->getRules();
+    //    expect($rule)->toBe([
+    //        'name' => ['required'],
+    //        'email' => ['email:dns'],
+    //    ]);
 })->todo();
 
 test('arraySchema', function () {
@@ -107,8 +107,8 @@ test('bailed', function () {
 });
 
 test('ruleClass', function () {
-//    $rule = RuleSchema::create()->ruleClass( 'name',\Illuminate\Validation\Rule::enum(\Alpayklncrsln\RuleSchema\Enums\FileMime::class))->getRules();
-//    expect($rule)->toBe([
-//        'name' => ['required'],
-//    ]);
+    //    $rule = RuleSchema::create()->ruleClass( 'name',\Illuminate\Validation\Rule::enum(\Alpayklncrsln\RuleSchema\Enums\FileMime::class))->getRules();
+    //    expect($rule)->toBe([
+    //        'name' => ['required'],
+    //    ]);
 })->todo();

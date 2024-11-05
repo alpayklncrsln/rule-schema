@@ -323,7 +323,6 @@ test('max', function () {
         ->toBeArray('max:10');
 });
 
-
 test('min', function () {
     $rule = Rule::make('name')->min(10)->getRule();
     expect($rule['name'])->toBeArray()
@@ -424,7 +423,6 @@ test('ipv6', function () {
         ->toBeArray('ipv6');
 });
 
-
 test('mimes string', function () {
     $rule = Rule::make('image')->mimes('png', 'jpg')->getRule();
     expect($rule['image'])->toBeArray()
@@ -434,7 +432,7 @@ test('mimes string', function () {
 test('mimes enum', function (FileMime $fileMime) {
     $rule = Rule::make('image')->mimes($fileMime)->getRule();
     expect($rule['image'])->toBeArray()
-        ->toBeArray('mimes:'. $fileMime->value);
+        ->toBeArray('mimes:'.$fileMime->value);
 })->with(FileMime::cases());
 
 test('mimetypes string', function () {
@@ -446,18 +444,16 @@ test('mimetypes string', function () {
 test('mimetypes enum', function (FileMime $fileMime) {
     $rule = Rule::make('image')->mimetypes($fileMime)->getRule();
     expect($rule['image'])->toBeArray()
-        ->toBeArray('mimetypes:'. $fileMime->type());
+        ->toBeArray('mimetypes:'.$fileMime->type());
 })->with(FileMime::cases());
 
-test('enum', function () {
-
-})->todo();
+test('enum', function () {})->todo();
 
 test('mimeAndMimetypes', function (FileMime $fileMime) {
     $rule = Rule::make('image')->mimeAndMimetypes()->getRule();
     expect($rule['image'])->toBeArray()
-        ->toBeArray('mimetypes:'. $fileMime->type())
-        ->toBeArray('mimes:'. $fileMime->value);
+        ->toBeArray('mimetypes:'.$fileMime->type())
+        ->toBeArray('mimes:'.$fileMime->value);
 })->with(FileMime::cases());
 
 test('maxDigits', function () {
