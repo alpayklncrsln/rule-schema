@@ -7,6 +7,7 @@ use Alpayklncrsln\RuleSchema\Table\TableBuilder;
 use Alpayklncrsln\RuleSchema\Traits\withCacheTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Request;
 
 class RuleSchema implements RuleSchemaInterface
 {
@@ -135,6 +136,20 @@ class RuleSchema implements RuleSchemaInterface
         if (! $this->existsCacheData()) {
             $this->rules[$rule->getAttribute()] = $rule->getRule()[$rule->getAttribute()];
         }
+
+        return $this;
+    }
+
+    public function postSchema( Rule ...$rules): self
+    {
+        $this->when(Request::isMethod('POST'), ...$rules);
+
+        return $this;
+    }
+
+    public function putSchema( Rule ...$rules): self
+    {
+        $this->when(Request::isMethod('PUT'), ...$rules);
 
         return $this;
     }
