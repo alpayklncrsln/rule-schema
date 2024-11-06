@@ -21,11 +21,8 @@
         </testsuite>
     </testsuites>
     <coverage>
-        <include>
-            <directory suffix=".php">src</directory>
-        </include>
         <report>
-            <html outputDirectory="build/coverage"/>
+            <html outputFile="build/coverage/index.html"/>
         </report>
     </coverage>
     <logging>
