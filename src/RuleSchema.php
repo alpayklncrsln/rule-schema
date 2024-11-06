@@ -140,14 +140,14 @@ class RuleSchema implements RuleSchemaInterface
         return $this;
     }
 
-    public function postSchema( Rule ...$rules): self
+    public function postSchema(Rule ...$rules): self
     {
         $this->when(Request::isMethod('POST'), ...$rules);
 
         return $this;
     }
 
-    public function putSchema( Rule ...$rules): self
+    public function putSchema(Rule ...$rules): self
     {
         $this->when(Request::isMethod('PUT'), ...$rules);
 
