@@ -14,6 +14,6 @@ class TableColumn
         public bool $autoIncrement = false,
 
     ) {
-        //..
+        // ..
     }
 }
