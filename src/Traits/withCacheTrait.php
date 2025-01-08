@@ -11,9 +11,9 @@ trait withCacheTrait
 {
     protected ?string $cacheName = null;
 
-    protected ?Carbon $cacheTime = null;
+    protected int|Carbon|null $cacheTime = null;
 
-    public static function cache(string $cacheName, Carbon $time, Rule ...$rules): self|array
+    public static function cache(string $cacheName, int|Carbon $time, Rule ...$rules): self|array
     {
         $ruleSchema = new RuleSchema(...$rules);
         $ruleSchema->setCache($cacheName, $time);
@@ -29,7 +29,7 @@ trait withCacheTrait
         return $this->cacheName;
     }
 
-    public function setCache(string $name, Carbon $time): self
+    public function setCache(string $name, int|Carbon $time): self
     {
         $this->cacheName = $name;
         $this->cacheTime = $time;
@@ -37,7 +37,7 @@ trait withCacheTrait
         return $this;
     }
 
-    protected function getCacheTime(): ?Carbon
+    protected function getCacheTime(): int|Carbon
     {
         return $this->cacheTime;
     }
