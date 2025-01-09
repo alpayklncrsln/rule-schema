@@ -5,7 +5,6 @@ namespace Alpayklncrsln\RuleSchema;
 use Alpayklncrsln\RuleSchema\Interfaces\MimeEnumInterface;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Validation\Rules\Enum;
 
 class Rule
 {
@@ -836,7 +835,7 @@ class Rule
             $ruleData[] = match (true) {
                 is_bool($value) => $key,
                 is_array($value) => "$key:".implode(',', $value),
-                $key=='enum' => "$key:".implode(',',array_column($value::cases(), 'value')),
+                $key == 'enum' => "$key:".implode(',', array_column($value::cases(), 'value')),
                 default => "$key:$value"
             };
         }
