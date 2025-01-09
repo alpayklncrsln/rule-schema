@@ -97,7 +97,58 @@ $ruleSchema = [
 ]
 ```
 
+## Methods
+when - RuleSchema
+->when(bool $condition, Rule ...$rules)
 
+```php
+use Alpayklncrsln\RuleSchema\RuleSchema;
+$ruleSchema = RuleSchema::create()
+->when(\Illuminate\Support\Facades\Auth::check() ,...$rules)
+->getRules();
+```
+merge - RuleSchema
+```php
+->merge(Rule ...$rules)
+```
+```php
+use Alpayklncrsln\RuleSchema\RuleSchema;
+$ruleSchema = RuleSchema::create()
+->merge(...$rules)
+->getRules();
+```
+
+expect - RuleSchema
+```
+Description:
+Remove attributes from rules 
+attribute - string Rule name
+```
+```php
+->expect(... $attributes)
+```
+```php
+use Alpayklncrsln\RuleSchema\RuleSchema;
+$ruleSchema = RuleSchema::create(
+.
+.
+)
+->expect(...$attributes)
+->getRules();
+
+existsMerge - RuleSchema
+->existsMerge($attribute, Rule ...$rules)
+
+```
+Description:
+if attribute exists, merge rules else not merge
+```
+```php
+use Alpayklncrsln\RuleSchema\RuleSchema;
+$ruleSchema = RuleSchema::create()        
+->existsMerge('name', ...$rules)
+->getRules();
+```
 
 ### Create Rule
 

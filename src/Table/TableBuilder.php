@@ -22,10 +22,10 @@ class TableBuilder
 
     public function __construct(string|Model $table)
     {
-        if (is_string($table)) {
-            $this->setTable($table);
-        } else {
+        if (is_subclass_of($table, Model::class)) {
             $this->modelTableName($table);
+        } else {
+            $this->setTable($table);
         }
         $this->ruleSchema = RuleSchema::create();
         $this->setExpectedColumns(['id', 'created_at', 'updated_at', 'deleted_at']);
@@ -122,10 +122,7 @@ class TableBuilder
                 $rule->numeric();
                 break;
             case 'varchar':
-                $rule->string()->max((int) Str::between($column->type, '(', ')'));
-                break;
-            case 'text':
-                $rule->string();
+                $rule->string()->max((int) Str::between($column->type, '(', ')')?: 255);
                 break;
             case 'tinyint':
                 if ((int) Str::between($column->type, '(', ')') === 1) {
