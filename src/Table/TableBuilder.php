@@ -23,7 +23,7 @@ class TableBuilder
     public function __construct(string|Model $table)
     {
         if (class_exists($table) && is_subclass_of($table, Model::class)) {
-            $this->modelTableName(new $table ());
+            $this->modelTableName(new $table);
         } else {
             $this->setTable($table);
         }
