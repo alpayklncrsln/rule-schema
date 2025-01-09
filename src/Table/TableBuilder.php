@@ -122,7 +122,7 @@ class TableBuilder
                 $rule->numeric();
                 break;
             case 'varchar':
-                $rule->string()->max((int) Str::between($column->type, '(', ')')?: 255);
+                $rule->string()->max((int) Str::between($column->type, '(', ')') ?: 255);
                 break;
             case 'tinyint':
                 if ((int) Str::between($column->type, '(', ')') === 1) {
