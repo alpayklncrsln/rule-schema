@@ -21,26 +21,68 @@ You can install the package via composer:
 composer require alpayklncrsln/rule-schema
 ```
 
+## Usage
 
-You can publish the config file with:
+### Example Form Request
+```php
 
-```bash
-php artisan vendor:publish --tag="rule-schema-config"
+<?php
+
+namespace App\Http\Requests\Auth;
+
+use Alpayklncrsln\RuleSchema\Rule;
+use Alpayklncrsln\RuleSchema\RuleSchema;
+use Illuminate\Foundation\Http\FormRequest;
+
+class LoginRequest extends FormRequest
+{
+    public function rules()
+    {
+        return RuleSchema::create(
+            Rule::make('email')->required()->email()->max()->min()->exists('users', 'email'),
+            Rule::make('password')->required()->min(8)->max()
+        )->getRules();
+    }
+
+    public function authorize()
+    {
+        return true;
+    }
+}
+
 ```
 
-This is the contents of the published config file:
+### Example Controller
 
 ```php
-return [
-];
-```
+<?php
 
-## Usage
+namespace App\Http\Controllers\Auth;
+
+use Alpayklncrsln\RuleSchema\RuleSchema;use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Controllers\Controller;
+
+class LoginController extends Controller
+{
+    public function login(\App\Http\Requests\Auth\LoginRequest $request)
+    {
+     $request->Validate(RuleSchema::create(
+         Rule::make('email')->required()->email()->max()->min()->exists('users', 'email'),
+         Rule::make('password')->required()->min(8)->max(),
+     )->getRules());
+    
+     .
+     . 
+       
+    }
+}
+
+```
 
 ### Create Rule Schema
 
 ```php
-$ruleSchema = new Alpayklncrsln\RuleSchema\RuleSchema::create(
+$ruleSchema = Alpayklncrsln\RuleSchema\RuleSchema::create(
     Alpayklncrsln\RuleSchema\Rule::make('name'),
     Alpayklncrsln\RuleSchema\Rule::make('slug'),
     .
@@ -54,6 +96,8 @@ $ruleSchema = [
     'slug' => [],
 ]
 ```
+
+
 
 ### Create Rule
 
@@ -73,7 +117,7 @@ Output:
 \Alpayklncrsln\RuleSchema\RuleSchema::create(
       Alpayklncrsln\RuleSchema\Rule::make('email')->required()->email()->max()->exists('users', 'email'),
       Alpayklncrsln\RuleSchema\Rule::make('password')->required()->min(8)->max(),
-)->fetchRules();
+)->getRules();
 ```
 
 Or
@@ -91,7 +135,7 @@ $ruleSchema = DefaultRuleSchema::login()->getRules();
       Alpayklncrsln\RuleSchema\Rule::make('name')->required()->max(),
       Alpayklncrsln\RuleSchema\Rule::make('email')->required()->email()->max()->unique('users', 'email'),
       Alpayklncrsln\RuleSchema\Rule::make('password')->required()->min(8)->max()->confirmed(),
-)->fetchRules();
+)->getRules();
 ```
 
 Or
@@ -100,6 +144,24 @@ Or
 use Alpayklncrsln\RuleSchema\Default\DefaultRuleSchema;
 $ruleSchema = DefaultRuleSchema::register()->getRules();
 ```
+
+#### Reset Password
+
+```php    
+\Alpayklncrsln\RuleSchema\RuleSchema::create(
+      Alpayklncrsln\RuleSchema\Rule::make('email')->required()->email()->max()->exists('users', 'email'),
+      Alpayklncrsln\RuleSchema\Rule::make('token')->required()->exists('password_resets', 'token'),
+      Alpayklncrsln\RuleSchema\Rule::make('password')->required()->min(8)->max()->confirmed(),
+)->getRules();
+```
+
+Or
+
+```php    
+use Alpayklncrsln\RuleSchema\Default\DefaultRuleSchema;
+$ruleSchema = DefaultRuleSchema::resetPassword()->getRules();
+```
+
 
 ## Available Rules
 
@@ -126,7 +188,6 @@ Please review [our security policy](../../security/policy) on how to report secu
 ## Credits
 
 - [alpayklncrsln](https://github.com/)
-- [All Contributors](../../contributors)
 
 ## License
 
