@@ -22,8 +22,8 @@ class TableBuilder
 
     public function __construct(string|Model $table)
     {
-        if (is_subclass_of($table, Model::class)) {
-            $this->modelTableName($table);
+        if (class_exists($table) && is_subclass_of($table, Model::class)) {
+            $this->modelTableName(new $table ());
         } else {
             $this->setTable($table);
         }
@@ -52,9 +52,7 @@ class TableBuilder
 
     private function modelTableName(Model $model): void
     {
-        $mode = new $model;
-        $this->setTable($mode->getTable());
-        unset($mode);
+        $this->setTable($model->getTable());
     }
 
     public function getTableColumns(): array
