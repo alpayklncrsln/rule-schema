@@ -507,28 +507,19 @@ class Rule
 
     public function mimes(MimeEnumInterface|string ...$mimes): self
     {
-        $this->rule['mimes'] = '';
-        foreach ($mimes as $mime) {
-            if (is_string($mime)) {
-                $this->rule['mimes'] .= ','.$mime;
-            } else {
-                $this->rule['mimes'] .= ','.$mime->value;
-            }
-        }
-
+        $this->rule['mimes'] = implode(',', array_map(
+            fn($mime) => is_string($mime) ? $mime : $mime->value,
+            $mimes
+        ));
         return $this;
     }
 
     public function mimetypes(string|MimeEnumInterface ...$mimetypes): self
     {
-        $this->rule['mimetypes'] = '';
-        foreach ($mimetypes as $mimeType) {
-            if (is_string($mimeType)) {
-                $this->rule['mimetypes'] .= ','.$mimeType;
-            } else {
-                $this->rule['mimetypes'] .= ','.$mimeType->value;
-            }
-        }
+        $this->rule['mimetypes'] = implode(',', array_map(
+            fn($mimeType) => is_string($mimeType) ? $mimeType : $mimeType->value,
+            $mimetypes
+        ));
 
         return $this;
     }
@@ -542,14 +533,9 @@ class Rule
 
     public function mimeAndMimetypes(MimeEnumInterface ...$mimes): self
     {
-        $_mimes = [];
-        $_mimeTypes = [];
-        foreach ($mimes as $mime) {
-            $_mimes[] = $mime->value;
-            $_mimeTypes[] = $mime->type();
-        }
-        $this->mimes(...$_mimes);
-        $this->mimetypes(...$_mimeTypes);
+        $this->mimes(...array_map(fn($mime) => $mime->value, $mimes));
+        $this->mimetypes(...array_map(fn($mime) => $mime->type(), $mimes));
+
 
         return $this;
     }
