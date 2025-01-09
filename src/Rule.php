@@ -836,8 +836,7 @@ class Rule
             $ruleData[] = match (true) {
                 is_bool($value) => $key,
                 is_array($value) => "$key:".implode(',', $value),
-                $key === 'enum' => new Enum($value),
-                is_subclass_of($value, \StringBackedEnum::class) => "$key:".implode(',', $value::cases()),
+                $key=='enum' => "$key:".implode(',',array_column($value::cases(), 'value')),
                 default => "$key:$value"
             };
         }
