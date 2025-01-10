@@ -508,7 +508,7 @@ class Rule
     public function mimes(MimeEnumInterface|string ...$mimes): self
     {
         $this->rule['mimes'] = implode(',', array_map(
-            fn ($mime) => is_string($mime) ? $mime : $mime->value,
+            fn ($mime) => is_string($mime) ? $mime : $mime->getValue(),
             $mimes
         ));
 
@@ -518,7 +518,7 @@ class Rule
     public function mimetypes(string|MimeEnumInterface ...$mimetypes): self
     {
         $this->rule['mimetypes'] = implode(',', array_map(
-            fn ($mimeType) => is_string($mimeType) ? $mimeType : $mimeType->value,
+            fn ($mimeType) => is_string($mimeType) ? $mimeType : $mimeType->getValue(),
             $mimetypes
         ));
 
@@ -534,7 +534,7 @@ class Rule
 
     public function mimeAndMimetypes(MimeEnumInterface ...$mimes): self
     {
-        $this->mimes(...array_map(fn ($mime) => $mime->value, $mimes));
+        $this->mimes(...array_map(fn ($mime) => $mime->getValue(), $mimes));
         $this->mimetypes(...array_map(fn ($mime) => $mime->type(), $mimes));
 
         return $this;

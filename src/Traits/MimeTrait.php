@@ -18,4 +18,9 @@ trait MimeTrait
     {
         return array_column(self::cases(), 'label');
     }
+
+    public function getValue(): string
+    {
+        return $this->value;
+    }
 }
