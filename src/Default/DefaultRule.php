@@ -65,4 +65,16 @@ class DefaultRule
     {
         return Rule::make($attribute)->ulid()->string()->required();
     }
+
+    public static function phoneNumber(string $attribute = 'phone_number'): Rule
+    {
+        return Rule::make($attribute)->required()->numeric()
+            ->regex('/^(\+?\d{1,3}[- ]?)?\d{10}$/')
+            ->min(10)->max(15);
+    }
+
+    public static function postalCode(string $attribute = 'postal_code'): Rule
+    {
+        return Rule::make($attribute)->required()->regex('/^\d{5}(-\d{4})?$/');
+    }
 }
