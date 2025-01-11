@@ -56,7 +56,7 @@ class DefaultRuleSchema
             Rule::make('name')->required()->max(),
             Rule::make('email')->required()->email(true)->max(),
             Rule::make('message')->required()->max(800),
-            Rule::make('rating')->required()->numeric()->between(1,5),
+            Rule::make('rating')->required()->numeric()->between(1, 5),
         );
     }
 }
