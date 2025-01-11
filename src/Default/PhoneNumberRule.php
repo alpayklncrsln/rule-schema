@@ -11,7 +11,4 @@ class PhoneNumberRule extends Rule
         return $this->string()->regex('/^(\+?\d{1,3}[- ]?)?\d{10}$/')
             ->min(10)->max(15);
     }
-
-
-
 }
