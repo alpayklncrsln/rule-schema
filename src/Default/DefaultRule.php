@@ -77,4 +77,9 @@ class DefaultRule
     {
         return Rule::make($attribute)->required()->regex('/^\d{5}(-\d{4})?$/');
     }
+
+    public static function emailEndsWith(string $attribute = 'email', string ...$domain): Rule
+    {
+        return Rule::make('email')->required()->email()->endsWith(...$domain);
+    }
 }
