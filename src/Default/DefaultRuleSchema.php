@@ -49,4 +49,14 @@ class DefaultRuleSchema
             Rule::make('isRead')->required()->boolean()->accepted(),
         );
     }
+
+    public static function feedback()
+    {
+        return RuleSchema::create(
+            Rule::make('name')->required()->max(),
+            Rule::make('email')->required()->email(true)->max(),
+            Rule::make('message')->required()->max(800),
+            Rule::make('rating')->required()->numeric()->between(1,5),
+        );
+    }
 }
