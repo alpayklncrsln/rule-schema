@@ -39,4 +39,14 @@ class DefaultRuleSchema
             Rule::make('password')->required()->min(8)->max()->confirmed(),
         );
     }
+
+    public static function contact()
+    {
+        return RuleSchema::create(
+            Rule::make('name')->required()->max(),
+            Rule::make('email')->required()->email(true)->max(),
+            Rule::make('message')->required()->max(800),
+            Rule::make('isRead')->required()->boolean()->accepted(),
+        );
+    }
 }
