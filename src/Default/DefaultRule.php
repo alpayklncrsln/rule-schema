@@ -6,9 +6,11 @@ use Alpayklncrsln\RuleSchema\Rule;
 
 class DefaultRule
 {
-    public static function name(string $attribute = 'name'): Rule
+    public static function name(string $attribute = 'name', bool $required = true,int $max = 255,bool|string $unique =false ): Rule
     {
-        return Rule::make($attribute)->required()->max();
+        $rule = Rule::make($attribute)->required($required)->string()->max($max);
+        if($unique) $rule->unique($unique, $attribute);
+         return $rule;
     }
 
     public static function email(string $attribute = 'email'): Rule
