@@ -15,12 +15,12 @@ class DefaultRuleSchema
         );
     }
 
-    public static function register(): RuleSchema
+    public static function register(bool $passwordConfirmation = true): RuleSchema
     {
         return RuleSchema::create(
             Rule::make('name')->required()->max(),
             Rule::make('email')->required()->email()->max()->unique('users', 'email'),
-            Rule::make('password')->required()->min(8)->max()->confirmed(),
+            Rule::make('password')->required()->min(8)->max()->confirmed($passwordConfirmation),
         );
     }
 
