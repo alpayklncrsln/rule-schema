@@ -29,6 +29,20 @@ composer require alpayklncrsln/rule-schema
 ## Temel Kullanım
 
 İşte doğrulama kuralları oluşturmanın basit bir örneği:
+##### RuleSchema  Metodları
+
+- `create` - Kuralları oluşturmak için kullanılır.
+- `when` - Kurralları koşulu sağladığı takdirde şemaya eklemek için kullanılır.
+- `expect` - Gerekli kuralları silmek için kullanılır.
+- `merge` - Kuralları birleştirme için kullanılır.
+- `existsMerge` - Önceden oluşturulan şemada alan  varsa, kural eklemek için kullanılır.
+- `auth` - Oturum aktifse kuralları eklemek için kullanılır.
+- `notauth` - Oturum aktif değilse kuralları eklemek için kullanılır.
+- `putSchema` - İstek metodu PUT ise kuralları eklemek için kullanılır.
+- `postSchema` - İstek metodu POST ise kuralları eklemek için kullanılır.
+- `patchSchema` - İstek metodu PATCH ise kuralları eklemek için kullanılır.
+- `arraySchema` - İç içe şema eklemek için kullanılır.
+- `getRules` - Oluşturulan kuralları almak için kullanılır.
 
 ```php
 use Alpayklncrsln\RuleSchema\Rule;
@@ -90,6 +104,7 @@ $rules = RuleSchema::create(
 )->getRules();
 ```
 
+
 ## Gelişmiş Özellikler
 
 ### Koşullu Kurallar
@@ -124,6 +139,60 @@ $rules = RuleSchema::create(
 )
 ->expect('password')
 ->getRules();
+```
+### MultiStep Kurallar
+Step by step kural uygulama için `MultiStepSchema` sınıfını kullanabilirsiniz.
+- `step` metodu ile her bir step'e kural uygulayabilirsiniz.
+- `lastStep` metodu ile son step'e kural uygulayabilirsiniz.
+- `allSteps` metodu ile tüm stepleri tek seferde uygulayabilirsiniz.
+- `setAllSteps` metodu ile tüm stepleri tek seferde uygulama durumunu ayarlayabilirsiniz.
+- `getRules` metodu ile kurallarını alabilirsiniz.
+
+```php
+$rules =\Alpayklncrsln\RuleSchema\Default\MultiStepSchema::make()
+    ->step(1,
+        Rule::make('name')->required(),
+        Rule::make('email')->required()->email(),
+    )
+    ->step(2,
+        Rule::make('password')->required(),
+    )
+    ->getRules();
+```
+Çıktı:
+```php
+// Step 1
+[
+'name' => ['required'],
+'email' => ['required', 'email'],
+]
+// Step 2
+[
+'password' => ['required']
+]
+
+```
+### MultiStep `AllSteps` Kullanımı
+AllSteps ile tüm stepleri tek seferde uygulayabilirsiniz.
+```php
+$rules = \Alpayklncrsln\RuleSchema\Default\MultiStepSchema::make('step', 1, 2)
+    ->allSteps()
+    ->step(1,
+        Rule::make('name')->required(),
+        Rule::make('email')->required()->email(),
+    )
+    ->step(2,
+        Rule::make('password')->required(),
+    )
+    ->getRules();
+```
+çıktı:
+```php
+[
+    'step_1.name' => ['required'],
+    'step_1.email' => ['required', 'email'],
+    'step_2.password' => ['required']
+]
 ```
 
 ## Mevcut Metodlar
