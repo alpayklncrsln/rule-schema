@@ -48,7 +48,7 @@ class Rule
 
     public function acceptedIf(string $field, string $value): self
     {
-        $this->rule['accepted_if'] = $field.','.$value;
+        $this->rule['accepted_if'] = $field . ',' . $value;
 
         return $this;
     }
@@ -209,7 +209,7 @@ class Rule
 
     public function dateFormat(string $format): self
     {
-        if (! $this->isRuleCheck('date')) {
+        if (!$this->isRuleCheck('date')) {
             $this->date();
         }
         $this->rule['date_format'] = $format;
@@ -226,7 +226,7 @@ class Rule
 
     public function decimal(int $min = 0, ?int $max = 2): self
     {
-        $this->rule['decimal'] = "$min".($max ? ",$max" : '');
+        $this->rule['decimal'] = "$min" . ($max ? ",$max" : '');
 
         return $this;
     }
@@ -240,7 +240,7 @@ class Rule
 
     public function declinedIf(string $field, string $value): self
     {
-        $this->rule['declined_if'] = $field.','.$value;
+        $this->rule['declined_if'] = $field . ',' . $value;
 
         return $this;
     }
@@ -276,7 +276,7 @@ class Rule
     public function demensionsImageWidthHeight(int $width, int $height): self
     {
         $this->image();
-        $this->demensions('width:'.$width.',height:'.$height);
+        $this->demensions('width:' . $width . ',height:' . $height);
 
         return $this;
     }
@@ -284,7 +284,7 @@ class Rule
     public function demensionsImageMinWidthMinHeight(int $minWidth, int $minHeight): self
     {
         $this->image();
-        $this->demensions('min_width:'.$minWidth.',min_height:'.$minHeight);
+        $this->demensions('min_width:' . $minWidth . ',min_height:' . $minHeight);
 
         return $this;
     }
@@ -317,12 +317,12 @@ class Rule
         return $this;
     }
 
-    public function email(bool $dnsCheck = false, bool $rfcCheck = false, bool $spoofCheck = false, bool $strictCheck = false,
-        bool|string $extra = false): self
+    public function email(bool        $dnsCheck = false, bool $rfcCheck = false, bool $spoofCheck = false, bool $strictCheck = false,
+                          bool|string $extra = false): self
     {
         if ($dnsCheck || $rfcCheck || $spoofCheck || $strictCheck || $extra) {
-            $this->rule['email'] = ($dnsCheck ? 'dns' : null).($rfcCheck ? 'rfc' : null).($spoofCheck ? 'spoof' : null).
-                ($extra ? ','.$extra : null).($strictCheck ? 'strict' : null);
+            $this->rule['email'] = ($dnsCheck ? 'dns' : null) . ($rfcCheck ? 'rfc' : null) . ($spoofCheck ? 'spoof' : null) .
+                ($extra ? ',' . $extra : null) . ($strictCheck ? 'strict' : null);
         } else {
             $this->rule['email'] = true;
         }
@@ -339,7 +339,7 @@ class Rule
 
     public function exists(Model|string $table, ?string $column = null): self
     {
-        $this->rule['exists'] = $table.(! is_null($column) ? ','.$column : '');
+        $this->rule['exists'] = $table . (!is_null($column) ? ',' . $column : '');
 
         return $this;
     }
@@ -508,7 +508,7 @@ class Rule
     public function mimes(MimeEnumInterface|string ...$mimes): self
     {
         $this->rule['mimes'] = implode(',', array_map(
-            fn ($mime) => is_string($mime) ? $mime : $mime->getValue(),
+            fn($mime) => is_string($mime) ? $mime : $mime->getValue(),
             $mimes
         ));
 
@@ -518,7 +518,7 @@ class Rule
     public function mimetypes(string|MimeEnumInterface ...$mimetypes): self
     {
         $this->rule['mimetypes'] = implode(',', array_map(
-            fn ($mimeType) => is_string($mimeType) ? $mimeType : $mimeType->getValue(),
+            fn($mimeType) => is_string($mimeType) ? $mimeType : $mimeType->getValue(),
             $mimetypes
         ));
 
@@ -534,8 +534,8 @@ class Rule
 
     public function mimeAndMimetypes(MimeEnumInterface ...$mimes): self
     {
-        $this->mimes(...array_map(fn ($mime) => $mime->getValue(), $mimes));
-        $this->mimetypes(...array_map(fn ($mime) => $mime->type(), $mimes));
+        $this->mimes(...array_map(fn($mime) => $mime->getValue(), $mimes));
+        $this->mimetypes(...array_map(fn($mime) => $mime->type(), $mimes));
 
         return $this;
     }
@@ -570,14 +570,14 @@ class Rule
 
     public function missingIf(string $field, string $value): self
     {
-        $this->rule['missing_if'] = $field.','.$value;
+        $this->rule['missing_if'] = $field . ',' . $value;
 
         return $this;
     }
 
     public function missingUnless(string $field, string $value): self
     {
-        $this->rule['missing_unless'] = $field.','.$value;
+        $this->rule['missing_unless'] = $field . ',' . $value;
 
         return $this;
     }
@@ -605,14 +605,14 @@ class Rule
 
     public function presentIf(string $field, string ...$value): self
     {
-        $this->rule['present_if'] = $field.','.implode(',', $value);
+        $this->rule['present_if'] = $field . ',' . implode(',', $value);
 
         return $this;
     }
 
     public function presentUnless(string $field, string ...$value): self
     {
-        $this->rule['present_unless'] = $field.','.implode(',', $value);
+        $this->rule['present_unless'] = $field . ',' . implode(',', $value);
 
         return $this;
     }
@@ -640,14 +640,14 @@ class Rule
 
     public function prohibitedIf(string $field, string ...$value): self
     {
-        $this->rule['prohibited_if'] = $field.','.implode(',', $value);
+        $this->rule['prohibited_if'] = $field . ',' . implode(',', $value);
 
         return $this;
     }
 
     public function prohibitedUnless(string $field, string ...$value): self
     {
-        $this->rule['prohibited_unless'] = $field.','.implode(',', $value);
+        $this->rule['prohibited_unless'] = $field . ',' . implode(',', $value);
 
         return $this;
     }
@@ -668,7 +668,7 @@ class Rule
 
     public function requiredIf(string $field, string ...$value): self
     {
-        $this->rule['required_if'] = $field.','.implode(',', $value);
+        $this->rule['required_if'] = $field . ',' . implode(',', $value);
 
         return $this;
     }
@@ -717,7 +717,7 @@ class Rule
 
     public function requiredUnless(string $field, string ...$value): self
     {
-        $this->rule['required_unless'] = $field.','.implode(',', $value);
+        $this->rule['required_unless'] = $field . ',' . implode(',', $value);
 
         return $this;
     }
@@ -819,14 +819,14 @@ class Rule
         foreach ($this->rule as $key => $value) {
 
             $ruleData[] = match (true) {
-                is_bool($value) => $key,
-                is_array($value) => "$key:".implode(',', $value),
-                $key == 'enum' => "$key:".implode(',', array_column($value::cases(), 'value')),
-                default => "$key:$value"
+                is_bool($value) => $value ? $key : null,
+                is_array($value) => "$key:" . implode(',', $value),
+                $key == 'enum' => "$key:" . implode(',', array_column($value::cases(), 'value')),
+                is_string($value) || is_int($value) => "$key:$value",
+                default => throw new \Exception(" Rule error:$key ")
             };
         }
-
-        return [$this->attribute => $ruleData];
+        return [$this->attribute => array_filter($ruleData)];
 
     }
 }
