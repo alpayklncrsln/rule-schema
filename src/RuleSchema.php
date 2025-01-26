@@ -14,6 +14,7 @@ class RuleSchema implements RuleSchemaInterface
     use withCacheTrait;
 
     protected array $rules = [];
+    protected array $messages = [];
 
     protected bool $isBail = false;
 
@@ -52,11 +53,19 @@ class RuleSchema implements RuleSchemaInterface
         if (! $this->existsCacheData()) {
             foreach ($rules as $rule) {
                 $this->rules = array_merge($this->rules, $rule->getRule());
+                $this->messages = array_merge($this->messages, $rule->getMessage());
             }
+
         }
 
         return $this;
     }
+
+    public function getMessages(): array
+    {
+        return $this->messages;
+    }
+
 
     public function when(bool $condition, Rule ...$rules): self
     {
