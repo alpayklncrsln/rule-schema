@@ -39,11 +39,14 @@ class MultiStepSchema
     public function setAllSteps(bool $allSteps): self
     {
         $this->allSteps = $allSteps;
+
         return $this;
     }
+
     public function allSteps(): self
     {
         $this->allSteps = true;
+
         return $this;
     }
 
@@ -54,6 +57,7 @@ class MultiStepSchema
         } else {
             $this->ruleSchema->when(Request::input($this->attribute) == $step, ...$rules);
         }
+
         return $this;
     }
 
