@@ -909,7 +909,7 @@ class Rule
     {
         $this->rule['uuid'] = $check;
         $this->setMessage(__FUNCTION__,$message);
-        
+
         return $this;
     }
 
