@@ -14,6 +14,7 @@ class RuleSchema implements RuleSchemaInterface
     use withCacheTrait;
 
     protected array $rules = [];
+
     protected array $messages = [];
 
     protected bool $isBail = false;
@@ -65,7 +66,6 @@ class RuleSchema implements RuleSchemaInterface
     {
         return $this->messages;
     }
-
 
     public function when(bool $condition, Rule ...$rules): self
     {
