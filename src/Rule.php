@@ -12,6 +12,8 @@ class Rule
 
     protected array $rule = [];
 
+    protected array $messages = [];
+
     public function __construct(string $attribute)
     {
         $this->attribute = $attribute;
@@ -20,6 +22,23 @@ class Rule
     public static function make(string $attribute): self
     {
         return new Rule($attribute);
+    }
+
+    protected function setMessage(string $ruleName, string $message = null): void
+    {
+        if (!is_null($message)) {
+            $this->messages[$ruleName] = $message;
+        }
+    }
+
+    public function getMessage(): array
+    {
+        $message = [];
+        foreach ($this->messages as $key => $value) {
+            $message[$this->attribute . '.' . $key] = $value;
+        }
+
+        return $message;
     }
 
     public function getAttribute(): string
@@ -39,286 +58,304 @@ class Rule
         return $this;
     }
 
-    public function accepted(bool $check = true): self
+    public function accepted(bool $check = true, string $message = null): self
     {
         $this->rule['accepted'] = $check;
-
+        $this->setMessage(__FUNCTION__, $message);
         return $this;
     }
 
-    public function acceptedIf(string $field, string $value): self
+    public function acceptedIf(string $field, string $value, string $message = null): self
     {
         $this->rule['accepted_if'] = $field . ',' . $value;
-
+        $this->setMessage(__FUNCTION__, $message);
         return $this;
     }
 
-    public function after(string $after): self
+    public function after(string $after, string $message = null): self
     {
         $this->rule['after'] = $after;
-
+        $this->setMessage(__FUNCTION__, $message);
         return $this;
     }
 
-    public function afterDate(string $value): self
+    public function afterDate(string $value, string $message = null): self
     {
         $this->date();
         $this->after($value);
-
+        $this->setMessage('after', $message);
         return $this;
     }
 
-    public function afterDateYesterday(): self
+    public function afterDateYesterday(string $message = null): self
     {
         $this->date();
         $this->after('yesterday');
-
+        $this->setMessage('after', $message);
         return $this;
     }
 
-    public function afterDateTomorrow(): self
+    public function afterDateTomorrow(string $message = null): self
     {
         $this->date();
         $this->after('tomorrow');
+        $this->setMessage('after', $message);
 
         return $this;
     }
 
-    public function alpha(string $value): self
+    public function alpha(string $value, string $message = null): self
     {
         $this->rule['alpha'] = $value;
-
+        $this->setMessage(__FUNCTION__, $message);
         return $this;
     }
 
-    public function alphaAscii(): self
+    public function alphaAscii(string $message = null): self
     {
         $this->alpha('ascii');
-
+        $this->setMessage('alpha', $message);
         return $this;
     }
 
-    public function alphaNumeric(string $value): self
+    public function alphaNumeric(string $value, string $message = null): self
     {
         $this->rule['alpha_num'] = $value;
+        $this->setMessage('alpha_num', $message);
 
         return $this;
     }
 
-    public function alphaNumericAscii(): self
+    public function alphaNumericAscii(string $message = null): self
     {
         $this->alphaNumeric('ascii');
+        $this->setMessage('alpha_num', $message);
 
         return $this;
     }
 
-    public function alphaDash(string $value): self
+    public function alphaDash(string $value, string $message = null): self
     {
         $this->rule['alpha_dash'] = $value;
+        $this->setMessage('alpha_dash', $message);
 
         return $this;
     }
 
-    public function bail(bool $check = true): self
+    public function bail(bool $check = true, string $message = null): self
     {
         $this->rule['bail'] = $check;
-
+        $this->setMessage(__FUNCTION__, $message);
         return $this;
     }
 
-    public function before(string $before): self
+    public function before(string $before, string $message = null): self
     {
         $this->rule['before'] = $before;
-
+        $this->setMessage(__FUNCTION__, $message);
         return $this;
     }
 
-    public function beforeDate(string $value): self
+    public function beforeDate(string $value, string $message = null): self
     {
         $this->date();
         $this->before($value);
-
+        $this->setMessage('before', $message);
         return $this;
     }
 
-    public function beforeDateYesterday(): self
+    public function beforeDateYesterday(string $message = null): self
     {
         $this->date();
         $this->before('yesterday');
+        $this->setMessage('before', $message);
 
         return $this;
     }
 
-    public function beforeDateTomorrow(): self
+    public function beforeDateTomorrow(string $message = null): self
     {
         $this->date();
+        $this->setMessage('before', $message);
         $this->before('tomorrow');
 
         return $this;
     }
 
-    public function between(int $min, int $max): self
+    public function between(int $min, int $max, string $message = null): self
     {
         $this->rule['between'] = "$min,$max";
-
+        $this->setMessage(__FUNCTION__, $message);
         return $this;
     }
 
-    public function boolean(bool $check = true): self
+    public function boolean(bool $check = true, string $message = null): self
     {
         $this->rule['boolean'] = $check;
-
+        $this->setMessage(__FUNCTION__, $message);
         return $this;
     }
 
-    public function confirmed(bool $check = true): self
+    public function confirmed(bool $check = true, string $message = null): self
     {
         $this->rule['confirmed'] = $check;
-
+        $this->setMessage(__FUNCTION__, $message);
         return $this;
     }
 
-    public function contains(string ...$contains): self
+    public function contains(array $contains, string $message = null): self
     {
         $this->rule['contains'] = $contains;
-
+        $this->setMessage(__FUNCTION__, $message);
         return $this;
     }
 
-    public function currentPassword(bool|string $guard = true): self
+    public function currentPassword(bool|string $guard = true, string $message = null): self
     {
         $this->rule['current_password'] = $guard;
-
+        $this->setMessage('current_password', $message);
         return $this;
     }
 
-    public function date(bool $check = true): self
+    public function date(bool $check = true, string $message = null): self
     {
         $this->rule['date'] = $check;
-
+        $this->setMessage(__FUNCTION__, $message);
         return $this;
     }
 
-    public function dateEquals(string $value): self
+    public function dateEquals(string $value, string $message = null): self
     {
         $this->date();
         $this->rule['date_equals'] = $value;
+        $this->setMessage('date_equals', $message);
 
         return $this;
     }
 
-    public function dateFormat(string $format): self
+    public function dateFormat(string $format, string $message = null): self
     {
         if (!$this->isRuleCheck('date')) {
             $this->date();
         }
         $this->rule['date_format'] = $format;
+        $this->setMessage('date_format', $message);
 
         return $this;
     }
 
-    public function dateTime(): self
+    public function dateTime(string $message = null): self
     {
         $this->rule['datetime'] = true;
-
+        $this->setMessage('datetime', $message);
         return $this;
     }
 
-    public function decimal(int $min = 0, ?int $max = 2): self
+    public function decimal(int $min = 0, ?int $max = 2, string $message = null): self
     {
         $this->rule['decimal'] = "$min" . ($max ? ",$max" : '');
-
+        $this->setMessage(__FUNCTION__, $message);
         return $this;
     }
 
-    public function declined(bool $check = true): self
+    public function declined(bool $check = true, string $message = null): self
     {
         $this->rule[__FUNCTION__] = $check;
-
+        $this->setMessage(__FUNCTION__, $message);
         return $this;
     }
 
-    public function declinedIf(string $field, string $value): self
+    public function declinedIf(string $field, string $value, string $message = null): self
     {
         $this->rule['declined_if'] = $field . ',' . $value;
-
+        $this->setMessage('declined_if', $message);
         return $this;
     }
 
-    public function different(string $field): self
+    public function different(string $field, string $message = null): self
     {
         $this->rule['different'] = $field;
+        $this->setMessage(__FUNCTION__, $message);
 
         return $this;
     }
 
-    public function digits(int $digits): self
+    public function digits(int $digits, string $message = null): self
     {
         $this->rule['digits'] = $digits;
+        $this->setMessage(__FUNCTION__, $message);
 
         return $this;
     }
 
-    public function digitsBetween(int $min, int $max): self
+    public function digitsBetween(int $min, int $max, string $message = null): self
     {
         $this->rule['digits_between'] = "$min,$max";
+        $this->setMessage('digits_between', $message);
 
         return $this;
     }
 
-    public function demensions(string $value): self
+    public function demensions(string $value, string $message = null): self
     {
         $this->rule['dimensions'] = $value;
+        $this->setMessage(__FUNCTION__, $message);
 
         return $this;
     }
 
-    public function demensionsImageWidthHeight(int $width, int $height): self
+    public function demensionsImageWidthHeight(int $width, int $height, string $message = null): self
     {
         $this->image();
         $this->demensions('width:' . $width . ',height:' . $height);
+        $this->setMessage('demensions', $message);
 
         return $this;
     }
 
-    public function demensionsImageMinWidthMinHeight(int $minWidth, int $minHeight): self
+    public function demensionsImageMinWidthMinHeight(int $minWidth, int $minHeight, string $message = null): self
     {
         $this->image();
         $this->demensions('min_width:' . $minWidth . ',min_height:' . $minHeight);
+        $this->setMessage('demensions', $message);
 
         return $this;
     }
 
-    public function distinct(bool|string $check = true): self
+    public function distinct(bool|string $check = true, string $message = null): self
     {
         $this->rule['distinct'] = $check;
+        $this->setMessage(__FUNCTION__, $message);
 
         return $this;
     }
 
-    public function distinctIgnoreCase(): self
+    public function distinctIgnoreCase(string $message = null): self
     {
         $this->distinct('ignore_case');
+        $this->setMessage('distinct', $message);
 
         return $this;
     }
 
-    public function doesntStartWith(string ...$starts): self
+    public function doesntStartWith(array $starts, string $message = null): self
     {
         $this->rule['doesnt_starts_with'] = $starts;
+        $this->setMessage('doesnt_starts_with', $message);
 
         return $this;
     }
 
-    public function doesntEndWith(string ...$ends): self
+    public function doesntEndWith(array $ends, string $message = null): self
     {
         $this->rule['doesnt_ends_with'] = $ends;
+        $this->setMessage('doesnt_ends_with', $message);
 
         return $this;
     }
 
-    public function email(bool        $dnsCheck = false, bool $rfcCheck = false, bool $spoofCheck = false, bool $strictCheck = false,
-                          bool|string $extra = false): self
+    public function email(bool $dnsCheck = false, bool $rfcCheck = false, bool $spoofCheck = false, bool $strictCheck = false,
+                          bool|string $extra = false, string $message = null): self
     {
         if ($dnsCheck || $rfcCheck || $spoofCheck || $strictCheck || $extra) {
             $this->rule['email'] = ($dnsCheck ? 'dns' : null) . ($rfcCheck ? 'rfc' : null) . ($spoofCheck ? 'spoof' : null) .
@@ -326,48 +363,55 @@ class Rule
         } else {
             $this->rule['email'] = true;
         }
+        $this->setMessage(__FUNCTION__,$message);
 
         return $this;
     }
 
-    public function endsWith(string ...$ends): self
+    public function endsWith(array $ends, string $message = null): self
     {
         $this->rule['ends_with'] = $ends;
+        $this->setMessage('ends_with', $message);
 
         return $this;
     }
 
-    public function exists(Model|string $table, ?string $column = null): self
+    public function exists(Model|string $table, ?string $column = null, string $message = null): self
     {
         $this->rule['exists'] = $table . (!is_null($column) ? ',' . $column : '');
+        $this->setMessage('exists', $message);
 
         return $this;
     }
 
-    public function hexColor(bool $check = true): self
+    public function hexColor(bool $check = true, string $message = null): self
     {
         $this->rule['hex_color'] = $check;
+        $this->setMessage('hex_color', $message);
 
         return $this;
     }
 
-    public function string(bool $check = true): self
+    public function string(bool $check = true, string $message = null): self
     {
         $this->rule['string'] = $check;
+        $this->setMessage(__FUNCTION__,$message);
 
         return $this;
     }
 
-    public function max(int $max = 255): self
+    public function max(int $max = 255, string $message = null): self
     {
         $this->rule['max'] = $max;
+        $this->setMessage(__FUNCTION__,$message);
 
         return $this;
     }
 
-    public function min(int $min = 1): self
+    public function min(int $min = 1, string $message = null): self
     {
         $this->rule['min'] = $min;
+        $this->setMessage(__FUNCTION__,$message);
 
         return $this;
     }
@@ -812,6 +856,7 @@ class Rule
 
         return $this;
     }
+
 
     public function getRule(): array
     {
