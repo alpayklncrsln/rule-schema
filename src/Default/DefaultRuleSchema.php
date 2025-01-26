@@ -59,5 +59,4 @@ class DefaultRuleSchema
             Rule::make('rating')->required()->numeric()->between(1, 5),
         );
     }
-    
 }
