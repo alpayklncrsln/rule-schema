@@ -40,7 +40,7 @@ class DefaultRuleSchema
         );
     }
 
-    public static function contact()
+    public static function contact(): RuleSchema
     {
         return RuleSchema::create(
             Rule::make('name')->required()->max(),
@@ -50,7 +50,7 @@ class DefaultRuleSchema
         );
     }
 
-    public static function feedback()
+    public static function feedback(): RuleSchema
     {
         return RuleSchema::create(
             Rule::make('name')->required()->max(),
@@ -59,4 +59,5 @@ class DefaultRuleSchema
             Rule::make('rating')->required()->numeric()->between(1, 5),
         );
     }
+    
 }
