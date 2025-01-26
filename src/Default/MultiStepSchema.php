@@ -36,6 +36,17 @@ class MultiStepSchema
         return new self($attribute, $startStep, $endStep, $allSteps, $ruleSchema);
     }
 
+    public function setAllSteps(bool $allSteps): self
+    {
+        $this->allSteps = $allSteps;
+        return $this;
+    }
+    public function allSteps(): self
+    {
+        $this->allSteps = true;
+        return $this;
+    }
+
     public function step(int|string $step, Rule ...$rules): self
     {
         if ($this->allSteps) {
@@ -43,18 +54,6 @@ class MultiStepSchema
         } else {
             $this->ruleSchema->when(Request::input($this->attribute) == $step, ...$rules);
         }
-
-        return $this;
-    }
-
-    public function lastStep(Rule ...$rules): self
-    {
-        if ($this->allSteps) {
-            $this->ruleSchema->arraySchema($this->attribute.'_'.$this->endStep, ...$rules);
-        } else {
-            $this->ruleSchema->when(Request::input($this->attribute) == $this->endStep, ...$rules);
-        }
-
         return $this;
     }
 
