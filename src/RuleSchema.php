@@ -153,4 +153,11 @@ class RuleSchema implements RuleSchemaInterface
 
         return $this;
     }
+
+    public function patchSchema(...$rules): self
+    {
+        $this->when(Request::isMethod('PATCH'), ...$rules);
+
+        return $this;
+    }
 }
