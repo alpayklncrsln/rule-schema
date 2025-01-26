@@ -113,8 +113,7 @@ class Rule
 
     public function alphaAscii(string $message = null): self
     {
-        $this->alpha('ascii');
-        $this->setMessage('alpha', $message);
+        $this->alpha('ascii', $message);
         return $this;
     }
 
@@ -128,8 +127,8 @@ class Rule
 
     public function alphaNumericAscii(string $message = null): self
     {
-        $this->alphaNumeric('ascii');
-        $this->setMessage('alpha_num', $message);
+        $this->alphaNumeric('ascii', $message);
+
 
         return $this;
     }
