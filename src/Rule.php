@@ -354,7 +354,7 @@ class Rule
         return $this;
     }
 
-    public function email(bool $dnsCheck = false, bool $rfcCheck = false, bool $spoofCheck = false, bool $strictCheck = false,
+    public function email(bool        $dnsCheck = false, bool $rfcCheck = false, bool $spoofCheck = false, bool $strictCheck = false,
                           bool|string $extra = false, string $message = null): self
     {
         if ($dnsCheck || $rfcCheck || $spoofCheck || $strictCheck || $extra) {
@@ -363,7 +363,7 @@ class Rule
         } else {
             $this->rule['email'] = true;
         }
-        $this->setMessage(__FUNCTION__,$message);
+        $this->setMessage(__FUNCTION__, $message);
 
         return $this;
     }
@@ -395,7 +395,7 @@ class Rule
     public function string(bool $check = true, string $message = null): self
     {
         $this->rule['string'] = $check;
-        $this->setMessage(__FUNCTION__,$message);
+        $this->setMessage(__FUNCTION__, $message);
 
         return $this;
     }
@@ -403,7 +403,7 @@ class Rule
     public function max(int $max = 255, string $message = null): self
     {
         $this->rule['max'] = $max;
-        $this->setMessage(__FUNCTION__,$message);
+        $this->setMessage(__FUNCTION__, $message);
 
         return $this;
     }
@@ -411,43 +411,44 @@ class Rule
     public function min(int $min = 1, string $message = null): self
     {
         $this->rule['min'] = $min;
-        $this->setMessage(__FUNCTION__,$message);
+        $this->setMessage(__FUNCTION__, $message);
 
         return $this;
     }
 
-    public function numeric(bool $check = true): self
+    public function numeric(bool $check = true, string $message = null): self
     {
         $this->rule['numeric'] = $check;
+        $this->setMessage(__FUNCTION__, $message);
 
         return $this;
     }
 
-    public function array(bool $check = true): self
+    public function array(bool $check = true, string $message = null): self
     {
         $this->rule['array'] = $check;
-
+        $this->setMessage(__FUNCTION__, $message);
         return $this;
     }
 
-    public function in(array $in): self
+    public function in(array $in, string $message = null): self
     {
         $this->rule['in'] = $in;
-
+        $this->setMessage(__FUNCTION__, $message);
         return $this;
     }
 
-    public function unique(Model|string $table, string $column = 'id'): self
+    public function unique(Model|string $table, string $column = null, string $message = null): self
     {
-        $this->rule['unique'] = "$table,$column";
-
+        $this->rule['unique'] = "$table" . (!is_null($column) ? ',' . $column : '');
+        $this->setMessage(__FUNCTION__, $message);
         return $this;
     }
 
-    public function nullable(bool $check = true): self
+    public function nullable(bool $check = true, string $message = null): self
     {
         $this->rule['nullable'] = $check;
-
+        $this->setMessage(__FUNCTION__, $message);
         return $this;
     }
 
@@ -458,402 +459,457 @@ class Rule
         return $this;
     }
 
-    public function file(): self
+    public function file(bool $check = true, string $message = null): self
     {
-        $this->rule['file'] = true;
+        $this->rule['file'] = $check;
+        $this->setMessage(__FUNCTION__, $message);
 
         return $this;
     }
 
-    public function activeUrl(): self
+    public function activeUrl(bool $check = true, string $message = null): self
     {
-        $this->rule['active_url'] = true;
+        $this->rule['active_url'] = $check;
+        $this->setMessage(__FUNCTION__, $message);
 
         return $this;
     }
 
-    public function regex(string $pattern): self
+    public function regex(string $pattern, string $message = null): self
     {
         $this->rule['regex'] = $pattern;
+        $this->setMessage(__FUNCTION__, $message);
 
         return $this;
     }
 
-    public function notRegex(string $pattern): self
+    public function notRegex(string $pattern, string $message = null): self
     {
         $this->rule['not_regex'] = $pattern;
-
+        $this->setMessage(__FUNCTION__, $message);
         return $this;
     }
 
-    public function gt(string $gt): self
+    public function gt(string $gt, string $message = null): self
     {
         $this->rule['gt'] = $gt;
+        $this->setMessage(__FUNCTION__, $message);
 
         return $this;
     }
 
-    public function lt(string $lt): self
+    public function lt(string $lt, string $message = null): self
     {
         $this->rule['lt'] = $lt;
+        $this->setMessage(__FUNCTION__, $message);
 
         return $this;
     }
 
-    public function gte(string $gte): self
+    public function gte(string $gte, string $message = null): self
     {
         $this->rule['gte'] = $gte;
+        $this->setMessage(__FUNCTION__, $message);
 
         return $this;
     }
 
-    public function lte(string $lte): self
+    public function lte(string $lte, string $message = null): self
     {
         $this->rule['lte'] = $lte;
+        $this->setMessage(__FUNCTION__, $message);
 
         return $this;
     }
 
-    public function json(bool $check = true): self
+    public function json(bool $check = true, string $message = null): self
     {
         $this->rule['json'] = $check;
+        $this->setMessage(__FUNCTION__, $message);
 
         return $this;
     }
 
-    public function ip(bool $check = true): self
+    public function ip(bool $check = true, string $message = null): self
     {
         $this->rule['ip'] = $check;
+        $this->setMessage(__FUNCTION__, $message);
 
         return $this;
     }
 
-    public function macAddress(bool $check = true): self
+    public function macAddress(bool $check = true, string $message = null): self
     {
         $this->rule['mac_address'] = $check;
+        $this->setMessage(__FUNCTION__, $message);
 
         return $this;
     }
 
-    public function ipv4(bool $check = true): self
+    public function ipv4(bool $check = true, string $message = null): self
     {
         $this->rule['ipv4'] = $check;
+        $this->setMessage(__FUNCTION__, $message);
 
         return $this;
     }
 
-    public function ipv6(bool $check = true): self
+    public function ipv6(bool $check = true, string $message = null): self
     {
         $this->rule['ipv6'] = $check;
+        $this->setMessage(__FUNCTION__, $message);
 
         return $this;
     }
 
-    public function mimes(MimeEnumInterface|string ...$mimes): self
+    public function mimes(string $message = null, MimeEnumInterface|string ...$mimes): self
     {
         $this->rule['mimes'] = implode(',', array_map(
             fn($mime) => is_string($mime) ? $mime : $mime->getValue(),
             $mimes
         ));
 
+        $this->setMessage(__FUNCTION__, $message);
+
         return $this;
     }
 
-    public function mimetypes(string|MimeEnumInterface ...$mimetypes): self
+    public function mimetypes(string $message = null, string|MimeEnumInterface ...$mimetypes): self
     {
         $this->rule['mimetypes'] = implode(',', array_map(
             fn($mimeType) => is_string($mimeType) ? $mimeType : $mimeType->getValue(),
             $mimetypes
         ));
 
+        $this->setMessage(__FUNCTION__, $message);
+
         return $this;
     }
 
-    public function enum($enum): self
+    public function enum($enum, string $message = null): self
     {
         $this->rule['enum'] = $enum;
-
+        $this->setMessage(__FUNCTION__, $message);
         return $this;
     }
 
-    public function mimeAndMimetypes(MimeEnumInterface ...$mimes): self
+    public function mimeAndMimetypes(string $message = null, MimeEnumInterface ...$mimes): self
     {
         $this->mimes(...array_map(fn($mime) => $mime->getValue(), $mimes));
         $this->mimetypes(...array_map(fn($mime) => $mime->type(), $mimes));
-
+        $this->setMessage(__FUNCTION__, $message);
         return $this;
     }
 
-    public function maxDigits(int $digits): self
+    public function maxDigits(int $digits, string $message = null): self
     {
         $this->rule['max_digits'] = $digits;
-
+        $this->setMessage('max_digits', $message);
         return $this;
     }
 
-    public function minDigits(int $digits): self
+    public function minDigits(int $digits, string $message = null): self
     {
         $this->rule['min_digits'] = $digits;
-
+        $this->setMessage('min_digits', $message);
         return $this;
     }
 
-    public function multipleOf(string $value): self
+    public function multipleOf(string $value, string $message = null): self
     {
         $this->rule['multiple_of'] = $value;
+        $this->setMessage(__FUNCTION__, $message);
 
         return $this;
     }
 
-    public function missing(bool $check = true): self
+    public function missing(bool $check = true, string $message = null): self
     {
         $this->rule['missing'] = $check;
+        $this->setMessage(__FUNCTION__, $message);
 
         return $this;
     }
 
-    public function missingIf(string $field, string $value): self
+    public function missingIf(string $field, string $value, string $message = null): self
     {
         $this->rule['missing_if'] = $field . ',' . $value;
+        $this->setMessage(__FUNCTION__, $message);
 
         return $this;
     }
 
-    public function missingUnless(string $field, string $value): self
+    public function missingUnless(string $field, string $value, string $message = null): self
     {
         $this->rule['missing_unless'] = $field . ',' . $value;
+        $this->setMessage('missing_unless', $message);
 
         return $this;
     }
 
-    public function missingWith(string ...$values): self
+    public function missingWith(array $values, string $message = null): self
     {
         $this->rule['missing_with'] = $values;
+        $this->setMessage('missing_with', $message);
 
         return $this;
     }
 
-    public function notIn(string ...$values): self
+    public function notIn(array $values, string $message = null): self
     {
         $this->rule['not_in'] = $values;
+        $this->setMessage(__FUNCTION__, $message);
 
         return $this;
     }
 
-    public function present(bool $check = true): self
+    public function present(bool $check = true, string $message = null): self
     {
         $this->rule['present'] = $check;
+        $this->setMessage(__FUNCTION__, $message);
 
         return $this;
     }
 
-    public function presentIf(string $field, string ...$value): self
+    public function presentIf(string $field, array $value, string $message = null): self
     {
         $this->rule['present_if'] = $field . ',' . implode(',', $value);
+        $this->setMessage('present_if', $message);
 
         return $this;
     }
 
-    public function presentUnless(string $field, string ...$value): self
+    public function presentUnless(string $field, array $value, string $message = null): self
     {
         $this->rule['present_unless'] = $field . ',' . implode(',', $value);
+        $this->setMessage('present_unless', $message);
 
         return $this;
     }
 
-    public function presentWith(string ...$value): self
+    public function presentWith(array $value, string $message = null): self
     {
         $this->rule['present_with'] = $value;
+        $this->setMessage('present_with', $message);
 
         return $this;
     }
 
-    public function presentWithAll(string ...$value): self
+    public function presentWithAll(array $value, string $message = null): self
     {
         $this->rule['present_with_all'] = $value;
+        $this->setMessage(__FUNCTION__, $message);
 
         return $this;
     }
 
-    public function prohibited(bool $check = true): self
+    public function prohibited(bool $check = true, string $message = null): self
     {
         $this->rule['prohibited'] = $check;
+        $this->setMessage(__FUNCTION__,$message);
 
         return $this;
     }
 
-    public function prohibitedIf(string $field, string ...$value): self
+    public function prohibitedIf(string $field, array $value, string $message = null): self
     {
         $this->rule['prohibited_if'] = $field . ',' . implode(',', $value);
-
+        $this->setMessage('prohibited_if',$message);
         return $this;
     }
 
-    public function prohibitedUnless(string $field, string ...$value): self
+    public function prohibitedUnless(string $field, array $value, string $message = null): self
     {
         $this->rule['prohibited_unless'] = $field . ',' . implode(',', $value);
+        $this->setMessage('prohibited_unless',$message);
 
         return $this;
     }
 
-    public function prohibits(string ...$field): self
+    public function prohibits( array $fields, string $message = null): self
     {
-        $this->rule['prohibits'] = $field;
+        $this->rule['prohibits'] = $fields;
+        $this->setMessage('prohibits', $message);
 
         return $this;
     }
 
-    public function required(bool $check = true): self
+    public function required(bool $check = true, string $message = null): self
     {
         $this->rule['required'] = $check;
+        $this->setMessage(__FUNCTION__,$message);
 
         return $this;
     }
 
-    public function requiredIf(string $field, string ...$value): self
+    public function requiredIf(string $field, array $value, string $message = null): self
     {
         $this->rule['required_if'] = $field . ',' . implode(',', $value);
+        $this->setMessage('required_if',$message);
 
         return $this;
     }
 
-    public function requiredIfAccepted(string ...$field): self
+    public function requiredIfAccepted(array $fields, string $message = null): self
     {
-        $this->rule['required_if_accepted'] = $field;
+        $this->rule['required_if_accepted'] = $fields;
+        $this->setMessage('required_if_accepted', $message);
 
         return $this;
     }
 
-    public function requiredIfDeclined(string ...$field): self
+    public function requiredIfDeclined(array $field, string $message = null): self
     {
         $this->rule['required_if_declined'] = $field;
+        $this->setMessage('required_if_declined', $message);
 
         return $this;
     }
 
-    public function requiredWith(string ...$field): self
+    public function requiredWith(array $fields, string $message = null): self
     {
-        $this->rule['required_with'] = $field;
+        $this->rule['required_with'] = $fields;
+        $this->setMessage('required_with', $message);
 
         return $this;
     }
 
-    public function requiredWithAll(string ...$field): self
+    public function requiredWithAll(array $fields, string $message = null): self
     {
-        $this->rule['required_with_all'] = $field;
+        $this->rule['required_with_all'] = $fields;
+        $this->setMessage('required_with_all',$message);
 
         return $this;
     }
 
-    public function requiredWithout(string ...$field): self
+    public function requiredWithout(array $fields, string $message = null): self
     {
-        $this->rule['required_without'] = $field;
+        $this->rule['required_without'] = $fields;
+        $this->setMessage('required_without',$message);
 
         return $this;
     }
 
-    public function requiredWithoutAll(string ...$field): self
+    public function requiredWithoutAll(array $fields, string $message = null): self
     {
-        $this->rule['required_without_all'] = $field;
+        $this->rule['required_without_all'] = $fields;
+        $this->setMessage(__FUNCTION__,$message);
 
         return $this;
     }
 
-    public function requiredUnless(string $field, string ...$value): self
+    public function requiredUnless(string $field, array $value, string $message = null): self
     {
         $this->rule['required_unless'] = $field . ',' . implode(',', $value);
-
+        $this->setMessage('required_unless',$message);
         return $this;
     }
 
-    public function requiredArrayKeys(string ...$key): self
+    public function requiredArrayKeys(array $keys, string $message = null): self
     {
-        $this->rule['required_array_keys'] = $key;
+        $this->rule['required_array_keys'] = $keys;
+        $this->setMessage('required_array_keys', $message);
 
         return $this;
     }
 
-    public function same(string $field): self
+    public function same(string $field, string $message = null): self
     {
         $this->rule['same'] = $field;
+        $this->setMessage(__FUNCTION__,$message);
+
 
         return $this;
     }
 
-    public function sometimes(): self
+    public function sometimes( bool $check = true, string $message = null): self
     {
-        $this->rule['sometimes'] = true;
+        $this->rule['sometimes'] = $check;
+        $this->setMessage(__FUNCTION__,$message);
+
 
         return $this;
     }
 
-    public function size(int $size): self
+    public function size(int $size, string $message = null): self
     {
         $this->rule['size'] = $size;
+        $this->setMessage(__FUNCTION__,$message);
 
         return $this;
     }
 
-    public function startsWith(string ...$value): self
+    public function startsWith(array $value, string $message = null): self
     {
         $this->rule['starts_with'] = $value;
 
         return $this;
     }
 
-    public function timezone(string $timezone = 'all'): self
+    public function timezone(string $timezone = 'all', string $message = null): self
     {
         $this->rule['timezone'] = $timezone;
+        $this->setMessage(__FUNCTION__,$message);
+
 
         return $this;
     }
 
-    public function uppercase(bool $check = true): self
+    public function uppercase(bool $check = true, string $message = null): self
     {
         $this->rule['uppercase'] = $check;
+        $this->setMessage(__FUNCTION__,$message);
 
         return $this;
     }
 
-    public function url(string ...$value): self
+    public function url(array $value, string $message = null): self
     {
         $this->rule['url'] = $value;
+        $this->setMessage(__FUNCTION__,$message);
+
+
 
         return $this;
     }
 
-    public function urlHttp(): self
+    public function urlHttp(string $message = null): self
     {
-        $this->url('http');
+        $this->url(['http'],$message);
+
 
         return $this;
     }
 
-    public function urlHttps(): self
+    public function urlHttps(string $message = null): self
     {
-        $this->url('https');
+        $this->url(['https'],$message);
+
 
         return $this;
     }
 
-    public function urlHttpAndHttps(): self
+    public function urlHttpAndHttps(string $message = null): self
     {
-        $this->url('http', 'https');
+        $this->url(['http', 'https'],$message);
 
         return $this;
     }
 
-    public function ulid(bool $check = true): self
+    public function ulid(bool $check = true, string $message = null): self
     {
         $this->rule['ulid'] = $check;
+        $this->setMessage(__FUNCTION__,$message);
+
 
         return $this;
     }
 
-    public function uuid(bool $check = true): self
+    public function uuid(bool $check = true, string $message = null): self
     {
         $this->rule['uuid'] = $check;
-
+        $this->setMessage(__FUNCTION__,$message);
+        
         return $this;
     }
 
