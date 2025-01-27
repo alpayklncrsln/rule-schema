@@ -54,6 +54,15 @@ $rules = RuleSchema::create(
 )->getRules();
 ```
 
+Çıktı:
+
+```php
+[
+    'email' => ['required', 'email', 'max:255'],
+    'password' => ['required', 'min:8', 'max:255'],
+]
+```
+
 ## Form Request ile Entegrasyon
 
 ```php
@@ -72,6 +81,14 @@ class LoginRequest extends FormRequest
     }
 }
 ```
+Çıktı:
+
+```php
+[
+    'email' => ['required', 'email', 'exists:users,email'],
+    'password' => ['required', 'min:8']
+]
+```
 
 ## Hazır Kimlik Doğrulama Şemaları
 
@@ -85,6 +102,9 @@ use Alpayklncrsln\RuleSchema\Default\DefaultRuleSchema;
 $rules = DefaultRuleSchema::login()->getRules();
 
 // Veya özel uygulama
+use Alpayklncrsln\RuleSchema\RuleSchema;
+use Alpayklncrsln\RuleSchema\Rule;
+
 $rules = RuleSchema::create(
     Rule::make('email')->required()->email()->exists('users', 'email'),
     Rule::make('password')->required()->min(8)
@@ -94,9 +114,12 @@ $rules = RuleSchema::create(
 ### Kayıt (Register)
 ```php
 // Hazır şema kullanımı
+use Alpayklncrsln\RuleSchema\Default\DefaultRuleSchema;
 $rules = DefaultRuleSchema::register()->getRules();
 
 // Veya özel uygulama
+use Alpayklncrsln\RuleSchema\RuleSchema;
+use Alpayklncrsln\RuleSchema\Rule;
 $rules = RuleSchema::create(
     Rule::make('name')->required()->max(255),
     Rule::make('email')->required()->email()->unique('users'),
@@ -109,6 +132,9 @@ $rules = RuleSchema::create(
 
 ### Koşullu Kurallar
 ```php
+use Alpayklncrsln\RuleSchema\RuleSchema;
+use Alpayklncrsln\RuleSchema\Rule;
+
 $rules = RuleSchema::create()
     ->when(Auth::check(), 
         Rule::make('role')->required()->in(['admin', 'user']),
@@ -116,9 +142,20 @@ $rules = RuleSchema::create()
     )
     ->getRules();
 ```
+Çıktı:
+```php
+[
+    'role' => ['required', 'in:admin,user'],
+    'permissions' => ['required', 'array']
+]
+
+```
 
 ### Kural Birleştirme
 ```php
+use Alpayklncrsln\RuleSchema\RuleSchema;
+use Alpayklncrsln\RuleSchema\Rule;
+
 $baseRules = RuleSchema::create(
     Rule::make('name')->required()
 );
@@ -129,9 +166,19 @@ $rules = $baseRules
     )
     ->getRules();
 ```
+Çıktı:
+```php
+[
+    'name' => ['required'],
+    'email' => ['required', 'email']
+]
+```
 
 ### Kuralları Hariç Tutma
 ```php
+use Alpayklncrsln\RuleSchema\RuleSchema;
+use Alpayklncrsln\RuleSchema\Rule;
+
 $rules = RuleSchema::create(
     Rule::make('name')->required(),
     Rule::make('email')->required()->email(),
@@ -140,6 +187,16 @@ $rules = RuleSchema::create(
 ->expect('password')
 ->getRules();
 ```
+
+Çıktı:
+
+```php
+[
+    'name' => ['required'],
+    'email' => ['required', 'email']
+]
+```
+
 ### MultiStep Kurallar
 Step by step kural uygulama için `MultiStepSchema` sınıfını kullanabilirsiniz.
 - `step` metodu ile her bir step'e kural uygulayabilirsiniz.
@@ -149,7 +206,9 @@ Step by step kural uygulama için `MultiStepSchema` sınıfını kullanabilirsin
 - `getRules` metodu ile kurallarını alabilirsiniz.
 
 ```php
-$rules =\Alpayklncrsln\RuleSchema\Default\MultiStepSchema::make()
+use Alpayklncrsln\RuleSchema\Default\MultiStepSchema;
+use Alpayklncrsln\RuleSchema\Rule;
+$rules = MultiStepSchema::make()
     ->step(1,
         Rule::make('name')->required(),
         Rule::make('email')->required()->email(),
@@ -160,6 +219,7 @@ $rules =\Alpayklncrsln\RuleSchema\Default\MultiStepSchema::make()
     ->getRules();
 ```
 Çıktı:
+
 ```php
 // Step 1
 [
@@ -170,12 +230,13 @@ $rules =\Alpayklncrsln\RuleSchema\Default\MultiStepSchema::make()
 [
 'password' => ['required']
 ]
-
 ```
 ### MultiStep `AllSteps` Kullanımı
 AllSteps ile tüm stepleri tek seferde uygulayabilirsiniz.
 ```php
-$rules = \Alpayklncrsln\RuleSchema\Default\MultiStepSchema::make('step', 1, 2)
+use Alpayklncrsln\RuleSchema\Default\MultiStepSchema;
+use  Alpayklncrsln\RuleSchema\Rule;
+$rules = MultiStepSchema::make('step', 1, 2)
     ->allSteps()
     ->step(1,
         Rule::make('name')->required(),
@@ -192,6 +253,32 @@ $rules = \Alpayklncrsln\RuleSchema\Default\MultiStepSchema::make('step', 1, 2)
     'step_1.name' => ['required'],
     'step_1.email' => ['required', 'email'],
     'step_2.password' => ['required']
+]
+```
+
+## Dosya İşlemleri İlgili Kurallar
+`mimeAndMimetypes` metodu ile dosya türlerini belirleyebilirsiniz.
+Tek fonksiyonla hem mimes hemde mimetypes de belirleyebilirsiniz.
+```php
+use Alpayklncrsln\RuleSchema\RuleSchema;
+use Alpayklncrsln\RuleSchema\Rule;
+use \Alpayklncrsln\RuleSchema\Enums\FileMime;
+
+$rules = RuleSchema::create(
+    Rule::make('image')->required()->image()
+    ->mimeAndMimetypes(
+    mimes: FileMime::JPEG,FileMime::JPG,FileMime::PNG),
+)
+->getRules();
+```
+çıktı:
+
+```php
+[
+    'image' => ['required', 'image',
+     'mimes:jpeg,jpg,png', 
+     'mimetypes:image/jpeg,image/jpg,image/png'
+     ]
 ]
 ```
 
