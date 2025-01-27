@@ -68,18 +68,37 @@ Output:
 ## Integration with Form Request
 
 ```php
+<?php
+
+namespace App\Http\Requests\Auth;
+
+use Alpayklncrsln\RuleSchema\Interfaces\HasRuleSchema;
 use Alpayklncrsln\RuleSchema\Rule;
 use Alpayklncrsln\RuleSchema\RuleSchema;
 use Illuminate\Foundation\Http\FormRequest;
-
-class LoginRequest extends FormRequest
+class LoginRequest extends FormRequest implements HasRuleSchema
 {
-    public function rules()
+    public function authorize(): bool
+    {
+        return true;
+    }
+    public function ruleSchema(): RuleSchema
     {
         return RuleSchema::create(
-            Rule::make('email')->required()->email()->exists('users', 'email'),
-            Rule::make('password')->required()->min(8)
-        )->getRules();
+            Rule::make('email')
+                ->required()
+                ->email(message: "Email geçerli değil.")->max()->min()
+                ->exists('users', 'email'),
+            Rule::make('password')->required()->min(8)->max()
+        );
+    }
+    public function rules(): array
+    {
+        return $this->ruleSchema()->getRules();
+    }
+    public function messages(): array
+    {
+        return $this->ruleSchema()->getMessages();
     }
 }
 ```
