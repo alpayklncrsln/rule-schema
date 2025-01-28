@@ -56,9 +56,9 @@ class DefaultRule
         return Rule::make($attribute)->file()->size(2048);
     }
 
-    public static function url(string $attribute = 'url'): Rule
+    public static function url(string $attribute = 'url',$urls = ['http', 'https']): Rule
     {
-        return Rule::make($attribute)->url();
+        return Rule::make($attribute)->url($urls);
     }
 
     public static function uuid(string $attribute = 'uuid'): Rule
@@ -85,6 +85,6 @@ class DefaultRule
 
     public static function emailEndsWith(string $attribute = 'email', string ...$domain): Rule
     {
-        return Rule::make('email')->required()->email()->endsWith(...$domain);
+        return Rule::make('email')->required()->email()->endsWith($domain);
     }
 }
