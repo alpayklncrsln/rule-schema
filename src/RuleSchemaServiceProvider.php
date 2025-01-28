@@ -2,7 +2,6 @@
 
 namespace Alpayklncrsln\RuleSchema;
 
-use Alpayklncrsln\RuleSchema\Commands\RuleSchemaCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
