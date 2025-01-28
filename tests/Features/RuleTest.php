@@ -147,15 +147,14 @@ test('rule confirmed', function () {
 });
 
 test('contains', function (string $value) {
-    $rule = Rule::make('name')->contains($value)->getRule();
+    $rule = Rule::make('name')->contains([$value])->getRule();
     expect($rule['name'])->toBeArray()
         ->toBeArray('contains:'.$value);
 })->with([
-    'test',
-    'test123',
-    'test 123',
-    'test 123 test',
-]);
+    'value',
+    'value1',
+    'value2',
+    ]);
 
 test('currentPassword', function (bool|string $guard) {
     $rule = Rule::make('name')->currentPassword($guard)->getRule();
@@ -269,20 +268,20 @@ test('distinct', function () {
         ->toBeArray('distinct');
 });
 
-test('distinctIgnoreCase', function () {
+test('distinct ignore case', function () {
     $rule = Rule::make('name')->distinctIgnoreCase()->getRule();
     expect($rule['name'])->toBeArray()
         ->toBeArray('distinct:ignore_case');
 });
 
-test('doesntStartWith', function () {
-    $rule = Rule::make('name')->doesntStartWith('admin')->getRule();
+test('doesnt start with', function () {
+    $rule = Rule::make('name')->doesntStartWith(['admin'])->getRule();
     expect($rule['name'])->toBeArray()
         ->toBeArray('doesnt_start_with:admin');
 });
 
 test('doesntEndWith', function () {
-    $rule = Rule::make('name')->doesntEndWith('admin')->getRule();
+    $rule = Rule::make('name')->doesntEndWith(['admin'])->getRule();
     expect($rule['name'])->toBeArray()
         ->toBeArray('doesnt_end_with:admin');
 });
@@ -294,7 +293,7 @@ test('email', function () {
 });
 
 test('endsWith', function () {
-    $rule = Rule::make('name')->endsWith('admin')->getRule();
+    $rule = Rule::make('name')->endsWith(['admin'])->getRule();
     expect($rule['name'])->toBeArray()
         ->toBeArray('ends_with:admin');
 });
@@ -430,7 +429,7 @@ test('mimes string', function () {
 });
 
 test('mimes enum', function (FileMime $fileMime) {
-    $rule = Rule::make('image')->mimes($fileMime)->getRule();
+    $rule = Rule::make('image')->mimes(mimes: $fileMime)->getRule();
     expect($rule['image'])->toBeArray()
         ->toBeArray('mimes:'.$fileMime->value);
 })->with(FileMime::cases());
@@ -442,7 +441,7 @@ test('mimetypes string', function () {
 });
 
 test('mimetypes enum', function (FileMime $fileMime) {
-    $rule = Rule::make('image')->mimetypes($fileMime)->getRule();
+    $rule = Rule::make('image')->mimetypes(mimetypes: $fileMime)->getRule();
     expect($rule['image'])->toBeArray()
         ->toBeArray('mimetypes:'.$fileMime->type());
 })->with(FileMime::cases());
@@ -493,13 +492,13 @@ test('missingUnless', function () {
 });
 
 test('missingWith', function () {
-    $rule = Rule::make('name')->missingWith('value', 'value1')->getRule();
+    $rule = Rule::make('name')->missingWith(['value', 'value1'])->getRule();
     expect($rule['name'])->toBeArray()
         ->toBeArray('missing_with:value,value1');
 });
 
 test('notIn', function () {
-    $rule = Rule::make('name')->notIn('value1', 'value2')->getRule();
+    $rule = Rule::make('name')->notIn(['value1', 'value2'])->getRule();
     expect($rule['name'])->toBeArray()
         ->toBeArray('not_in:value1,value2');
 });
@@ -510,25 +509,25 @@ test('present', function () {
         ->toBeArray('present');
 });
 test('presentIf', function () {
-    $rule = Rule::make('name')->presentIf('field', 'value')->getRule();
+    $rule = Rule::make('name')->presentIf('field', ['value'])->getRule();
     expect($rule['name'])->toBeArray()
         ->toBeArray('present_if:field,value');
 });
 
 test('presentUnless', function () {
-    $rule = Rule::make('name')->presentUnless('field', 'value')->getRule();
+    $rule = Rule::make('name')->presentUnless('field', ['value'])->getRule();
     expect($rule['name'])->toBeArray()
         ->toBeArray('present_unless:field,value');
 });
 
 test('presentWith', function () {
-    $rule = Rule::make('name')->presentWith('value', 'value1')->getRule();
+    $rule = Rule::make('name')->presentWith(['value', 'value1'])->getRule();
     expect($rule['name'])->toBeArray()
         ->toBeArray('present_with:value,value1');
 });
 
 test('presentWithAll', function () {
-    $rule = Rule::make('name')->presentWithAll('value', 'value1')->getRule();
+    $rule = Rule::make('name')->presentWithAll(['value', 'value1'])->getRule();
     expect($rule['name'])->toBeArray()
         ->toBeArray('present_with_all:value,value1');
 });
@@ -539,19 +538,19 @@ test('prohibited', function () {
 });
 
 test('prohibitedIf', function () {
-    $rule = Rule::make('name')->prohibitedIf('field', 'value')->getRule();
+    $rule = Rule::make('name')->prohibitedIf('field',[ 'value'])->getRule();
     expect($rule['name'])->toBeArray()
         ->toBeArray('prohibited_if:field,value');
 });
 
 test('prohibitedUnless', function () {
-    $rule = Rule::make('name')->prohibitedUnless('field', 'value')->getRule();
+    $rule = Rule::make('name')->prohibitedUnless('field', ['value'])->getRule();
     expect($rule['name'])->toBeArray()
         ->toBeArray('prohibited_unless:field,value');
 });
 
 test('prohibits', function () {
-    $rule = Rule::make('name')->prohibits('value1', 'value2')->getRule();
+    $rule = Rule::make('name')->prohibits(['value1', 'value2'])->getRule();
     expect($rule['name'])->toBeArray()
         ->toBeArray('prohibits:value1,value2');
 });
@@ -562,26 +561,26 @@ test('required', function () {
         ->toBeArray('required');
 });
 
-test('requiredIf', function () {
-    $rule = Rule::make('name')->requiredIf('field', 'value')->getRule();
+test('required if', function () {
+    $rule = Rule::make('name')->requiredIf('field', ['value'])->getRule();
     expect($rule['name'])->toBeArray()
         ->toBeArray('required_if:field,value');
 });
 
 test('requiredUnless', function () {
-    $rule = Rule::make('name')->requiredUnless('field', 'value')->getRule();
+    $rule = Rule::make('name')->requiredUnless('field', ['value'])->getRule();
     expect($rule['name'])->toBeArray()
         ->toBeArray('required_unless:field,value');
 });
 
 test('requiredWith', function () {
-    $rule = Rule::make('name')->requiredWith('value', 'value1')->getRule();
+    $rule = Rule::make('name')->requiredWith(['value', 'value1'])->getRule();
     expect($rule['name'])->toBeArray()
         ->toBeArray('required_with:value,value1');
 });
 
 test('requiredWithAll', function () {
-    $rule = Rule::make('name')->requiredWithAll('value', 'value1')->getRule();
+    $rule = Rule::make('name')->requiredWithAll(['value', 'value1'])->getRule();
     expect($rule['name'])->toBeArray()
         ->toBeArray('required_with_all:value,value1');
 });
@@ -599,13 +598,13 @@ test('size', function () {
 });
 
 test('requiredArrayKeys', function () {
-    $rule = Rule::make('name')->requiredArrayKeys('key', 'key1')->getRule();
+    $rule = Rule::make('name')->requiredArrayKeys(['key', 'key1'])->getRule();
     expect($rule['name'])->toBeArray()
         ->toBeArray('required_array_keys:key,key1');
 });
 
 test('startsWith', function () {
-    $rule = Rule::make('name')->startsWith('value')->getRule();
+    $rule = Rule::make('name')->startsWith(['value'])->getRule();
     expect($rule['name'])->toBeArray()
         ->toBeArray('starts_with:value');
 });
@@ -616,7 +615,7 @@ test('timezone', function () {
 });
 
 test('url', function () {
-    $rule = Rule::make('name')->url()->getRule();
+    $rule = Rule::make('name')->url(['http'])->getRule();
     expect($rule['name'])->toBeArray('url');
 });
 
