@@ -154,7 +154,7 @@ test('contains', function (string $value) {
     'value',
     'value1',
     'value2',
-    ]);
+]);
 
 test('currentPassword', function (bool|string $guard) {
     $rule = Rule::make('name')->currentPassword($guard)->getRule();
@@ -538,7 +538,7 @@ test('prohibited', function () {
 });
 
 test('prohibitedIf', function () {
-    $rule = Rule::make('name')->prohibitedIf('field',[ 'value'])->getRule();
+    $rule = Rule::make('name')->prohibitedIf('field', ['value'])->getRule();
     expect($rule['name'])->toBeArray()
         ->toBeArray('prohibited_if:field,value');
 });
