@@ -5,7 +5,9 @@
     "keywords": [
         "alpayklncrsln",
         "laravel",
-        "rule-schema"
+        "rule-schema",
+        "Laravel Validation Rules",
+        "Validation Rules"
     ],
     "homepage": "https://github.com//rule-schema",
     "license": "MIT",
