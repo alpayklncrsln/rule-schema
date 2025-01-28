@@ -56,7 +56,7 @@ class DefaultRule
         return Rule::make($attribute)->file()->size(2048);
     }
 
-    public static function url(string $attribute = 'url',$urls = ['http', 'https']): Rule
+    public static function url(string $attribute = 'url', $urls = ['http', 'https']): Rule
     {
         return Rule::make($attribute)->url($urls);
     }
