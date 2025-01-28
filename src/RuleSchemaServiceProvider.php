@@ -17,9 +17,6 @@ class RuleSchemaServiceProvider extends PackageServiceProvider
          */
         $package
             ->name('rule-schema')
-            ->hasConfigFile()
-            ->hasViews()
-            ->hasMigration('create_rule_schema_table')
-            ->hasCommand(RuleSchemaCommand::class);
+            ->hasConfigFile();
     }
 }
