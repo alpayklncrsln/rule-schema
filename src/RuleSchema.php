@@ -169,4 +169,18 @@ class RuleSchema implements RuleSchemaInterface
 
         return $this;
     }
+
+    public function matchSchema(array $methods=["put","patch"],Rule ...$rules): self
+    {
+        $this->when(in_array(Request::method(),$methods), ...$rules);
+
+        return $this;
+    }
+
+    public function deleteSchema(Rule ...$rules): self
+    {
+        $this->when(Request::isMethod('DELETE'), ...$rules);
+
+        return $this;
+    }
 }
