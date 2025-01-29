@@ -170,9 +170,9 @@ class RuleSchema implements RuleSchemaInterface
         return $this;
     }
 
-    public function matchSchema(array $methods=["put","patch"],Rule ...$rules): self
+    public function matchSchema(array $methods = ['put', 'patch'], Rule ...$rules): self
     {
-        $this->when(in_array(Request::method(),$methods), ...$rules);
+        $this->when(in_array(Request::method(), $methods), ...$rules);
 
         return $this;
     }
