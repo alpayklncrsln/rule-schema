@@ -1,0 +1,15 @@
+<?php
+
+namespace {{namespace}};
+
+use Alpayklncrsln\RuleSchema\RuleSchemaRequest;
+use Alpayklncrsln\RuleSchema\RuleSchema;
+
+class {{class}} extends RuleSchemaRequest
+{
+
+    public function ruleSchema(): RuleSchema
+    {
+        return RuleSchema::create();
+    }
+}

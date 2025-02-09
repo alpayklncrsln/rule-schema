@@ -2,6 +2,7 @@
 
 namespace Alpayklncrsln\RuleSchema;
 
+use Alpayklncrsln\RuleSchema\Commands\RuleSchemaCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -16,6 +17,9 @@ class RuleSchemaServiceProvider extends PackageServiceProvider
          */
         $package
             ->name('rule-schema')
-            ->hasConfigFile();
+            ->hasConfigFile()
+            ->hasCommands([
+                RuleSchemaCommand::class
+            ]);
     }
 }
