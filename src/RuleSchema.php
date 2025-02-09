@@ -27,7 +27,7 @@ class RuleSchema implements RuleSchemaInterface
         }
     }
 
-    public static function create(Rule|array ...$rules): self
+    public static function create(Rule|RuleSchema|array ...$rules): self
     {
         return new RuleSchema(...$rules);
     }
@@ -41,7 +41,11 @@ class RuleSchema implements RuleSchemaInterface
                     if ($rule instanceof Rule) {
                         $this->rules = array_merge($this->rules, $rule->getRule());
                         $this->messages = array_merge($this->messages, $rule->getMessage());
-                    } else {
+                    } elseif ($rule instanceof RuleSchema) {
+                        $this->rules = array_merge($this->rules, $rule->getRules());
+                        $this->messages = array_merge($this->messages, $rule->getMessages());
+                    }
+                    else {
                         throw new \Exception('Invalid rule type. Must be an instance of '.Rule::class.' of them.');
                     }
 
@@ -76,7 +80,7 @@ class RuleSchema implements RuleSchemaInterface
         return $this->messages;
     }
 
-    public function when(bool $condition, Rule|array ...$rules): self
+    public function when(bool $condition, Rule|RuleSchema|array ...$rules): self
     {
         if ($condition && ! $this->existsCacheData()) {
             $this->merge($rules);
@@ -96,7 +100,7 @@ class RuleSchema implements RuleSchemaInterface
         return $this;
     }
 
-    public function existsMerge($attribute, Rule|array ...$rules): self
+    public function existsMerge($attribute, Rule|RuleSchema|array ...$rules): self
     {
         if (! $this->existsCacheData()) {
             $this->when(isset($this->rules[$attribute]), $rules);
@@ -105,7 +109,7 @@ class RuleSchema implements RuleSchemaInterface
         return $this;
     }
 
-    public function auth(Rule|array ...$rules): self
+    public function auth(Rule|RuleSchema|array ...$rules): self
     {
         if (! $this->existsCacheData()) {
             $this->when(Auth::check(), $rules);
@@ -114,7 +118,7 @@ class RuleSchema implements RuleSchemaInterface
         return $this;
     }
 
-    public function notAuth(Rule|array ...$rules): self
+    public function notAuth(Rule|RuleSchema|array ...$rules): self
     {
         if (! $this->existsCacheData()) {
             $this->when(! Auth::check(), ...$rules);
@@ -158,35 +162,35 @@ class RuleSchema implements RuleSchemaInterface
         return $this;
     }
 
-    public function postSchema(Rule|array ...$rules): self
+    public function postSchema(Rule|RuleSchema|array ...$rules): self
     {
         $this->when(Request::isMethod('POST'), ...$rules);
 
         return $this;
     }
 
-    public function putSchema(array $rules): self
+    public function putSchema(Rule|RuleSchema|array ...$rules): self
     {
         $this->when(Request::isMethod('PUT'), $rules);
 
         return $this;
     }
 
-    public function patchSchema(Rule|array ...$rules): self
+    public function patchSchema(Rule|RuleSchema|array ...$rules): self
     {
         $this->when(Request::isMethod('PATCH'), ...$rules);
 
         return $this;
     }
 
-    public function matchSchema(array $methods = ['put', 'patch'], Rule|array ...$rules): self
+    public function matchSchema(array $methods = ['put', 'patch'], Rule|RuleSchema|array ...$rules): self
     {
         $this->when(in_array(Request::method(), $methods), ...$rules);
 
         return $this;
     }
 
-    public function deleteSchema(Rule|array ...$rules): self
+    public function deleteSchema(Rule|RuleSchema|array ...$rules): self
     {
         $this->when(Request::isMethod('DELETE'), ...$rules);
 
