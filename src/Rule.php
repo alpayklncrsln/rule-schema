@@ -458,9 +458,9 @@ class Rule
         return $this;
     }
 
-    public function unique(Model|string $table, ?string $column = null, ?string $message = null): self
+    public function unique(Model|string $table, ?string $column = null,?string $value = null,?string $message = null): self
     {
-        $this->rule['unique'] = "$table".(! is_null($column) ? ','.$column : '');
+        $this->rule['unique'] = "$table".(! is_null($column) ? ','.$column : '').(! is_null($value) ? ','.$value : '');
         $this->setMessage(__FUNCTION__, $message);
 
         return $this;
@@ -884,6 +884,21 @@ class Rule
     public function uppercase(bool $check = true, ?string $message = null): self
     {
         $this->rule['uppercase'] = $check;
+        $this->setMessage(__FUNCTION__, $message);
+
+        return $this;
+    }
+
+    public function lowercase(bool $check = true, ?string $message = null): self
+    {
+        $this->rule['lowercase'] = $check;
+        $this->setMessage(__FUNCTION__, $message);
+
+        return $this;
+    }
+    public function integer(bool $check = true, ?string $message = null): self
+    {
+        $this->rule['integer'] = $check;
         $this->setMessage(__FUNCTION__, $message);
 
         return $this;
