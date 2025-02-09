@@ -1,7 +1,9 @@
 <?php
+
 use Alpayklncrsln\RuleSchema\Default\DefaultRuleSchema;
+
 test('login', function () {
-   $rule = DefaultRuleSchema::login()->getRules();
+    $rule = DefaultRuleSchema::login()->getRules();
     expect($rule['email'])->toBeArray()
         ->toBeArray('email')
         ->toBeArray('exists:users,email')
@@ -84,5 +86,3 @@ test('feedback', function () {
         ->toBeArray('between:1,5')
         ->toBeArray('required');
 });
-
-
