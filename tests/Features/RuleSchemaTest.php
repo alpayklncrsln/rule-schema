@@ -4,10 +4,10 @@ use Alpayklncrsln\RuleSchema\Rule;
 use Alpayklncrsln\RuleSchema\RuleSchema;
 
 test('create', function () {
-    $rule = RuleSchema::create(
+    $rule = RuleSchema::create([
         Rule::make('name')->required(),
         Rule::make('email')->email(true),
-    );
+    ]);
 
     expect($rule->getRules())->toBe([
         'name' => ['required'],
@@ -16,10 +16,10 @@ test('create', function () {
 });
 
 test('merge', function () {
-    $rule = RuleSchema::create()->merge(
+    $rule = RuleSchema::create()->merge([
         Rule::make('name')->required(),
         Rule::make('email')->email(true),
-    )->getRules();
+    ])->getRules();
 
     expect($rule)->toBe([
         'name' => ['required'],
@@ -28,10 +28,10 @@ test('merge', function () {
 });
 
 test('when', function () {
-    $rule = RuleSchema::create()->when(true,
+    $rule = RuleSchema::create()->when(true,[
         Rule::make('name')->required(),
         Rule::make('email')->email(true),
-    )->getRules();
+    ])->getRules();
 
     expect($rule)->toBe([
         'name' => ['required'],
@@ -40,12 +40,12 @@ test('when', function () {
 });
 
 test('existsMerge', function () {
-    $rule = RuleSchema::create(
+    $rule = RuleSchema::create([
         Rule::make('name')->required(),
-    )->existsMerge(
-        'name',
+    ])->existsMerge(
+        'name',[
         Rule::make('email')->email(true),
-    )->getRules();
+    ])->getRules();
 
     expect($rule)->toBe([
         'name' => ['required'],
@@ -55,10 +55,10 @@ test('existsMerge', function () {
 
 test('auth', function () {
     \Illuminate\Support\Facades\Auth::shouldReceive('check')->once()->andReturn(true);
-    $rule = RuleSchema::create()->auth(
+    $rule = RuleSchema::create()->auth([
         Rule::make('name')->required(),
         Rule::make('email')->email(true),
-    )->getRules();
+    ])->getRules();
 
     expect($rule)->toBe([
         'name' => ['required'],
@@ -68,10 +68,10 @@ test('auth', function () {
 test('notAuth', function () {
     \Illuminate\Support\Facades\Auth::shouldReceive('check')->once()->andReturn(false);
 
-    $rule = RuleSchema::create()->notAuth(
+    $rule = RuleSchema::create()->notAuth([
         Rule::make('name')->required(),
         Rule::make('email')->email(true),
-    )->getRules();
+    ])->getRules();
 
     expect($rule)->toBe([
         'name' => ['required'],
@@ -88,17 +88,19 @@ test('model', function () {
 })->todo();
 
 test('arraySchema', function () {
-    $rule = RuleSchema::create()->arraySchema('images', Rule::make('name')->required())->getRules();
+    $rule = RuleSchema::create()->arraySchema('images', [
+        Rule::make('name')->required()
+    ])->getRules();
     expect($rule)->toBe([
         'images.name' => ['required'],
     ]);
 });
 
 test('bailed', function () {
-    $rule = RuleSchema::create(
+    $rule = RuleSchema::create([
         Rule::make('name')->required(),
         Rule::make('email')->email(true),
-    )->bailed()->getRules();
+    ])->bailed()->getRules();
 
     expect($rule)->toBe([
         'name' => ['required', 'bail'],
