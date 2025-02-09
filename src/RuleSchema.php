@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
-use Illuminate\Validation\Rule as LaravelRule;
 
 class RuleSchema implements RuleSchemaInterface
 {
@@ -35,15 +34,15 @@ class RuleSchema implements RuleSchemaInterface
 
     public function merge(Rule|array ...$rules): self
     {
-        if (!$this->existsCacheData()) {
-            if ($rules !==[]){
-                $rules= Arr::flatten($rules);
+        if (! $this->existsCacheData()) {
+            if ($rules !== []) {
+                $rules = Arr::flatten($rules);
                 foreach ($rules as $rule) {
                     if ($rule instanceof Rule) {
                         $this->rules = array_merge($this->rules, $rule->getRule());
                         $this->messages = array_merge($this->messages, $rule->getMessage());
                     } else {
-                        throw new \Exception("Invalid rule type. Must be an instance of " . Rule::class . " of them.");
+                        throw new \Exception('Invalid rule type. Must be an instance of '.Rule::class.' of them.');
                     }
 
                 }
@@ -72,27 +71,23 @@ class RuleSchema implements RuleSchemaInterface
         return $this->rules;
     }
 
-
-    public
-    function getMessages(): array
+    public function getMessages(): array
     {
         return $this->messages;
     }
 
-    public
-    function when(bool $condition, Rule|array ...$rules): self
+    public function when(bool $condition, Rule|array ...$rules): self
     {
-        if ($condition && !$this->existsCacheData()) {
+        if ($condition && ! $this->existsCacheData()) {
             $this->merge($rules);
         }
 
         return $this;
     }
 
-    public
-    function expect(array $attributes): self
+    public function expect(array $attributes): self
     {
-        if (!$this->existsCacheData()) {
+        if (! $this->existsCacheData()) {
             foreach ($attributes as $attribute) {
                 unset($this->rules[$attribute]);
             }
@@ -112,8 +107,8 @@ class RuleSchema implements RuleSchemaInterface
 
     public function auth(Rule|array ...$rules): self
     {
-        if (!$this->existsCacheData()) {
-            $this->when(Auth::check(),$rules);
+        if (! $this->existsCacheData()) {
+            $this->when(Auth::check(), $rules);
         }
 
         return $this;
