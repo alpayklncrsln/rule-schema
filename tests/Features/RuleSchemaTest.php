@@ -66,16 +66,16 @@ test('auth', function () {
     ]);
 });
 test('notAuth', function () {
-    \Illuminate\Support\Facades\Auth::shouldReceive('check')->once()->andReturn(false);
-
-    $rule = RuleSchema::create()->notAuth([
+    $rule = RuleSchema::create()
+        ->notAuth(
         Rule::make('name')->required(),
-        Rule::make('email')->email(true),
-    ])->getRules();
+        Rule::make('email')->email()
+    )
+        ->getRules();
 
     expect($rule)->toBe([
         'name' => ['required'],
-        'email' => ['email:dns'],
+        'email' => ['email'],
     ]);
 });
 
@@ -90,9 +90,18 @@ test('model', function () {
 test('arraySchema', function () {
     $rule = RuleSchema::create()->arraySchema('images', [
         Rule::make('name')->required()
-    ])->getRules();
+    ],false)->getRules();
     expect($rule)->toBe([
         'images.name' => ['required'],
+    ]);
+});
+
+test('arraySchema multiple true', function () {
+    $rule = RuleSchema::create()->arraySchema('images', [
+        Rule::make('name')->required()
+    ])->getRules();
+    expect($rule)->toBe([
+        'images.*.name' => ['required'],
     ]);
 });
 

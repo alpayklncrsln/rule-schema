@@ -6,9 +6,9 @@ use Alpayklncrsln\RuleSchema\Interfaces\RuleSchemaInterface;
 use Alpayklncrsln\RuleSchema\Table\TableBuilder;
 use Alpayklncrsln\RuleSchema\Traits\withCacheTrait;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
-use Illuminate\Validation\Rule as LaravelRule;
 
 class RuleSchema implements RuleSchemaInterface
 {
@@ -35,15 +35,19 @@ class RuleSchema implements RuleSchemaInterface
     public function merge(Rule|array ...$rules): self
     {
         if (!$this->existsCacheData()) {
-            foreach ($rules as $rule) {
-                if ($rule instanceof Rule) {
-                    $this->rules = array_merge($this->rules, $rule->getRule());
-                    $this->messages = array_merge($this->messages, $rule->getMessage());
-                } else {
-                    throw new \Exception("Invalid rule type. Must be an instance of " . Rule::class . " of them.");
-                }
+            if ($rules !==[]){
+                $rules= Arr::flatten($rules);
+                foreach ($rules as $rule) {
+                    if ($rule instanceof Rule) {
+                        $this->rules = array_merge($this->rules, $rule->getRule());
+                        $this->messages = array_merge($this->messages, $rule->getMessage());
+                    } else {
+                        throw new \Exception("Invalid rule type. Must be an instance of " . Rule::class . " of them.");
+                    }
 
+                }
             }
+
         }
 
         return $this;
@@ -79,7 +83,7 @@ class RuleSchema implements RuleSchemaInterface
     function when(bool $condition, Rule|array ...$rules): self
     {
         if ($condition && !$this->existsCacheData()) {
-            $this->merge(...$rules);
+            $this->merge($rules);
         }
 
         return $this;
@@ -111,7 +115,7 @@ class RuleSchema implements RuleSchemaInterface
     function auth(Rule|array ...$rules): self
     {
         if (!$this->existsCacheData()) {
-            $this->when(Auth::check(), ...$rules);
+            $this->when(Auth::check(),$rules);
         }
 
         return $this;
@@ -121,7 +125,7 @@ class RuleSchema implements RuleSchemaInterface
     function notAuth(Rule|array ...$rules): self
     {
         if (!$this->existsCacheData()) {
-            $this->when(!Auth::check(), ...$rules);
+            $this->when(!Auth::check(),$rules);
         }
 
         return $this;
