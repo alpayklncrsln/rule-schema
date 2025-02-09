@@ -53,7 +53,7 @@ class MultiStepSchema
     public function step(int|string $step, Rule ...$rules): self
     {
         if ($this->allSteps) {
-            $this->ruleSchema->arraySchema($this->attribute.'_'.$step, $rules,false);
+            $this->ruleSchema->arraySchema($this->attribute.'_'.$step, $rules, false);
         } else {
             $this->ruleSchema->when(Request::input($this->attribute) == $step, ...$rules);
         }
