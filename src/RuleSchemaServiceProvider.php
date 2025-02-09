@@ -19,7 +19,7 @@ class RuleSchemaServiceProvider extends PackageServiceProvider
             ->name('rule-schema')
             ->hasConfigFile()
             ->hasCommands([
-                RuleSchemaCommand::class
+                RuleSchemaCommand::class,
             ]);
     }
 }
