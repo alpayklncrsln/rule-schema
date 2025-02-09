@@ -458,7 +458,7 @@ class Rule
         return $this;
     }
 
-    public function unique(Model|string $table, ?string $column = null,?string $value = null,?string $message = null): self
+    public function unique(Model|string $table, ?string $column = null, ?string $value = null, ?string $message = null): self
     {
         $this->rule['unique'] = "$table".(! is_null($column) ? ','.$column : '').(! is_null($value) ? ','.$value : '');
         $this->setMessage(__FUNCTION__, $message);
@@ -896,6 +896,7 @@ class Rule
 
         return $this;
     }
+
     public function integer(bool $check = true, ?string $message = null): self
     {
         $this->rule['integer'] = $check;

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
+use Illuminate\Validation\Rule as LaravelRule;
 
 class RuleSchema implements RuleSchemaInterface
 {
@@ -53,8 +54,7 @@ class RuleSchema implements RuleSchemaInterface
         return $this;
     }
 
-    public
-    function getRules(): array
+    public function getRules(): array
     {
         if ($this->isCaching()) {
             if ($this->existsCacheData()) {
@@ -101,18 +101,16 @@ class RuleSchema implements RuleSchemaInterface
         return $this;
     }
 
-    public
-    function existsMerge($attribute, Rule|array ...$rules): self
+    public function existsMerge($attribute, Rule|array ...$rules): self
     {
-        if (!$this->existsCacheData()) {
+        if (! $this->existsCacheData()) {
             $this->when(isset($this->rules[$attribute]), $rules);
         }
 
         return $this;
     }
 
-    public
-    function auth(Rule|array ...$rules): self
+    public function auth(Rule|array ...$rules): self
     {
         if (!$this->existsCacheData()) {
             $this->when(Auth::check(),$rules);
@@ -121,89 +119,79 @@ class RuleSchema implements RuleSchemaInterface
         return $this;
     }
 
-    public
-    function notAuth(Rule|array ...$rules): self
+    public function notAuth(Rule|array ...$rules): self
     {
-        if (!$this->existsCacheData()) {
-            $this->when(!Auth::check(),$rules);
+        if (! $this->existsCacheData()) {
+            $this->when(! Auth::check(), ...$rules);
         }
 
         return $this;
     }
 
-    public
-    static function model(string|Model $table): RuleSchema
+    public static function model(string|Model $table): RuleSchema
     {
         return TableBuilder::create($table)->getTableRuleSchema();
 
     }
 
-    public
-    function bailed(): self
+    public function bailed(): self
     {
-        if (!$this->existsCacheData()) {
+        if (! $this->existsCacheData()) {
             $this->isBail = true;
         }
 
         return $this;
     }
 
-    public
-    function arraySchema(string $attribute, array $rules, bool $isMultiple = true, array $methods = ['POST', 'PUT', 'PATCH', 'DELETE', 'GET']): self
+    public function arraySchema(string $attribute, array $rules, bool $isMultiple = true, array $methods = ['POST', 'PUT', 'PATCH', 'DELETE', 'GET']): self
     {
-        if (!$this->existsCacheData() && in_array(Request::method(), $methods)) {
+        if (! $this->existsCacheData() && in_array(Request::method(), $methods)) {
             foreach ($rules as $rule) {
-                $this->rules[$attribute . ($isMultiple ? '.*' : '') . '.' . $rule->getAttribute()] = $rule->getRule()[$rule->getAttribute()];
+                $this->rules[$attribute.($isMultiple ? '.*' : '').'.'.$rule->getAttribute()] = $rule->getRule()[$rule->getAttribute()];
             }
         }
 
         return $this;
     }
 
-    public
-    function add(Rule $rule): self
+    public function add(Rule $rule): self
     {
-        if (!$this->existsCacheData()) {
+        if (! $this->existsCacheData()) {
             $this->rules[$rule->getAttribute()] = $rule->getRule()[$rule->getAttribute()];
         }
 
         return $this;
     }
 
-    public
-    function postSchema(Rule|array ...$rules): self
+    public function postSchema(Rule|array ...$rules): self
     {
         $this->when(Request::isMethod('POST'), ...$rules);
 
         return $this;
     }
 
-    public
-    function putSchema(array $rules): self
+    public function putSchema(array $rules): self
     {
         $this->when(Request::isMethod('PUT'), $rules);
 
         return $this;
     }
 
-    public
-    function patchSchema(Rule|array ...$rules): self
+    public function patchSchema(Rule|array ...$rules): self
     {
         $this->when(Request::isMethod('PATCH'), ...$rules);
 
         return $this;
     }
 
-    public
-    function matchSchema(array $methods = ['put', 'patch'], Rule|array ...$rules): self
+    public function matchSchema(array $methods = ['put', 'patch'], Rule|array ...$rules): self
     {
         $this->when(in_array(Request::method(), $methods), ...$rules);
 
         return $this;
     }
 
-    public
-    function deleteSchema(Rule|array ...$rules): self
+    public function deleteSchema(Rule|array ...$rules): self
     {
         $this->when(Request::isMethod('DELETE'), ...$rules);
 

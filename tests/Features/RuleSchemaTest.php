@@ -28,7 +28,7 @@ test('merge', function () {
 });
 
 test('when', function () {
-    $rule = RuleSchema::create()->when(true,[
+    $rule = RuleSchema::create()->when(true, [
         Rule::make('name')->required(),
         Rule::make('email')->email(true),
     ])->getRules();
@@ -43,9 +43,9 @@ test('existsMerge', function () {
     $rule = RuleSchema::create([
         Rule::make('name')->required(),
     ])->existsMerge(
-        'name',[
-        Rule::make('email')->email(true),
-    ])->getRules();
+        'name', [
+            Rule::make('email')->email(true),
+        ])->getRules();
 
     expect($rule)->toBe([
         'name' => ['required'],

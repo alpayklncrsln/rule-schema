@@ -7,11 +7,11 @@ use Alpayklncrsln\RuleSchema\RuleSchema;
 
 interface RuleSchemaInterface
 {
-    public static function create( Rule|array ...$rulesWW): RuleSchema;
+    public static function create(Rule|array ...$rulesWW): RuleSchema;
 
     public function getRules(): array;
 
-    public function when(bool $condition,Rule|array ...$rules): RuleSchema;
+    public function when(bool $condition, Rule|array ...$rules): RuleSchema;
 
     public function merge(array $rules): RuleSchema;
 
