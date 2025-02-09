@@ -68,9 +68,9 @@ test('auth', function () {
 test('notAuth', function () {
     $rule = RuleSchema::create()
         ->notAuth(
-        Rule::make('name')->required(),
-        Rule::make('email')->email()
-    )
+            Rule::make('name')->required(),
+            Rule::make('email')->email()
+        )
         ->getRules();
 
     expect($rule)->toBe([
@@ -89,8 +89,8 @@ test('model', function () {
 
 test('arraySchema', function () {
     $rule = RuleSchema::create()->arraySchema('images', [
-        Rule::make('name')->required()
-    ],false)->getRules();
+        Rule::make('name')->required(),
+    ], false)->getRules();
     expect($rule)->toBe([
         'images.name' => ['required'],
     ]);
@@ -98,7 +98,7 @@ test('arraySchema', function () {
 
 test('arraySchema multiple true', function () {
     $rule = RuleSchema::create()->arraySchema('images', [
-        Rule::make('name')->required()
+        Rule::make('name')->required(),
     ])->getRules();
     expect($rule)->toBe([
         'images.*.name' => ['required'],
