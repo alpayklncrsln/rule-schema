@@ -44,8 +44,7 @@ class RuleSchema implements RuleSchemaInterface
                     } elseif ($rule instanceof RuleSchema) {
                         $this->rules = array_merge($this->rules, $rule->getRules());
                         $this->messages = array_merge($this->messages, $rule->getMessages());
-                    }
-                    else {
+                    } else {
                         throw new \Exception('Invalid rule type. Must be an instance of '.Rule::class.' or '.RuleSchema::class.' of them.');
                     }
 
