@@ -20,7 +20,7 @@ class RuleSchema implements RuleSchemaInterface
 
     protected bool $isBail = false;
 
-    public function __construct(Rule|array ...$rules)
+    public function __construct(Rule|RuleSchema|array ...$rules)
     {
         if (count($rules) > 0) {
             $this->merge(...$rules);
@@ -46,7 +46,7 @@ class RuleSchema implements RuleSchemaInterface
                         $this->messages = array_merge($this->messages, $rule->getMessages());
                     }
                     else {
-                        throw new \Exception('Invalid rule type. Must be an instance of '.Rule::class.' of them.');
+                        throw new \Exception('Invalid rule type. Must be an instance of '.Rule::class.' or '.RuleSchema::class.' of them.');
                     }
 
                 }
