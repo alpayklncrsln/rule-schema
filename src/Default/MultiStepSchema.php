@@ -65,4 +65,14 @@ class MultiStepSchema
     {
         return $this->ruleSchema->getRules();
     }
+
+    public function getMessages(): array
+    {
+        return $this->ruleSchema->getMessages();
+    }
+
+    public function getSchema(): RuleSchema
+    {
+        return $this->ruleSchema;
+    }
 }
