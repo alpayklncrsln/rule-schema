@@ -17,6 +17,7 @@ Rule Schema, Laravel uygulamalarında doğrulama kuralları oluşturmak için ak
 - Tip güvenli kural oluşturma
 - Form Request'ler ile kolay entegrasyon
 - Temiz ve sürdürülebilir doğrulama mantığı
+- Pakete özel Form request sınıfı oluşturma
 
 ## Kurulum
 
@@ -25,6 +26,32 @@ Paketi composer ile kurabilirsiniz:
 ```bash
 composer require alpayklncrsln/rule-schema
 ```
+
+Paketin Form Requestini Eklemek İçin:
+````aiignore
+php artisan make:rule-schema Product
+````
+
+Rule Schema Form Request'inizi oluşturun:
+
+````php
+<?php
+
+namespace App\Http\Requests;
+
+use Alpayklncrsln\RuleSchema\RuleSchemaRequest;
+
+class ProductRequest extends RuleSchemaRequest
+{
+    public function ruleSchema(): RuleSchema
+    {
+        return RuleSchema::create([
+            
+        ]);
+    }
+}
+````
+
 
 ## Temel Kullanım
 
@@ -213,6 +240,35 @@ $rules = RuleSchema::create(
 [
     'name' => ['required'],
     'email' => ['required', 'email']
+]
+```
+
+### RuleSchema ile ``arraySchema`` Kullanımı
+- `arraySchema` metodu ile iç içe  kurallarını belirleyebilirsiniz.
+- `isMultiple` değişkeni ile çoklu olup olmadığını belirliyebilirsiniz.
+- `methods` değişkeni istek metodlarını belirliyebilirsiniz.Hangi durmda eklenceğini belirler. 
+```php
+use Alpayklncrsln\RuleSchema\RuleSchema;
+use Alpayklncrsln\RuleSchema\Rule;
+
+$rules = RuleSchema::create([
+    Rule::make('name')->required(),
+    Rule::make('email')->required()->email(),
+    Rule::make('password')->required()->min(8),
+])->arraySchema('roles',[
+    Rule::make('name')->required()->string()->max()
+    ],isMultiple: true )
+->getRules();
+```
+
+Çıktı:
+
+```php   
+[
+    'name' => ['required'],
+    'email' => ['required', 'email'],
+    'password' => ['required', 'min:8'],  
+    'roles.*.name' => ['required', 'string', 'max:255'], 
 ]
 ```
 

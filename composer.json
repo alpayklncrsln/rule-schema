@@ -1,13 +1,17 @@
 {
     "name": "alpayklncrsln/rule-schema",
-    "version": "1.1.2",
+    "version": "1.2.0",
     "description": "This is my package rule-schema",
     "keywords": [
         "alpayklncrsln",
         "laravel",
         "rule-schema",
         "Laravel Validation Rules",
-        "Validation Rules"
+        "Validation Rules",
+        "Laravel Rule Schema",
+        "Rule Schema",
+        "Laravel Rules",
+        "Rules"
     ],
     "homepage": "https://github.com//rule-schema",
     "license": "MIT",
