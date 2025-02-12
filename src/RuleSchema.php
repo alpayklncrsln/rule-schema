@@ -195,4 +195,9 @@ class RuleSchema implements RuleSchemaInterface
 
         return $this;
     }
+
+    public function validate(): array
+    {
+     return  Request::validate($this->getRules(), $this->getMessages());
+    }
 }
