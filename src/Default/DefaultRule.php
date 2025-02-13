@@ -87,9 +87,10 @@ class DefaultRule
     {
         return Rule::make('email')->required()->email()->endsWith($domain);
     }
-    public function text(string $attribute = 'text', int $max = 16000,bool $isRequired = true, ?string $stringMessage = null, ?string $maxMessage = null): Rule
+
+    public function text(string $attribute = 'text', int $max = 16000, bool $isRequired = true, ?string $stringMessage = null, ?string $maxMessage = null): Rule
     {
-        return Rule::make($attribute)->required($isRequired)->nullable(!$isRequired)->string(message: $stringMessage)->max($max,$maxMessage);
+        return Rule::make($attribute)->required($isRequired)->nullable(! $isRequired)->string(message: $stringMessage)->max($max, $maxMessage);
     }
 
     public function longText(string $attribute = 'long_text', int $max = 65000,bool $isRequired = true, ?string $stringMessage = null, ?string $maxMessage = null): Rule
