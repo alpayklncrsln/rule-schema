@@ -93,8 +93,8 @@ class DefaultRule
         return Rule::make($attribute)->required($isRequired)->nullable(! $isRequired)->string(message: $stringMessage)->max($max, $maxMessage);
     }
 
-    public function longText(string $attribute = 'long_text', int $max = 65000,bool $isRequired = true, ?string $stringMessage = null, ?string $maxMessage = null): Rule
+    public function longText(string $attribute = 'long_text', int $max = 65000, bool $isRequired = true, ?string $stringMessage = null, ?string $maxMessage = null): Rule
     {
-        return Rule::make($attribute)->required($isRequired)->nullable(!$isRequired)->string(message: $stringMessage)->max($max,$maxMessage);
+        return Rule::make($attribute)->required($isRequired)->nullable(! $isRequired)->string(message: $stringMessage)->max($max, $maxMessage);
     }
 }
