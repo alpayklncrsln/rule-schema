@@ -31,21 +31,21 @@ class RuleSchemaCommand extends Command
 
         $content = '';
         if ($this->option('m')) {
-            $model=  'App\\Models\\'.$name;
-            $model = new $model();
-          $fillable =  $model->getFillable();
-          if (!empty($fillable)) {
-              foreach ($fillable as $rule ) {
-                  $content.= "Rule::make('{$rule}')->required(),\n";
-              }
-          }
+            $model = 'App\\Models\\'.$name;
+            $model = new $model;
+            $fillable = $model->getFillable();
+            if (! empty($fillable)) {
+                foreach ($fillable as $rule) {
+                    $content .= "Rule::make('{$rule}')->required(),\n";
+                }
+            }
         }
 
         // Stub dosyasını oku ve değişkenleri değiştir
         $stubContent = File::get($stubPath);
         $stubContent = str_replace(
-            ['{{namespace}}', '{{class}}','{{content}}'],
-            [$namespace, $name.'Request',$content],
+            ['{{namespace}}', '{{class}}', '{{content}}'],
+            [$namespace, $name.'Request', $content],
             $stubContent
         );
 
