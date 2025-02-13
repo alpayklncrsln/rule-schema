@@ -4,12 +4,15 @@ namespace {{namespace}};
 
 use Alpayklncrsln\RuleSchema\RuleSchemaRequest;
 use Alpayklncrsln\RuleSchema\RuleSchema;
+use Alpayklncrsln\RuleSchema\Rule;
 
 class {{class}} extends RuleSchemaRequest
 {
 
     public function ruleSchema(): RuleSchema
     {
-        return RuleSchema::create();
+        return RuleSchema::create([
+ {{content}}
+        ]);
     }
 }

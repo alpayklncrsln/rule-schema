@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\File;
 
 class RuleSchemaCommand extends Command
 {
-    protected $signature = 'make:rule-schema {name}';
+    protected $signature = 'make:rule-schema {name} {--m}';
 
     protected $description = 'RuleSchema request creation';
 
@@ -20,7 +20,7 @@ class RuleSchemaCommand extends Command
 
         // Laravel projesinde oluşturulacak dosyanın yolu
         $namespace = 'App\\Http\\Requests';
-        $targetPath = base_path("app/Http/Requests/{$name}.php");
+        $targetPath = base_path("app/Http/Requests/{$name}Request.php");
 
         // Eğer stub dosyası yoksa hata ver
         if (! File::exists($stubPath)) {
@@ -29,11 +29,23 @@ class RuleSchemaCommand extends Command
             return self::FAILURE;
         }
 
+        $content = '';
+        if ($this->option('m')) {
+            $model=  'App\\Models\\'.$name;
+            $model = new $model();
+          $fillable =  $model->getFillable();
+          if (!empty($fillable)) {
+              foreach ($fillable as $rule ) {
+                  $content.= "Rule::make('{$rule}')->required(),\n";
+              }
+          }
+        }
+
         // Stub dosyasını oku ve değişkenleri değiştir
         $stubContent = File::get($stubPath);
         $stubContent = str_replace(
-            ['{{namespace}}', '{{class}}'],
-            [$namespace, $name],
+            ['{{namespace}}', '{{class}}','{{content}}'],
+            [$namespace, $name.'Request',$content],
             $stubContent
         );
 
