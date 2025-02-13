@@ -5,11 +5,11 @@ namespace Alpayklncrsln\RuleSchema\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
-use Alpayklncrsln\RuleSchema\Rule;
 
 class RuleSchemaCommand extends Command
 {
     protected $signature = 'make:rule-schema {name} {--m}';
+
     protected $description = 'RuleSchema request creation';
 
     public function handle(): int
@@ -19,8 +19,9 @@ class RuleSchemaCommand extends Command
         $namespace = 'App\\Http\\Requests';
         $targetPath = base_path("app/Http/Requests/{$name}Request.php");
 
-        if (!File::exists($stubPath)) {
+        if (! File::exists($stubPath)) {
             $this->error("Stub not found: {$stubPath}");
+
             return self::FAILURE;
         }
 
@@ -29,19 +30,21 @@ class RuleSchemaCommand extends Command
         if ($this->option('m')) {
             $modelClass = "App\\Models\\{$name}";
 
-            if (!class_exists($modelClass)) {
+            if (! class_exists($modelClass)) {
                 $this->error("Model not found: {$modelClass}");
+
                 return self::FAILURE;
             }
 
             /** @var \Illuminate\Database\Eloquent\Model $model */
-            $model = new $modelClass();
+            $model = new $modelClass;
             $table = $model->getTable();
             $fillableColumns = $model->getFillable();
 
             // Veritabanında tablo olup olmadığını kontrol et
-            if (!DB::getSchemaBuilder()->hasTable($table)) {
+            if (! DB::getSchemaBuilder()->hasTable($table)) {
                 $this->error("Table not found: {$table}");
+
                 return self::FAILURE;
             }
 
@@ -51,7 +54,7 @@ class RuleSchemaCommand extends Command
             if (empty($fillableColumns)) {
                 $filteredColumns = $columns;
             } else {
-                $filteredColumns = array_filter($columns, fn($col) => in_array($col->name, $fillableColumns));
+                $filteredColumns = array_filter($columns, fn ($col) => in_array($col->name, $fillableColumns));
             }
 
             foreach ($filteredColumns as $column) {
@@ -67,39 +70,39 @@ class RuleSchemaCommand extends Command
                 $rule = "Rule::make('{$columnName}')";
 
                 if ($nullable) {
-                    $rule .= "->nullable()";
+                    $rule .= '->nullable()';
                 } else {
-                    $rule .= "->required()";
+                    $rule .= '->required()';
                 }
 
                 if (str_contains($dataType, 'int')) {
-                    $rule .= "->integer()";
+                    $rule .= '->integer()';
                 } elseif (str_contains($dataType, 'varchar') || str_contains($dataType, 'text')) {
-                    $rule .= "->string()";
+                    $rule .= '->string()';
 
                     if (preg_match('/\((\d+)\)/', $column->type, $matches)) {
                         $rule .= "->max({$matches[1]})";
                     }
                 } elseif (str_contains($dataType, 'decimal') || str_contains($dataType, 'double') || str_contains($dataType, 'float')) {
-                    $rule .= "->numeric()";
+                    $rule .= '->numeric()';
                 } elseif (str_contains($dataType, 'date') || str_contains($dataType, 'time') || str_contains($dataType, 'timestamp')) {
-                    $rule .= "->date()";
+                    $rule .= '->date()';
                 } elseif (str_contains($dataType, 'boolean') || str_contains($dataType, 'tinyint(1)')) {
-                    $rule .= "->boolean()";
+                    $rule .= '->boolean()';
                 }
 
                 if ($columnName === 'email') {
-                    $rule .= "->email()";
+                    $rule .= '->email()';
                 } elseif ($columnName === 'url') {
-                    $rule .= "->url()";
+                    $rule .= '->url()';
                 }
 
-                if (!$nullable && str_contains($column->type, 'unique')) {
+                if (! $nullable && str_contains($column->type, 'unique')) {
                     $rule .= "->unique('{$table}', '{$columnName}')";
                 }
 
-                if (!is_null($column->dflt_value)) {
-                    $rule .= "->sometimes()";
+                if (! is_null($column->dflt_value)) {
+                    $rule .= '->sometimes()';
                 }
                 $rules .= "            {$rule},\n";
             }
