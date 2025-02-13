@@ -7,12 +7,12 @@ use Alpayklncrsln\RuleSchema\RuleSchema;
 
 class DefaultRuleSchema
 {
-    public static function login(): RuleSchema
+    public static function login(bool $remember = true): RuleSchema
     {
         return RuleSchema::create(
             Rule::make('email')->required()->email()->max()->exists('users', 'email'),
             Rule::make('password')->required()->min(8)->max()
-        );
+        )->when($remember, Rule::make('remember')->nullable()->boolean());
     }
 
     public static function register(bool $passwordConfirmation = true): RuleSchema
