@@ -41,7 +41,6 @@ class RuleSchemaCommand extends Command
             $table = $model->getTable();
             $fillableColumns = $model->getFillable();
 
-            // Veritabanında tablo olup olmadığını kontrol et
             if (! DB::getSchemaBuilder()->hasTable($table)) {
                 $this->error("Table not found: {$table}");
 

@@ -29,7 +29,7 @@ composer require alpayklncrsln/rule-schema
 
 Paketin Form Requestini Eklemek İçin:
 ````aiignore
-php artisan make:rule-schema Product
+php artisan make:rule-schema Product --m
 ````
 
 Rule Schema Form Request'inizi oluşturun:

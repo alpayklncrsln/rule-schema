@@ -29,7 +29,7 @@ composer require alpayklncrsln/rule-schema
 
 To Add the Package's Form Request:
 ```bash
-php artisan make:rule-schema Product
+php artisan make:rule-schema Product --m
 ```
 
 Create your Rule Schema Form Request:
