@@ -5,23 +5,28 @@ namespace Alpayklncrsln\RuleSchema\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 
 class RuleSchemaCommand extends Command
 {
     protected $signature = 'make:rule-schema {name} {--m}';
-
     protected $description = 'RuleSchema request creation';
 
     public function handle(): int
     {
-        $name = $this->argument('name');
-        $stubPath = __DIR__.'/../stubs/rule-schema.stub';
-        $namespace = 'App\\Http\\Requests';
-        $targetPath = base_path("app/Http/Requests/{$name}Request.php");
+        $stubPath = __DIR__ . '/../stubs/rule-schema.stub';
+        $name = str_replace('/', '\\', $this->argument('name'));
+        $namespace = 'App\\Http\\Requests\\' . Str::beforeLast($name, '\\');
+        $targetPath = base_path("app/Http/Requests/" . str_replace(['\\', '/'], '/', $name) .( !Str::contains($name, 'Request') ? 'Request' : ''). ".php");
 
-        if (! File::exists($stubPath)) {
+        if (File::exists($targetPath)) {
+            $this->error("Request already exists: {$targetPath}");
+            return self::FAILURE;
+        }
+        $name = Str::afterLast($name, '\\');
+
+        if (!File::exists($stubPath)) {
             $this->error("Stub not found: {$stubPath}");
-
             return self::FAILURE;
         }
 
@@ -29,57 +34,45 @@ class RuleSchemaCommand extends Command
 
         if ($this->option('m')) {
             $modelClass = "App\\Models\\{$name}";
-
-            if (! class_exists($modelClass)) {
+            if (!class_exists($modelClass)) {
                 $this->error("Model not found: {$modelClass}");
-
                 return self::FAILURE;
             }
 
-            /** @var \Illuminate\Database\Eloquent\Model $model */
             $model = new $modelClass;
             $table = $model->getTable();
             $fillableColumns = $model->getFillable();
 
-            if (! DB::getSchemaBuilder()->hasTable($table)) {
+            if (!DB::getSchemaBuilder()->hasTable($table)) {
                 $this->error("Table not found: {$table}");
-
                 return self::FAILURE;
             }
 
-            // Tablodaki tüm sütunları al
-            $columns = DB::select("PRAGMA table_info($table)");
+            $columns = $this->getTableColumns($model, $table);
 
             if (empty($fillableColumns)) {
-                $filteredColumns = $columns;
+                $filteredColumns = array_map(fn($col) => (object) ['name' => $this->getColumnName($col)], $columns);
             } else {
-                $filteredColumns = array_filter($columns, fn ($col) => in_array($col->name, $fillableColumns));
+                $filteredColumns = array_filter($columns, fn($col) => in_array($this->getColumnName($col), $fillableColumns));
             }
 
             foreach ($filteredColumns as $column) {
-                $columnName = $column->name;
-
+                $columnName = $this->getColumnName($column);
                 if (in_array($columnName, ['id', 'created_at', 'updated_at', 'deleted_at'])) {
                     continue;
                 }
 
-                $nullable = $column->notnull == 0;
-                $dataType = strtolower($column->type);
+                $nullable = $this->isNullable($column);
+                $dataType = $this->getColumnType($column);
 
                 $rule = "Rule::make('{$columnName}')";
-
-                if ($nullable) {
-                    $rule .= '->nullable()';
-                } else {
-                    $rule .= '->required()';
-                }
+                $rule .= $nullable ? '->nullable()' : '->required()';
 
                 if (str_contains($dataType, 'int')) {
                     $rule .= '->integer()';
                 } elseif (str_contains($dataType, 'varchar') || str_contains($dataType, 'text')) {
                     $rule .= '->string()';
-
-                    if (preg_match('/\((\d+)\)/', $column->type, $matches)) {
+                    if (preg_match('/\((\d+)\)/', $dataType, $matches)) {
                         $rule .= "->max({$matches[1]})";
                     }
                 } elseif (str_contains($dataType, 'decimal') || str_contains($dataType, 'double') || str_contains($dataType, 'float')) {
@@ -96,13 +89,6 @@ class RuleSchemaCommand extends Command
                     $rule .= '->url()';
                 }
 
-                if (! $nullable && str_contains($column->type, 'unique')) {
-                    $rule .= "->unique('{$table}', '{$columnName}')";
-                }
-
-                if (! is_null($column->dflt_value)) {
-                    $rule .= '->sometimes()';
-                }
                 $rules .= "            {$rule},\n";
             }
         }
@@ -110,15 +96,45 @@ class RuleSchemaCommand extends Command
         $stubContent = File::get($stubPath);
         $stubContent = str_replace(
             ['{{namespace}}', '{{class}}', '{{content}}'],
-            [$namespace, "{$name}Request", rtrim($rules, ",\n")],
+            [$namespace, $name . ($this->option('m') || !Str::contains($name, 'Request') ? 'Request' : ''), rtrim($rules, ",\n")],
             $stubContent
         );
 
         File::ensureDirectoryExists(dirname($targetPath));
         File::put($targetPath, $stubContent);
-
         $this->info("Request class created: {$targetPath}");
-
         return self::SUCCESS;
+    }
+
+    private function getTableColumns($model, $table)
+    {
+        switch ($model->getConnection()->getDriverName()) {
+            case 'sqlite':
+                return DB::select("PRAGMA table_info(`$table`)");
+            case 'mysql':
+                return DB::select("SHOW COLUMNS FROM `$table`");
+            case 'pgsql':
+            case 'mssql':
+                return DB::select("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE LOWER(table_name) = LOWER(?)", [$table]);
+            case 'oracle':
+                return DB::select("SELECT * FROM ALL_TAB_COLUMNS WHERE UPPER(TABLE_NAME) = UPPER(?)", [$table]);
+            default:
+                throw new \Exception("Unsupported database driver: {$model->getConnection()->getDriverName()}");
+        }
+    }
+
+    private function getColumnName($column)
+    {
+        return $column->name ?? $column->Field ?? $column->column_name ?? null;
+    }
+
+    private function getColumnType($column)
+    {
+        return strtolower($column->type ?? $column->Type ?? $column->data_type ?? '');
+    }
+
+    private function isNullable($column)
+    {
+        return !($column->notnull ?? $column->Null === 'NO' ?? false);
     }
 }
