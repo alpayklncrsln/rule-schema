@@ -9,7 +9,7 @@ class AuthAllCommand extends Command
 {
     protected $signature = 'rule-schema:auth:all {--force : Auth folder force delete and create}';
 
-    protected $description = 'RuleSchema Auth Login request creation';
+    protected $description = 'RuleSchema Auth All request creation';
 
     public function handle(): int
     {
