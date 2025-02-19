@@ -145,29 +145,26 @@ class RuleSchema implements RuleSchemaInterface
     {
         if (! $this->existsCacheData() && in_array(Request::method(), $methods)) {
             foreach ($rules as $rule) {
-                if ( $rule instanceof Rule) {
+                if ($rule instanceof Rule) {
                     $this->rules[$attribute.($isMultiple ? '.*' : '').'.'.$rule->getAttribute()] = $rule->getRule()[$rule->getAttribute()];
                     if ($rule->getMessage() !== []) {
-                        foreach ($rule->getMessage() as $key =>  $message) {
+                        foreach ($rule->getMessage() as $key => $message) {
                             $this->messages[$attribute.($isMultiple ? '.*' : '').'.'.$key] = $message;
                         }
                     }
-                }
-                elseif ($rule instanceof RuleSchema) {
+                } elseif ($rule instanceof RuleSchema) {
 
                     foreach ($rule->getRules() as $key => $value) {
                         $this->rules[$attribute.($isMultiple ? '.*' : '').'.'.$key] = $value;
                     }
                     if ($rule->getMessages() !== []) {
-                        foreach ($rule->getMessages() as $key =>  $message) {
+                        foreach ($rule->getMessages() as $key => $message) {
                             $this->messages[$attribute.($isMultiple ? '.*' : '').'.'.$key] = $message;
                         }
                     }
-                }
-                else {
+                } else {
                     throw new \Exception('Invalid rule type. Must be an instance of '.Rule::class.' of them.');
                 }
-
 
             }
         }
