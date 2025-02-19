@@ -10,23 +10,26 @@ use Illuminate\Support\Str;
 class RuleSchemaCommand extends Command
 {
     protected $signature = 'make:rule-schema {name} {--m}';
+
     protected $description = 'RuleSchema request creation';
 
     public function handle(): int
     {
-        $stubPath = __DIR__ . '/../stubs/rule-schema.stub';
+        $stubPath = __DIR__.'/../stubs/rule-schema.stub';
         $name = str_replace('/', '\\', $this->argument('name'));
-        $namespace = 'App\\Http\\Requests\\' . Str::beforeLast($name, '\\');
-        $targetPath = base_path("app/Http/Requests/" . str_replace(['\\', '/'], '/', $name) .( !Str::contains($name, 'Request') ? 'Request' : ''). ".php");
+        $namespace = 'App\\Http\\Requests\\'.Str::beforeLast($name, '\\');
+        $targetPath = base_path('app/Http/Requests/'.str_replace(['\\', '/'], '/', $name).(! Str::contains($name, 'Request') ? 'Request' : '').'.php');
 
         if (File::exists($targetPath)) {
             $this->error("Request already exists: {$targetPath}");
+
             return self::FAILURE;
         }
         $name = Str::afterLast($name, '\\');
 
-        if (!File::exists($stubPath)) {
+        if (! File::exists($stubPath)) {
             $this->error("Stub not found: {$stubPath}");
+
             return self::FAILURE;
         }
 
@@ -34,8 +37,9 @@ class RuleSchemaCommand extends Command
 
         if ($this->option('m')) {
             $modelClass = "App\\Models\\{$name}";
-            if (!class_exists($modelClass)) {
+            if (! class_exists($modelClass)) {
                 $this->error("Model not found: {$modelClass}");
+
                 return self::FAILURE;
             }
 
@@ -43,17 +47,18 @@ class RuleSchemaCommand extends Command
             $table = $model->getTable();
             $fillableColumns = $model->getFillable();
 
-            if (!DB::getSchemaBuilder()->hasTable($table)) {
+            if (! DB::getSchemaBuilder()->hasTable($table)) {
                 $this->error("Table not found: {$table}");
+
                 return self::FAILURE;
             }
 
             $columns = $this->getTableColumns($model, $table);
 
             if (empty($fillableColumns)) {
-                $filteredColumns = array_map(fn($col) => (object) ['name' => $this->getColumnName($col)], $columns);
+                $filteredColumns = array_map(fn ($col) => (object) ['name' => $this->getColumnName($col)], $columns);
             } else {
-                $filteredColumns = array_filter($columns, fn($col) => in_array($this->getColumnName($col), $fillableColumns));
+                $filteredColumns = array_filter($columns, fn ($col) => in_array($this->getColumnName($col), $fillableColumns));
             }
 
             foreach ($filteredColumns as $column) {
@@ -96,13 +101,14 @@ class RuleSchemaCommand extends Command
         $stubContent = File::get($stubPath);
         $stubContent = str_replace(
             ['{{namespace}}', '{{class}}', '{{content}}'],
-            [$namespace, $name . ($this->option('m') || !Str::contains($name, 'Request') ? 'Request' : ''), rtrim($rules, ",\n")],
+            [$namespace, $name.($this->option('m') || ! Str::contains($name, 'Request') ? 'Request' : ''), rtrim($rules, ",\n")],
             $stubContent
         );
 
         File::ensureDirectoryExists(dirname($targetPath));
         File::put($targetPath, $stubContent);
         $this->info("Request class created: {$targetPath}");
+
         return self::SUCCESS;
     }
 
@@ -115,9 +121,9 @@ class RuleSchemaCommand extends Command
                 return DB::select("SHOW COLUMNS FROM `$table`");
             case 'pgsql':
             case 'mssql':
-                return DB::select("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE LOWER(table_name) = LOWER(?)", [$table]);
+                return DB::select('SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE LOWER(table_name) = LOWER(?)', [$table]);
             case 'oracle':
-                return DB::select("SELECT * FROM ALL_TAB_COLUMNS WHERE UPPER(TABLE_NAME) = UPPER(?)", [$table]);
+                return DB::select('SELECT * FROM ALL_TAB_COLUMNS WHERE UPPER(TABLE_NAME) = UPPER(?)', [$table]);
             default:
                 throw new \Exception("Unsupported database driver: {$model->getConnection()->getDriverName()}");
         }
@@ -135,6 +141,6 @@ class RuleSchemaCommand extends Command
 
     private function isNullable($column)
     {
-        return !($column->notnull ?? $column->Null === 'NO' ?? false);
+        return ! ($column->notnull ?? $column->Null === 'NO' ?? false);
     }
 }
