@@ -3,7 +3,6 @@
 namespace Alpayklncrsln\RuleSchema\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 
@@ -15,10 +14,10 @@ class AuthRegisterCommand extends Command
 
     public function handle(): int
     {
-        $stubPath = __DIR__ . '/../stubs/rule-schema-custom.stub';
+        $stubPath = __DIR__.'/../stubs/rule-schema-custom.stub';
         $name = str_replace('/', '\\', 'Auth/Register');
-        $namespace = 'App\\Http\\Requests\\' . Str::beforeLast($name, '\\');
-        $targetPath = base_path("app/Http/Requests/" . str_replace(['\\', '/'], '/', $name) . "Request.php");
+        $namespace = 'App\\Http\\Requests\\'.Str::beforeLast($name, '\\');
+        $targetPath = base_path('app/Http/Requests/'.str_replace(['\\', '/'], '/', $name).'Request.php');
 
         if (File::exists($targetPath)) {
             $this->error("Request already exists: {$targetPath}");
@@ -27,7 +26,7 @@ class AuthRegisterCommand extends Command
         }
         $name = Str::afterLast($name, '\\');
 
-        if (!File::exists($stubPath)) {
+        if (! File::exists($stubPath)) {
             $this->error("Stub not found: {$stubPath}");
 
             return self::FAILURE;

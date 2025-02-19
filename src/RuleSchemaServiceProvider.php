@@ -31,7 +31,7 @@ class RuleSchemaServiceProvider extends PackageServiceProvider
                 AuthRegisterCommand::class,
                 AuthLoginCommand::class,
                 AuthUpdatePasswordCommand::class,
-                AuthResetPasswordCommand::class
+                AuthResetPasswordCommand::class,
             ]);
     }
 }
