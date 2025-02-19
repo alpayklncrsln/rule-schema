@@ -1,0 +1,17 @@
+<?php
+
+namespace {{namespace}};
+
+use Alpayklncrsln\RuleSchema\RuleSchemaRequest;
+use Alpayklncrsln\RuleSchema\RuleSchema;
+use Alpayklncrsln\RuleSchema\Rule;
+use Alpayklncrsln\RuleSchema\Default\DefaultRuleSchema;
+
+class {{class}} extends RuleSchemaRequest
+{
+
+    public function ruleSchema(): RuleSchema
+    {
+        return {{content}}
+    }
+}
