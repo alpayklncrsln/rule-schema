@@ -3,7 +3,6 @@
 namespace Alpayklncrsln\RuleSchema\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 
@@ -15,10 +14,10 @@ class AuthResetPasswordCommand extends Command
 
     public function handle(): int
     {
-        $stubPath = __DIR__ . '/../stubs/rule-schema-custom.stub';
+        $stubPath = __DIR__.'/../stubs/rule-schema-custom.stub';
         $name = str_replace('/', '\\', 'Auth/ResetPassword');
-        $namespace = 'App\\Http\\Requests\\' . Str::beforeLast($name, '\\');
-        $targetPath = base_path("app/Http/Requests/" . str_replace(['\\', '/'], '/', $name) . "Request.php");
+        $namespace = 'App\\Http\\Requests\\'.Str::beforeLast($name, '\\');
+        $targetPath = base_path('app/Http/Requests/'.str_replace(['\\', '/'], '/', $name).'Request.php');
 
         if (File::exists($targetPath)) {
             $this->error("Request already exists: {$targetPath}");
@@ -26,7 +25,7 @@ class AuthResetPasswordCommand extends Command
             return self::FAILURE;
         }
 
-        if (!File::exists($stubPath)) {
+        if (! File::exists($stubPath)) {
             $this->error("Stub not found: {$stubPath}");
 
             return self::FAILURE;

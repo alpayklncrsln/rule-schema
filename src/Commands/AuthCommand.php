@@ -3,9 +3,6 @@
 namespace Alpayklncrsln\RuleSchema\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Str;
 
 class AuthCommand extends Command
 {
@@ -17,27 +14,29 @@ class AuthCommand extends Command
     {
         $type = $this->argument('type');
 
-       switch ($type) {
-           case'all':
-               $this->call('rule-schema:auth:all');
-               break;
-           case 'login':
-               $this->call('rule-schema:auth:login');
-               break;
-           case 'register':
-               $this->call('rule-schema:auth:register');
-               break;
-           case 'reset-password':
-               $this->call('rule-schema:auth:reset-password');
-               break;
-           case 'update-password':
-               $this->call('rule-schema:auth:update-password');
-               break;
-           default:
-               $this->error('Invalid type provided.');
-               $this->warn('Available types: login, register, reset-password, update-password');
-               return self::FAILURE;
-       }
+        switch ($type) {
+            case 'all':
+                $this->call('rule-schema:auth:all');
+                break;
+            case 'login':
+                $this->call('rule-schema:auth:login');
+                break;
+            case 'register':
+                $this->call('rule-schema:auth:register');
+                break;
+            case 'reset-password':
+                $this->call('rule-schema:auth:reset-password');
+                break;
+            case 'update-password':
+                $this->call('rule-schema:auth:update-password');
+                break;
+            default:
+                $this->error('Invalid type provided.');
+                $this->warn('Available types: login, register, reset-password, update-password');
+
+                return self::FAILURE;
+        }
+
         return self::SUCCESS;
     }
 }
