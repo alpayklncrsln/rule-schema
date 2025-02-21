@@ -55,6 +55,7 @@ class Rule
     {
 
         $this->rule['rule.'.count($this->rule)] = $rule;
+
         return $this;
     }
 
