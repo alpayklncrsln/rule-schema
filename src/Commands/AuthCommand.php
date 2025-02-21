@@ -32,7 +32,7 @@ class AuthCommand extends Command
                 break;
             default:
                 $this->error('Invalid type provided.');
-                $this->warn('Available types: login, register, reset-password, update-password');
+                $this->warn('Available types: all, login, register, reset-password, update-password');
 
                 return self::FAILURE;
         }
