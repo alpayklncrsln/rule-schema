@@ -3,8 +3,8 @@
 namespace Alpayklncrsln\RuleSchema;
 
 use Alpayklncrsln\RuleSchema\Interfaces\MimeEnumInterface;
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Validation\Rules\Enum;
 
 class Rule
 {
@@ -21,7 +21,7 @@ class Rule
 
     public static function make(string $attribute): self
     {
-        return new Rule($attribute);
+        return new self($attribute);
     }
 
     protected function setMessage(string $ruleName, ?string $message = null): void
@@ -51,10 +51,10 @@ class Rule
         return array_key_exists($ruleName, $this->rule);
     }
 
-    public function ruleClass(ValidationRule $class): self
+    public function rule(mixed $rule): self
     {
-        $this->rule[] = $class;
 
+        $this->rule['rule.'.count($this->rule)] = $rule;
         return $this;
     }
 
@@ -609,7 +609,7 @@ class Rule
         return $this;
     }
 
-    public function enum($enum, ?string $message = null): self
+    public function enum(Enum $enum, ?string $message = null): self
     {
         $this->rule['enum'] = $enum;
         $this->setMessage(__FUNCTION__, $message);
@@ -958,9 +958,8 @@ class Rule
             $ruleData[] = match (true) {
                 is_bool($value) => $value ? $key : null,
                 is_array($value) => "$key:".implode(',', $value),
-                $key == 'enum' => "$key:".implode(',', array_column($value::cases(), 'value')),
                 is_string($value) || is_int($value) => "$key:$value",
-                default => throw new \Exception(" Rule error:$key ")
+                default => $value
             };
         }
 
