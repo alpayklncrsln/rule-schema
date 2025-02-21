@@ -27,6 +27,22 @@ Paketi composer ile kurabilirsiniz:
 composer require alpayklncrsln/rule-schema
 ```
 
+````aiignore
+php artisan rule-schema:auth all
+php artisan rule-schema:auth login
+php artisan rule-schema:auth register
+php artisan rule-schema:auth reset-password
+php artisan rule-schema:auth update-password
+
+or
+
+php artisan rule-schema:auth:all
+php artisan rule-schema:auth:login
+php artisan rule-schema:auth:register
+php artisan rule-schema:auth:reset-password
+php artisan rule-schema:auth:update-password
+````
+
 Paketin Form Requestini Eklemek İçin:
 ````aiignore
 php artisan make:rule-schema Product --m

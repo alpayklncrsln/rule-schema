@@ -27,6 +27,23 @@ You can install the package via composer:
 composer require alpayklncrsln/rule-schema
 ```
 
+
+````aiignore
+php artisan rule-schema:auth all
+php artisan rule-schema:auth login
+php artisan rule-schema:auth register
+php artisan rule-schema:auth reset-password
+php artisan rule-schema:auth update-password
+
+or
+
+php artisan rule-schema:auth:all
+php artisan rule-schema:auth:login
+php artisan rule-schema:auth:register
+php artisan rule-schema:auth:reset-password
+php artisan rule-schema:auth:update-password
+````
+
 To Add the Package's Form Request:
 ```bash
 php artisan make:rule-schema Product --m
