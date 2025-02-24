@@ -11,7 +11,9 @@
         "Laravel Rule Schema",
         "Rule Schema",
         "Laravel Rules",
-        "Rules"
+        "Rules",
+        "Laravel Validation",
+        "Validation"
     ],
     "homepage": "https://github.com/alpayklncrsln/rule-schema",
     "license": "MIT",
