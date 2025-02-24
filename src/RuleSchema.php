@@ -4,7 +4,7 @@ namespace Alpayklncrsln\RuleSchema;
 
 use Alpayklncrsln\RuleSchema\Interfaces\RuleSchemaInterface;
 use Alpayklncrsln\RuleSchema\Table\TableBuilder;
-use Alpayklncrsln\RuleSchema\Traits\withCacheTrait;
+use Alpayklncrsln\RuleSchema\Traits\WithCacheTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Request;
 
 class RuleSchema implements RuleSchemaInterface
 {
-    use withCacheTrait;
+    use WithCacheTrait;
 
     protected array $rules = [];
 
