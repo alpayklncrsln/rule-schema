@@ -17,7 +17,7 @@ class RuleSchemaCommand extends Command
     {
         $stubPath = __DIR__.'/../stubs/rule-schema.stub';
         $name = str_replace('/', '\\', $this->argument('name'));
-        $namespace = 'App\\Http\\Requests\\'.Str::beforeLast($name, '\\');
+        $namespace = 'App\\Http\\Requests'.(Str::beforeLast($name, '\\') != $name ? '\\'.trim(Str::after($name, '\\'), '\\') : '');
         $targetPath = base_path('app/Http/Requests/'.str_replace(['\\', '/'], '/', $name).(! Str::contains($name, 'Request') ? 'Request' : '').'.php');
 
         if (File::exists($targetPath)) {
