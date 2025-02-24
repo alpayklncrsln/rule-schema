@@ -244,18 +244,18 @@ test('digitsBetween', function () {
         ->toBeArray('digits_between:1,10');
 });
 
-test('demensions', function (string $value) {
-    $rule = Rule::make('name')->demensions($value)->getRule();
+test('dimensions', function (string $value) {
+    $rule = Rule::make('name')->dimensions($value)->getRule();
     expect($rule['name'])->toBeArray()
-        ->toBeArray('demensions:'.$value);
+        ->toBeArray('dimensions:'.$value);
 })->with([
     'width',
     'height',
 ]);
 
-test('demensionsImageWidthHeight', function (int $width, int $height) {
-    $rule = Rule::make('name')->demensionsImageWidthHeight($width, $height)->getRule();
-    expect($rule['name'])->toBeArray('demensions:width'.$width.',height:'.$height);
+test('dimensionsImageWidthHeight', function (int $width, int $height) {
+    $rule = Rule::make('name')->dimensionsImageWidthHeight($width, $height)->getRule();
+    expect($rule['name'])->toBeArray('dimensions:width'.$width.',height:'.$height);
 
 })->with([
     [100, 100],
