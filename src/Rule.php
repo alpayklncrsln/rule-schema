@@ -315,7 +315,7 @@ class Rule
         return $this;
     }
 
-    public function demensions(string $value, ?string $message = null): self
+    public function dimensions(string $value, ?string $message = null): self
     {
         $this->rule['dimensions'] = $value;
         $this->setMessage(__FUNCTION__, $message);
@@ -323,20 +323,20 @@ class Rule
         return $this;
     }
 
-    public function demensionsImageWidthHeight(int $width, int $height, ?string $message = null): self
+    public function dimensionsImageWidthHeight(int $width, int $height, ?string $message = null): self
     {
         $this->image();
-        $this->demensions('width:'.$width.',height:'.$height);
-        $this->setMessage('demensions', $message);
+        $this->dimensions('width:'.$width.',height:'.$height);
+        $this->setMessage('dimensions', $message);
 
         return $this;
     }
 
-    public function demensionsImageMinWidthMinHeight(int $minWidth, int $minHeight, ?string $message = null): self
+    public function dimensionsImageMinWidthMinHeight(int $minWidth, int $minHeight, ?string $message = null): self
     {
         $this->image();
-        $this->demensions('min_width:'.$minWidth.',min_height:'.$minHeight);
-        $this->setMessage('demensions', $message);
+        $this->dimensions('min_width:'.$minWidth.',min_height:'.$minHeight);
+        $this->setMessage('dimensions', $message);
 
         return $this;
     }
