@@ -7,7 +7,7 @@ use Alpayklncrsln\RuleSchema\RuleSchema;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 
-trait withCacheTrait
+trait WithCacheTrait
 {
     protected ?string $cacheName = null;
 
