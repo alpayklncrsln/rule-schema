@@ -139,7 +139,7 @@ class RuleSchemaCommand extends Command
         return strtolower($column->type ?? $column->Type ?? $column->data_type ?? '');
     }
 
-    private function isNullable($column)
+    private function isNullable($column): bool
     {
         return ! ($column->notnull ?? $column->Null === 'NO' ?? false);
     }
