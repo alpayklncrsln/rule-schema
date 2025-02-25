@@ -2,6 +2,10 @@
 
 All notable changes to `rule-schema` will be documented in this file.
 
+## v1.3.2 - 2025-02-25
+
+**Full Changelog**: https://github.com/alpayklncrsln/rule-schema/compare/v1.3.1...v1.3.2
+
 ## v1.3.0 - 2025-02-19
 
 **Release Note - Version Update**
