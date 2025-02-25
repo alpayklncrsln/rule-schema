@@ -141,6 +141,14 @@ class RuleSchemaCommand extends Command
 
     private function isNullable($column): bool
     {
-        return ! ($column->notnull ?? $column->Null === 'NO' ?? false);
+        if (property_exists($column, 'notnull') && ! $column->notnull) {
+            return true;
+        }
+
+        if (isset($column->Null)) {
+            return $column->Null === 'YES';
+        }
+
+        return false;
     }
 }
