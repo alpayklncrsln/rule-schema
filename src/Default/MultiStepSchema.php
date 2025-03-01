@@ -14,6 +14,8 @@ class MultiStepSchema
 
     protected ?RuleSchema $ruleSchema;
 
+    protected null|int|string $currentStep = null;
+
     public function __construct(string $attribute = 'step', bool $allSteps = false, ?RuleSchema $ruleSchema = null)
     {
         $this->allSteps = $allSteps;
@@ -28,6 +30,13 @@ class MultiStepSchema
     public static function make(string $attribute = 'step', bool $allSteps = false, ?RuleSchema $ruleSchema = null): self
     {
         return new self($attribute, $allSteps, $ruleSchema);
+    }
+
+    public function setCurrentStep(int|string $step): self
+    {
+        $this->currentStep = $step;
+
+        return $this;
     }
 
     public function setAllSteps(bool $allSteps): self
@@ -49,7 +58,7 @@ class MultiStepSchema
         if ($this->allSteps) {
             $this->ruleSchema->arraySchema($this->attribute.'_'.$step, $rules, false);
         } else {
-            $this->ruleSchema->when(Request::input($this->attribute) == $step, $rules);
+            $this->ruleSchema->when($this->currentStep ? $this->currentStep == $step : Request::input($this->attribute) == $step, $rules);
         }
 
         return $this;
