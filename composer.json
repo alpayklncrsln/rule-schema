@@ -30,11 +30,11 @@
         "spatie/laravel-package-tools": "^1.0"
     },
     "require-dev": {
-        "larastan/larastan": "^2.0|3.0",
+        "larastan/larastan": "^2.0|^3.0",
         "laravel/framework": "^11.0|^12.0",
         "laravel/pint": "^1.14",
         "nunomaduro/collision": "^8.1.1|^7.10.0",
-        "orchestra/testbench": "^8.0|^9.0|10.0",
+        "orchestra/testbench": "^8.0|^9.0|^10.0",
         "pestphp/pest": "^2.34|^3.0",
         "pestphp/pest-plugin-arch": "^2.7|^3.0",
         "pestphp/pest-plugin-laravel": "^2.3|^3.0",
