@@ -22,7 +22,7 @@
     </testsuites>
     <coverage>
         <report>
-            <html outputFile="build/coverage/index.html"/>
+            <html outputDirectory="build/coverage"/>
         </report>
     </coverage>
     <logging>
