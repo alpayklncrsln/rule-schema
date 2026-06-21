@@ -2,6 +2,7 @@
 
 use Alpayklncrsln\RuleSchema\Enums\FileMime;
 use Alpayklncrsln\RuleSchema\Rule;
+use Illuminate\Validation\Rules\Enum;
 
 test('get attribute of rule ', function () {
     $rule = Rule::make('name');
@@ -446,7 +447,11 @@ test('mimetypes enum', function (FileMime $fileMime) {
         ->toBeArray('mimetypes:'.$fileMime->type());
 })->with(FileMime::cases());
 
-test('enum', function () {})->todo();
+test('enum', function () {
+    $rule = Rule::make('role')->enum(new Enum(FileMime::class))->getRule();
+    expect($rule['role'])->toBeArray();
+    expect($rule['role'][0])->toBeInstanceOf(Enum::class);
+});
 
 test('mimeAndMimetypes', function (FileMime $fileMime) {
     $rule = Rule::make('image')->mimeAndMimetypes()->getRule();
@@ -642,4 +647,34 @@ test('uuid', function () {
 test('ulid', function () {
     $rule = Rule::make('name')->ulid()->getRule();
     expect($rule['name'])->toBeArray('ulid');
+});
+
+test('laravel native rule unique integration', function () {
+    $nativeUnique = \Illuminate\Validation\Rule::unique('users')->ignore(1);
+    $rule = Rule::make('email')->unique($nativeUnique)->getRule();
+    expect($rule['email'][0])->toBe($nativeUnique);
+});
+
+test('laravel native rule exists integration', function () {
+    $nativeExists = \Illuminate\Validation\Rule::exists('users')->where('active', 1);
+    $rule = Rule::make('user_id')->exists($nativeExists)->getRule();
+    expect($rule['user_id'][0])->toBe($nativeExists);
+});
+
+test('laravel native rule in integration', function () {
+    $nativeIn = \Illuminate\Validation\Rule::in(['first', 'second']);
+    $rule = Rule::make('choice')->in($nativeIn)->getRule();
+    expect($rule['choice'][0])->toBe($nativeIn);
+});
+
+test('laravel native rule notIn integration', function () {
+    $nativeNotIn = \Illuminate\Validation\Rule::notIn(['first', 'second']);
+    $rule = Rule::make('choice')->notIn($nativeNotIn)->getRule();
+    expect($rule['choice'][0])->toBe($nativeNotIn);
+});
+
+test('laravel native rule dimensions integration', function () {
+    $nativeDimensions = \Illuminate\Validation\Rule::dimensions()->maxWidth(1000);
+    $rule = Rule::make('avatar')->dimensions($nativeDimensions)->getRule();
+    expect($rule['avatar'][0])->toBe($nativeDimensions);
 });

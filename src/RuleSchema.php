@@ -2,13 +2,16 @@
 
 namespace Alpayklncrsln\RuleSchema;
 
+use Alpayklncrsln\RuleSchema\Default\DefaultRuleSchema;
 use Alpayklncrsln\RuleSchema\Interfaces\RuleSchemaInterface;
 use Alpayklncrsln\RuleSchema\Table\TableBuilder;
 use Alpayklncrsln\RuleSchema\Traits\WithCacheTrait;
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Validator;
 
 class RuleSchema implements RuleSchemaInterface
 {
@@ -20,32 +23,32 @@ class RuleSchema implements RuleSchemaInterface
 
     protected bool $isBail = false;
 
-    public function __construct(Rule|RuleSchema|array ...$rules)
+    public function __construct(BaseRuleBuilder|RuleSchema|array ...$rules)
     {
         if (count($rules) > 0) {
             $this->merge(...$rules);
         }
     }
 
-    public static function create(Rule|RuleSchema|array ...$rules): self
+    public static function create(BaseRuleBuilder|RuleSchema|array ...$rules): self
     {
         return new RuleSchema(...$rules);
     }
 
-    public function merge(Rule|array ...$rules): self
+    public function merge(BaseRuleBuilder|RuleSchema|array ...$rules): self
     {
         if (! $this->existsCacheData()) {
             if ($rules !== []) {
                 $rules = Arr::flatten($rules);
                 foreach ($rules as $rule) {
-                    if ($rule instanceof Rule) {
+                    if ($rule instanceof BaseRuleBuilder) {
                         $this->rules = array_merge($this->rules, $rule->getRule());
                         $this->messages = array_merge($this->messages, $rule->getMessage());
                     } elseif ($rule instanceof RuleSchema) {
                         $this->rules = array_merge($this->rules, $rule->getRules());
                         $this->messages = array_merge($this->messages, $rule->getMessages());
                     } else {
-                        throw new \Exception('Invalid rule type. Must be an instance of '.Rule::class.' or '.RuleSchema::class.' of them.');
+                        throw new Exception('Invalid rule type. Must be an instance of ' . BaseRuleBuilder::class . ' or ' . RuleSchema::class . ' of them.');
                     }
 
                 }
@@ -79,7 +82,7 @@ class RuleSchema implements RuleSchemaInterface
         return $this->messages;
     }
 
-    public function when(bool $condition, Rule|RuleSchema|array ...$rules): self
+    public function when(bool $condition, BaseRuleBuilder|RuleSchema|array ...$rules): self
     {
         if ($condition && ! $this->existsCacheData()) {
             $this->merge($rules);
@@ -91,15 +94,17 @@ class RuleSchema implements RuleSchemaInterface
     public function expect(array $attributes): self
     {
         if (! $this->existsCacheData()) {
+            $rules = $this->rules;
             foreach ($attributes as $attribute) {
-                unset($this->rules[$attribute]);
+                unset($rules[$attribute]);
             }
+            $this->rules = $rules;
         }
 
         return $this;
     }
 
-    public function existsMerge($attribute, Rule|RuleSchema|array ...$rules): self
+    public function existsMerge($attribute, BaseRuleBuilder|RuleSchema|array ...$rules): self
     {
         if (! $this->existsCacheData()) {
             $this->when(isset($this->rules[$attribute]), $rules);
@@ -108,7 +113,7 @@ class RuleSchema implements RuleSchemaInterface
         return $this;
     }
 
-    public function auth(Rule|RuleSchema|array ...$rules): self
+    public function auth(BaseRuleBuilder|RuleSchema|array ...$rules): self
     {
         if (! $this->existsCacheData()) {
             $this->when(Auth::check(), $rules);
@@ -117,7 +122,7 @@ class RuleSchema implements RuleSchemaInterface
         return $this;
     }
 
-    public function notAuth(Rule|RuleSchema|array ...$rules): self
+    public function notAuth(BaseRuleBuilder|RuleSchema|array ...$rules): self
     {
         if (! $this->existsCacheData()) {
             $this->when(! Auth::check(), ...$rules);
@@ -145,7 +150,7 @@ class RuleSchema implements RuleSchemaInterface
     {
         if (! $this->existsCacheData() && in_array(Request::method(), $methods)) {
             foreach ($rules as $rule) {
-                if ($rule instanceof Rule) {
+                if ($rule instanceof BaseRuleBuilder) {
                     $this->rules[$attribute.($isMultiple ? '.*' : '').'.'.$rule->getAttribute()] = $rule->getRule()[$rule->getAttribute()];
                     if ($rule->getMessage() !== []) {
                         foreach ($rule->getMessage() as $key => $message) {
@@ -163,7 +168,7 @@ class RuleSchema implements RuleSchemaInterface
                         }
                     }
                 } else {
-                    throw new \Exception('Invalid rule type. Must be an instance of '.Rule::class.' of them.');
+                    throw new Exception('Invalid rule type. Must be an instance of ' . BaseRuleBuilder::class . ' of them.');
                 }
 
             }
@@ -172,7 +177,7 @@ class RuleSchema implements RuleSchemaInterface
         return $this;
     }
 
-    public function add(Rule $rule): self
+    public function add(BaseRuleBuilder $rule): self
     {
         if (! $this->existsCacheData()) {
             $this->rules[$rule->getAttribute()] = $rule->getRule()[$rule->getAttribute()];
@@ -181,43 +186,89 @@ class RuleSchema implements RuleSchemaInterface
         return $this;
     }
 
-    public function postSchema(Rule|RuleSchema|array ...$rules): self
+    public function ruleClass(string $attribute, mixed $rule): self
+    {
+        if (!$this->existsCacheData()) {
+            if (!isset($this->rules[$attribute])) {
+                $this->rules[$attribute] = [];
+            }
+            $this->rules[$attribute][] = $rule;
+        }
+
+        return $this;
+    }
+
+    public function postSchema(BaseRuleBuilder|RuleSchema|array ...$rules): self
     {
         $this->when(Request::isMethod('POST'), ...$rules);
 
         return $this;
     }
 
-    public function putSchema(Rule|RuleSchema|array ...$rules): self
+    public function putSchema(BaseRuleBuilder|RuleSchema|array ...$rules): self
     {
         $this->when(Request::isMethod('PUT'), $rules);
 
         return $this;
     }
 
-    public function patchSchema(Rule|RuleSchema|array ...$rules): self
+    public function patchSchema(BaseRuleBuilder|RuleSchema|array ...$rules): self
     {
         $this->when(Request::isMethod('PATCH'), ...$rules);
 
         return $this;
     }
 
-    public function matchSchema(array $methods = ['put', 'patch'], Rule|RuleSchema|array ...$rules): self
+    public function matchSchema(array $methods = ['put', 'patch'], BaseRuleBuilder|RuleSchema|array ...$rules): self
     {
         $this->when(in_array(Request::method(), $methods), ...$rules);
 
         return $this;
     }
 
-    public function deleteSchema(Rule|RuleSchema|array ...$rules): self
+    public function deleteSchema(BaseRuleBuilder|RuleSchema|array ...$rules): self
     {
         $this->when(Request::isMethod('DELETE'), ...$rules);
 
         return $this;
     }
 
-    public function validate(): array
+    public function validate(?array $data = null): array
     {
-        return Request::validate($this->getRules(), $this->getMessages());
+        if (is_null($data)) {
+            return Request::validate($this->getRules(), $this->getMessages());
+        }
+
+        return Validator::make($data, $this->getRules(), $this->getMessages())->validate();
+    }
+
+    public static function login(bool $remember = true): self
+    {
+        return DefaultRuleSchema::login($remember);
+    }
+
+    public static function register(bool $passwordConfirmation = true): self
+    {
+        return DefaultRuleSchema::register($passwordConfirmation);
+    }
+
+    public static function resetPassword(): self
+    {
+        return DefaultRuleSchema::resetPassword();
+    }
+
+    public static function updatePassword(): self
+    {
+        return DefaultRuleSchema::updatePassword();
+    }
+
+    public static function contact(): self
+    {
+        return DefaultRuleSchema::contact();
+    }
+
+    public static function feedback(): self
+    {
+        return DefaultRuleSchema::feedback();
     }
 }

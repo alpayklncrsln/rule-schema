@@ -4,59 +4,18 @@ namespace Alpayklncrsln\RuleSchema;
 
 use Alpayklncrsln\RuleSchema\Interfaces\MimeEnumInterface;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Validation\Rules\Dimensions;
 use Illuminate\Validation\Rules\Enum;
+use Illuminate\Validation\Rules\Exists;
+use Illuminate\Validation\Rules\In;
+use Illuminate\Validation\Rules\NotIn;
+use Illuminate\Validation\Rules\Unique;
 
-class Rule
+class Rule extends BaseRuleBuilder
 {
-    public string $attribute = '';
-
-    protected array $rule = [];
-
-    protected array $messages = [];
-
-    public function __construct(string $attribute)
-    {
-        $this->attribute = $attribute;
-    }
-
-    public static function make(string $attribute): self
+    public static function make(string $attribute = ''): self
     {
         return new self($attribute);
-    }
-
-    protected function setMessage(string $ruleName, ?string $message = null): void
-    {
-        if (! is_null($message)) {
-            $this->messages[$ruleName] = $message;
-        }
-    }
-
-    public function getMessage(): array
-    {
-        $message = [];
-        foreach ($this->messages as $key => $value) {
-            $message[$this->attribute.'.'.$key] = $value;
-        }
-
-        return $message;
-    }
-
-    public function getAttribute(): string
-    {
-        return $this->attribute;
-    }
-
-    private function isRuleCheck(string $ruleName): bool
-    {
-        return array_key_exists($ruleName, $this->rule);
-    }
-
-    public function rule(mixed $rule): self
-    {
-
-        $this->rule['rule.'.count($this->rule)] = $rule;
-
-        return $this;
     }
 
     public function accepted(bool $check = true, ?string $message = null): self
@@ -315,7 +274,7 @@ class Rule
         return $this;
     }
 
-    public function dimensions(string $value, ?string $message = null): self
+    public function dimensions(string|Dimensions $value, ?string $message = null): self
     {
         $this->rule['dimensions'] = $value;
         $this->setMessage(__FUNCTION__, $message);
@@ -395,9 +354,13 @@ class Rule
         return $this;
     }
 
-    public function exists(Model|string $table, ?string $column = null, ?string $message = null): self
+    public function exists(Model|string|Exists $table, ?string $column = null, ?string $message = null): self
     {
-        $this->rule['exists'] = $table.(! is_null($column) ? ','.$column : '');
+        if ($table instanceof Exists) {
+            $this->rule['exists'] = $table;
+        } else {
+            $this->rule['exists'] = $table . (!is_null($column) ? ',' . $column : '');
+        }
         $this->setMessage('exists', $message);
 
         return $this;
@@ -451,7 +414,7 @@ class Rule
         return $this;
     }
 
-    public function in(array $in, ?string $message = null): self
+    public function in(array|In $in, ?string $message = null): self
     {
         $this->rule['in'] = $in;
         $this->setMessage(__FUNCTION__, $message);
@@ -459,9 +422,13 @@ class Rule
         return $this;
     }
 
-    public function unique(Model|string $table, ?string $column = null, ?string $value = null, ?string $message = null): self
+    public function unique(Model|string|Unique $table, ?string $column = null, ?string $value = null, ?string $message = null): self
     {
-        $this->rule['unique'] = "$table".(! is_null($column) ? ','.$column : '').(! is_null($value) ? ','.$value : '');
+        if ($table instanceof Unique) {
+            $this->rule['unique'] = $table;
+        } else {
+            $this->rule['unique'] = "$table" . (!is_null($column) ? ',' . $column : '') . (!is_null($value) ? ',' . $value : '');
+        }
         $this->setMessage(__FUNCTION__, $message);
 
         return $this;
@@ -683,7 +650,7 @@ class Rule
         return $this;
     }
 
-    public function notIn(array $values, ?string $message = null): self
+    public function notIn(array|NotIn $values, ?string $message = null): self
     {
         $this->rule['not_in'] = $values;
         $this->setMessage(__FUNCTION__, $message);

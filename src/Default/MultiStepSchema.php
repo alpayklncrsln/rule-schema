@@ -2,7 +2,7 @@
 
 namespace Alpayklncrsln\RuleSchema\Default;
 
-use Alpayklncrsln\RuleSchema\Rule;
+use Alpayklncrsln\RuleSchema\BaseRuleBuilder;
 use Alpayklncrsln\RuleSchema\RuleSchema;
 use Illuminate\Support\Facades\Request;
 
@@ -53,7 +53,7 @@ class MultiStepSchema
         return $this;
     }
 
-    public function step(int|string $step, array|RuleSchema|Rule ...$rules): self
+    public function step(int|string $step, array|RuleSchema|BaseRuleBuilder ...$rules): self
     {
         if ($this->allSteps) {
             $this->ruleSchema->arraySchema($this->attribute.'_'.$step, $rules, false);

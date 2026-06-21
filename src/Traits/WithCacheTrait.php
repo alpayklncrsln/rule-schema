@@ -2,7 +2,7 @@
 
 namespace Alpayklncrsln\RuleSchema\Traits;
 
-use Alpayklncrsln\RuleSchema\Rule;
+use Alpayklncrsln\RuleSchema\BaseRuleBuilder;
 use Alpayklncrsln\RuleSchema\RuleSchema;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
@@ -13,7 +13,7 @@ trait WithCacheTrait
 
     protected int|Carbon|null $cacheTime = null;
 
-    public static function cache(string $cacheName, int|Carbon $time, Rule ...$rules): self|array
+    public static function cache(string $cacheName, int|Carbon $time, BaseRuleBuilder|RuleSchema|array ...$rules): self|array
     {
         $ruleSchema = new RuleSchema(...$rules);
         $ruleSchema->setCache($cacheName, $time);

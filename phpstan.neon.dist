@@ -9,3 +9,5 @@ parameters:
     tmpDir: build/phpstan
     checkOctaneCompatibility: true
     checkModelProperties: true
+    ignoreErrors:
+        - '#Trait Alpayklncrsln\\RuleSchema\\Traits\\InteractsWithRuleSchema is used zero times and is not analysed\.#'

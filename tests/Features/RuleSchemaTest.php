@@ -1,7 +1,13 @@
 <?php
 
+use Alpayklncrsln\RuleSchema\Enums\FileMime;
 use Alpayklncrsln\RuleSchema\Rule;
 use Alpayklncrsln\RuleSchema\RuleSchema;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Validation\Rules\Enum;
+use Illuminate\Validation\ValidationException;
 
 test('create', function () {
     $rule = RuleSchema::create([
@@ -54,7 +60,7 @@ test('existsMerge', function () {
 });
 
 test('auth', function () {
-    \Illuminate\Support\Facades\Auth::shouldReceive('check')->once()->andReturn(true);
+    Auth::shouldReceive('check')->once()->andReturn(true);
     $rule = RuleSchema::create()->auth([
         Rule::make('name')->required(),
         Rule::make('email')->email(true),
@@ -80,12 +86,25 @@ test('notAuth', function () {
 });
 
 test('model', function () {
-    //    $rule = RuleSchema::create()->model(User::class)->getRules();
-    //    expect($rule)->toBe([
-    //        'name' => ['required'],
-    //        'email' => ['email:dns'],
-    //    ]);
-})->todo();
+    Schema::create('test_users', function ($table) {
+        $table->id();
+        $table->string('name');
+        $table->string('email')->nullable();
+        $table->integer('age');
+        $table->boolean('is_active');
+        $table->timestamps();
+    });
+
+    $rule = RuleSchema::model(TestUser::class)->getRules();
+
+    expect($rule)->toBeArray()
+        ->toHaveKey('name')
+        ->toHaveKey('email')
+        ->toHaveKey('age')
+        ->toHaveKey('is_active');
+
+    Schema::dropIfExists('test_users');
+});
 
 test('arraySchema', function () {
     $rule = RuleSchema::create()->arraySchema('images', [
@@ -118,8 +137,50 @@ test('bailed', function () {
 });
 
 test('ruleClass', function () {
-    //    $rule = RuleSchema::create()->ruleClass( 'name',\Illuminate\Validation\Rule::enum(\Alpayklncrsln\RuleSchema\Enums\FileMime::class))->getRules();
-    //    expect($rule)->toBe([
-    //        'name' => ['required'],
-    //    ]);
-})->todo();
+    $rule = RuleSchema::create()
+        ->ruleClass('mime_type', \Illuminate\Validation\Rule::enum(FileMime::class))
+        ->getRules();
+
+    expect($rule)->toBeArray()
+        ->toHaveKey('mime_type');
+
+    expect($rule['mime_type'][0])->toBeInstanceOf(Enum::class);
+});
+
+test('validate with custom data success', function () {
+    $schema = RuleSchema::create([
+        Rule::make('name')->required()->string(),
+        Rule::make('age')->required()->numeric()->min(18),
+    ]);
+
+    $data = [
+        'name' => 'John Doe',
+        'age' => 20,
+    ];
+
+    $validated = $schema->validate($data);
+
+    expect($validated)->toBe($data);
+});
+
+test('validate with custom data failure', function () {
+    $schema = RuleSchema::create([
+        Rule::make('name')->required()->string(),
+        Rule::make('age')->required()->numeric()->min(18),
+    ]);
+
+    $data = [
+        'name' => 'John Doe',
+        'age' => 15,
+    ];
+
+    expect(fn() => $schema->validate($data))
+        ->toThrow(ValidationException::class);
+});
+
+class TestUser extends Model
+{
+    protected $table = 'test_users';
+
+    protected $fillable = ['name', 'email', 'age', 'is_active'];
+}
