@@ -137,4 +137,14 @@ class NumericRuleBuilder extends BaseRuleBuilder
 
         return $this;
     }
+
+    public function castToInt(): self
+    {
+        return $this->sanitize(fn($val) => is_numeric($val) ? (int)$val : $val);
+    }
+
+    public function castToFloat(): self
+    {
+        return $this->sanitize(fn($val) => is_numeric($val) ? (float)$val : $val);
+    }
 }

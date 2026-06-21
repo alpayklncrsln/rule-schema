@@ -2,6 +2,8 @@
 
 namespace Alpayklncrsln\RuleSchema;
 
+use Illuminate\Support\Carbon;
+
 class DateRuleBuilder extends BaseRuleBuilder
 {
     public function __construct(string $attribute = '')
@@ -114,5 +116,10 @@ class DateRuleBuilder extends BaseRuleBuilder
         $this->before('tomorrow');
 
         return $this;
+    }
+
+    public function castToCarbon(): self
+    {
+        return $this->sanitize(fn($val) => !is_null($val) ? Carbon::parse($val) : $val);
     }
 }

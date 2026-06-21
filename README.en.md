@@ -630,6 +630,53 @@ chain is modified, the cache is automatically invalidated and re-compiled on the
 
 ---
 
+### 17. Data Sanitization & Casting (Transformers)
+
+Rule Schema goes beyond validation by allowing you to clean, sanitize, cast, and define fallback/default values for
+request parameters inline. Once validation passes, the parameters are automatically mutated and returned in their
+correct formats.
+
+#### **Core Sanitizers (Available on all Builders)**
+
+- `default(mixed $value)`: Falls back to the given default value if the input is `null`.
+- `sanitize(callable $callback)`: Runs a custom callback to clean or mutate the parameter.
+- `transform(callable $callback)`: Alias of the `sanitize()` method.
+
+#### **String-Specific Sanitizers (`R::string()`)**
+
+- `trim()`: Trims whitespace from both ends of the string.
+- `lower()`: Converts the string to lowercase (multi-byte safe).
+- `upper()`: Converts the string to uppercase (multi-byte safe).
+- `stripTags()`: Strips HTML and PHP tags (ideal for basic XSS prevention).
+- `slug()`: Converts the string to a URL-friendly slug.
+
+#### **Numeric-Specific Casting (`R::numeric()`)**
+
+- `castToInt()`: Casts the numeric value to PHP `int`.
+- `castToFloat()`: Casts the numeric value to PHP `float`.
+
+#### **Date-Specific Casting (`R::date()`)**
+
+- `castToCarbon()`: Converts the date string/value directly into a `Carbon\Carbon` instance.
+
+#### **Example Usage:**
+
+```php
+$validatedData = RuleSchema::create(
+    R::string('name')->required()->trim()->lower(),
+    R::numeric('age')->nullable()->default(18)->castToInt(),
+    R::date('published_at')->castToCarbon(),
+    R::array('tags')->each(R::string()->trim()->lower())
+)->validate($request->all());
+
+// $validatedData['name'] -> converts '  JOHN  ' to 'john'
+// $validatedData['age'] -> converts null to 18 (int)
+// $validatedData['published_at'] -> converts '2026-06-21' to Carbon instance
+// $validatedData['tags'] -> converts ['  PHP ', ' Laravel '] to ['php', 'laravel']
+```
+
+---
+
 ## 💻 Artisan CLI Commands
 
 Accelerate your workflow with the following code generation tools:

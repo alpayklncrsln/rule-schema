@@ -2,6 +2,7 @@
 
 namespace Alpayklncrsln\RuleSchema;
 
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
 
 class StringRuleBuilder extends BaseRuleBuilder
@@ -264,12 +265,12 @@ class StringRuleBuilder extends BaseRuleBuilder
     }
 
     public function passwordSecurity(
-        int     $min = 8,
-        bool    $mixedCase = false,
-        bool    $letters = false,
-        bool    $numbers = false,
-        bool    $symbols = false,
-        bool    $uncompromised = false,
+        int  $min = 8,
+        bool $mixedCase = false,
+        bool $letters = false,
+        bool $numbers = false,
+        bool $symbols = false,
+        bool $uncompromised = false,
         ?string $message = null
     ): self
     {
@@ -295,5 +296,30 @@ class StringRuleBuilder extends BaseRuleBuilder
         $this->setMessage('password_security', $message);
 
         return $this;
+    }
+
+    public function trim(): self
+    {
+        return $this->sanitize(fn($val) => is_string($val) ? trim($val) : $val);
+    }
+
+    public function lower(): self
+    {
+        return $this->sanitize(fn($val) => is_string($val) ? mb_strtolower($val) : $val);
+    }
+
+    public function upper(): self
+    {
+        return $this->sanitize(fn($val) => is_string($val) ? mb_strtoupper($val) : $val);
+    }
+
+    public function stripTags(): self
+    {
+        return $this->sanitize(fn($val) => is_string($val) ? strip_tags($val) : $val);
+    }
+
+    public function slug(): self
+    {
+        return $this->sanitize(fn($val) => is_string($val) ? Str::slug($val) : $val);
     }
 }

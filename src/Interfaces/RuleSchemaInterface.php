@@ -18,4 +18,6 @@ interface RuleSchemaInterface
     public function existsMerge($attribute, BaseRuleBuilder|RuleSchema|array ...$rules): RuleSchema;
 
     public function ruleClass(string $attribute, mixed $rule): RuleSchema;
+
+    public function getBuilders(): array;
 }

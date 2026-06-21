@@ -645,6 +645,53 @@ yeniden hesaplanır.
 
 ---
 
+### 17. Veri Temizleme, Dönüştürme ve Varsayılan Değerler (Data Sanitization & Casting)
+
+Rule Schema, doğrulamanın ötesine geçerek parametrelerinizi inline olarak temizlemenize, cast etmenize ve varsayılan
+değerler tanımlamanıza olanak tanır. Doğrulama başarılı olduktan sonra verileriniz otomatik olarak dönüştürülmüş şekilde
+döndürülür.
+
+#### **Genel Sanitizer Metotları (Tüm Builder Sınıflarında)**
+
+- `default(mixed $value)`: Giriş verisi `null` ise belirtilen varsayılan değeri atar.
+- `sanitize(callable $callback)`: Özel bir temizleme veya dönüştürme closure fonksiyonu çalıştırır.
+- `transform(callable $callback)`: `sanitize` metodunun alternatif adıdır (alias).
+
+#### **String-Özgü Sanitizer Metotları (`R::string()`)**
+
+- `trim()`: Metnin başındaki ve sonundaki boşlukları temizler.
+- `lower()`: Metni çoklu dil uyumlu (mb-safe) olarak küçük harfe dönüştürür.
+- `upper()`: Metni çoklu dil uyumlu (mb-safe) olarak büyük harfe dönüştürür.
+- `stripTags()`: HTML ve PHP etiketlerini temizler (XSS koruması için idealdir).
+- `slug()`: Metni URL uyumlu bir slug ifadesine dönüştürür.
+
+#### **Numeric-Özgü Casting Metotları (`R::numeric()`)**
+
+- `castToInt()`: Sayısal değeri PHP `int` veri tipine dönüştürür.
+- `castToFloat()`: Sayısal değeri PHP `float` veri tipine dönüştürür.
+
+#### **Date-Özgü Casting Metotları (`R::date()`)**
+
+- `castToCarbon()`: Tarih değerini doğrudan bir `Carbon\Carbon` nesnesine dönüştürür.
+
+#### **Örnek Kullanım:**
+
+```php
+$validatedData = RuleSchema::create(
+    R::string('name')->required()->trim()->lower(),
+    R::numeric('age')->nullable()->default(18)->castToInt(),
+    R::date('published_at')->castToCarbon(),
+    R::array('tags')->each(R::string()->trim()->lower())
+)->validate($request->all());
+
+// $validatedData['name'] -> '  AHMET  ' iken 'ahmet' olur.
+// $validatedData['age'] -> null iken 18 (int) olur.
+// $validatedData['published_at'] -> '2026-06-21' stringi Carbon nesnesine dönüşür.
+// $validatedData['tags'] -> ['  PHP ', ' Laravel '] iken ['php', 'laravel'] olur.
+```
+
+---
+
 ## 💻 Artisan CLI Komutları
 
 Paket, geliştirme sürecinizi hızlandırmak için çeşitli kod üreteçleri sunar:

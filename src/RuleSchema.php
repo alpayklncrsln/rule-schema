@@ -23,6 +23,8 @@ class RuleSchema implements RuleSchemaInterface
 
     protected bool $isBail = false;
 
+    protected array $builders = [];
+
     public function __construct(BaseRuleBuilder|RuleSchema|array ...$rules)
     {
         if (count($rules) > 0) {
@@ -42,9 +44,11 @@ class RuleSchema implements RuleSchemaInterface
                 $rules = Arr::flatten($rules);
                 foreach ($rules as $rule) {
                     if ($rule instanceof BaseRuleBuilder) {
+                        $this->builders[] = $rule;
                         $this->rules = array_merge($this->rules, $rule->getRule());
                         $this->messages = array_merge($this->messages, $rule->getMessage());
                     } elseif ($rule instanceof RuleSchema) {
+                        $this->builders = array_merge($this->builders, $rule->getBuilders());
                         $this->rules = array_merge($this->rules, $rule->getRules());
                         $this->messages = array_merge($this->messages, $rule->getMessages());
                     } else {
@@ -57,6 +61,11 @@ class RuleSchema implements RuleSchemaInterface
         }
 
         return $this;
+    }
+
+    public function getBuilders(): array
+    {
+        return $this->builders;
     }
 
     public function getRules(): array
@@ -151,6 +160,10 @@ class RuleSchema implements RuleSchemaInterface
         if (! $this->existsCacheData() && in_array(Request::method(), $methods)) {
             foreach ($rules as $rule) {
                 if ($rule instanceof BaseRuleBuilder) {
+                    $prefixedRule = clone $rule;
+                    $prefixedRule->attribute = $attribute . ($isMultiple ? '.*' : '') . ($rule->getAttribute() !== '' ? '.' . $rule->getAttribute() : '');
+                    $this->builders[] = $prefixedRule;
+
                     $this->rules[$attribute.($isMultiple ? '.*' : '').'.'.$rule->getAttribute()] = $rule->getRule()[$rule->getAttribute()];
                     if ($rule->getMessage() !== []) {
                         foreach ($rule->getMessage() as $key => $message) {
@@ -158,6 +171,11 @@ class RuleSchema implements RuleSchemaInterface
                         }
                     }
                 } elseif ($rule instanceof RuleSchema) {
+                    foreach ($rule->getBuilders() as $subBuilder) {
+                        $prefixedRule = clone $subBuilder;
+                        $prefixedRule->attribute = $attribute . ($isMultiple ? '.*' : '') . ($subBuilder->getAttribute() !== '' ? '.' . $subBuilder->getAttribute() : '');
+                        $this->builders[] = $prefixedRule;
+                    }
 
                     foreach ($rule->getRules() as $key => $value) {
                         $this->rules[$attribute.($isMultiple ? '.*' : '').'.'.$key] = $value;
@@ -180,6 +198,7 @@ class RuleSchema implements RuleSchemaInterface
     public function add(BaseRuleBuilder $rule): self
     {
         if (! $this->existsCacheData()) {
+            $this->builders[] = $rule;
             $this->rules[$rule->getAttribute()] = $rule->getRule()[$rule->getAttribute()];
         }
 
@@ -236,10 +255,26 @@ class RuleSchema implements RuleSchemaInterface
     public function validate(?array $data = null): array
     {
         if (is_null($data)) {
-            return Request::validate($this->getRules(), $this->getMessages());
+            $validated = Request::validate($this->getRules(), $this->getMessages());
+        } else {
+            $validated = Validator::make($data, $this->getRules(), $this->getMessages())->validate();
         }
 
-        return Validator::make($data, $this->getRules(), $this->getMessages())->validate();
+        foreach ($this->builders as $builder) {
+            $sanitizers = $builder->getSanitizers();
+            foreach ($sanitizers as $path => $callbacks) {
+                $segments = explode('.', $path);
+                BaseRuleBuilder::sanitizePath($validated, $segments, function ($val) use ($callbacks) {
+                    foreach ($callbacks as $callback) {
+                        $val = $callback($val);
+                    }
+
+                    return $val;
+                });
+            }
+        }
+
+        return $validated;
     }
 
     public static function login(bool $remember = true): self

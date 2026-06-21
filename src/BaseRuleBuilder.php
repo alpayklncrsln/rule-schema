@@ -4,6 +4,7 @@ namespace Alpayklncrsln\RuleSchema;
 
 use Closure;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Traits\Macroable;
 use Illuminate\Validation\Rules\Enum;
@@ -11,6 +12,7 @@ use Illuminate\Validation\Rules\Exists;
 use Illuminate\Validation\Rules\In;
 use Illuminate\Validation\Rules\NotIn;
 use Illuminate\Validation\Rules\Unique;
+use Laravel\SerializableClosure\SerializableClosure;
 
 abstract class BaseRuleBuilder
 {
@@ -25,6 +27,8 @@ abstract class BaseRuleBuilder
     protected ?array $compiledRules = null;
 
     protected ?array $compiledMessages = null;
+
+    protected array $sanitizers = [];
 
     public function __construct(string $attribute = '')
     {
@@ -627,6 +631,140 @@ abstract class BaseRuleBuilder
         ];
     }
 
+    public function sanitize(callable $callback): static
+    {
+        $this->sanitizers[] = $callback;
+
+        return $this;
+    }
+
+    public function transform(callable $callback): static
+    {
+        return $this->sanitize($callback);
+    }
+
+    public function default(mixed $value): static
+    {
+        return $this->sanitize(fn($val) => is_null($val) ? $value : $val);
+    }
+
+    public function applySanitizers(mixed $value): mixed
+    {
+        foreach ($this->sanitizers as $sanitizer) {
+            $value = $sanitizer($value);
+        }
+
+        return $value;
+    }
+
+    public function getSanitizers(): array
+    {
+        $allSanitizers = [];
+        if ($this->sanitizers !== []) {
+            $allSanitizers[$this->attribute] = $this->sanitizers;
+        }
+
+        if ($this instanceof ArrayRuleBuilder) {
+            if ($this->eachBuilder) {
+                foreach ($this->eachBuilder->getSanitizers() as $subPath => $sanitizers) {
+                    $newPath = ($this->attribute !== '' ? $this->attribute . '.*' : '*') . ($subPath !== '' ? '.' . $subPath : '');
+                    $allSanitizers[$newPath] = $sanitizers;
+                }
+            }
+            if ($this->childBuilders) {
+                foreach ($this->childBuilders as $child) {
+                    foreach ($child->getSanitizers() as $subPath => $sanitizers) {
+                        $newPath = ($this->attribute !== '' ? $this->attribute . '.' : '') . $subPath;
+                        $allSanitizers[$newPath] = $sanitizers;
+                    }
+                }
+            }
+        }
+
+        return $allSanitizers;
+    }
+
+    public static function sanitizePath(mixed &$data, array $segments, callable $callback): void
+    {
+        if (empty($segments) || (count($segments) === 1 && $segments[0] === '')) {
+            $data = $callback($data);
+
+            return;
+        }
+
+        $segment = array_shift($segments);
+
+        if ($segment === '*') {
+            if (is_array($data)) {
+                foreach ($data as $key => $value) {
+                    if (empty($segments)) {
+                        $data[$key] = $callback($value);
+                    } else {
+                        self::sanitizePath($data[$key], $segments, $callback);
+                    }
+                }
+            }
+        } else {
+            if (is_array($data) && Arr::has($data, $segment)) {
+                $value = data_get($data, $segment);
+                if (empty($segments)) {
+                    $newValue = $callback($value);
+                    data_set($data, $segment, $newValue);
+                } else {
+                    self::sanitizePath($value, $segments, $callback);
+                    data_set($data, $segment, $value);
+                }
+            }
+        }
+    }
+
+    public function __serialize(): array
+    {
+        $serializedSanitizers = [];
+        foreach ($this->sanitizers as $sanitizer) {
+            if ($sanitizer instanceof Closure) {
+                $serializedSanitizers[] = new SerializableClosure($sanitizer);
+            } else {
+                $serializedSanitizers[] = $sanitizer;
+            }
+        }
+
+        $data = [
+            'attribute' => $this->attribute,
+            'rule' => $this->rule,
+            'messages' => $this->messages,
+            'sanitizers' => $serializedSanitizers,
+        ];
+
+        if ($this instanceof ArrayRuleBuilder) {
+            $data['eachBuilder'] = $this->eachBuilder;
+            $data['childBuilders'] = $this->childBuilders;
+        }
+
+        return $data;
+    }
+
+    public function __unserialize(array $data): void
+    {
+        $this->attribute = $data['attribute'];
+        $this->rule = $data['rule'];
+        $this->messages = $data['messages'];
+        $this->sanitizers = [];
+
+        foreach ($data['sanitizers'] as $sanitizer) {
+            if ($sanitizer instanceof SerializableClosure) {
+                $this->sanitizers[] = $sanitizer->getClosure();
+            } else {
+                $this->sanitizers[] = $sanitizer;
+            }
+        }
+
+        if ($this instanceof ArrayRuleBuilder) {
+            $this->eachBuilder = $data['eachBuilder'] ?? null;
+            $this->childBuilders = $data['childBuilders'] ?? null;
+        }
+    }
+
     public function validate(mixed $value): mixed
     {
         $prep = $this->prepareValidation($value);
@@ -638,6 +776,28 @@ abstract class BaseRuleBuilder
         );
 
         $validated = $validator->validate();
+
+        $sanitizers = $this->getSanitizers();
+        $prepSanitizers = [];
+        foreach ($sanitizers as $path => $callbacks) {
+            if ($this->attribute === '') {
+                $newPath = $path === '' ? 'value' : 'value.' . $path;
+                $prepSanitizers[$newPath] = $callbacks;
+            } else {
+                $prepSanitizers[$path] = $callbacks;
+            }
+        }
+
+        foreach ($prepSanitizers as $path => $callbacks) {
+            $segments = explode('.', $path);
+            self::sanitizePath($validated, $segments, function ($val) use ($callbacks) {
+                foreach ($callbacks as $callback) {
+                    $val = $callback($val);
+                }
+
+                return $val;
+            });
+        }
 
         return $validated[$prep['attribute']] ?? $value;
     }
