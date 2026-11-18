@@ -24,6 +24,11 @@ _ide_helper_models.php
 /.fleet
 /.vscode
 
+# Tools
+/graft
+/.claude
+/.ignore
+
 # Misc
 phpunit.xml
 phpstan.neon
