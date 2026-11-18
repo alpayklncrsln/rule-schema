@@ -73,7 +73,7 @@ class DefaultRule
 
     public static function phoneNumber(string $attribute = 'phone_number'): Rule
     {
-        return Rule::make($attribute)->required()->numeric()
+        return Rule::make($attribute)->required()->string()
             ->regex('/^(\+?\d{1,3}[- ]?)?\d{10}$/')
             ->min(10)->max(15);
     }

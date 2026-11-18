@@ -32,7 +32,7 @@ class RuleSchema implements RuleSchemaInterface
         return new RuleSchema(...$rules);
     }
 
-    public function merge(Rule|array ...$rules): self
+    public function merge(Rule|RuleSchema|array ...$rules): self
     {
         if (! $this->existsCacheData()) {
             if ($rules !== []) {

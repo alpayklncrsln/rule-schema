@@ -20,11 +20,6 @@
             <directory>tests</directory>
         </testsuite>
     </testsuites>
-    <coverage>
-        <report>
-            <html outputDirectory="build/coverage"/>
-        </report>
-    </coverage>
     <logging>
         <junit outputFile="build/report.junit.xml"/>
     </logging>

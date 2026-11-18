@@ -19,6 +19,12 @@ Rule Schema, Laravel uygulamalarında doğrulama kuralları oluşturmak için ak
 - Temiz ve sürdürülebilir doğrulama mantığı
 - Pakete özel Form request sınıfı oluşturma
 
+## Gereksinimler
+
+| Paket | PHP | Laravel |
+|-------|-----|---------|
+| 1.x | 8.3, 8.4 | 11.x, 12.x, 13.x |
+
 ## Kurulum
 
 Paketi composer ile kurabilirsiniz:
@@ -357,8 +363,7 @@ use \Alpayklncrsln\RuleSchema\Enums\FileMime;
 
 $rules = RuleSchema::create(
     Rule::make('image')->required()->image()
-    ->mimeAndMimetypes(
-    mimes: FileMime::JPEG,FileMime::JPG,FileMime::PNG),
+    ->mimeAndMimetypes(null, FileMime::JPEG, FileMime::JPG, FileMime::PNG),
 )
 ->getRules();
 ```
@@ -384,7 +389,7 @@ Paket, aşağıdakiler de dahil olmak üzere tüm Laravel doğrulama kuralların
 - Veritabanı doğrulama (unique, exists)
 - Özel doğrulama kuralları
 
-Mevcut tüm kuralların listesi için [Laravel Doğrulama Dokümantasyonu](https://laravel.com/docs/11.x/validation#available-validation-rules)'na bakınız.
+Mevcut tüm kuralların listesi için [Laravel Doğrulama Dokümantasyonu](https://laravel.com/docs/13.x/validation#available-validation-rules)'na bakınız.
 
 ## Test
 
