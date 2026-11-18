@@ -2,6 +2,28 @@
 
 All notable changes to `rule-schema` will be documented in this file.
 
+## Unreleased
+
+### Added
+
+- Laravel 13 support (`illuminate/contracts: ^11.0|^12.0|^13.0`). Laravel 11 and 12 are still supported.
+- `Rule::image()` now accepts `$check` and `$message` arguments; `Rule::startsWith()` now registers its custom message.
+- `RuleSchema::merge()` accepts `RuleSchema` instances, so `RuleSchema::create(RuleSchema::create(...))` no longer throws a `TypeError`.
+
+### Fixed
+
+- `Rule::email()` joins its flags with commas. `email(true, true)` produced `email:dnsrfc`, it now produces `email:rfc,dns`; a lone `extra` produced `email:,filter`, it now produces `email:filter`. **Output order is now `rfc,strict,dns,spoof,<extra>`.**
+- `Rule::mimeAndMimetypes()` no longer swallows the first MIME value as the message, and registers the custom message under `mimes` and `mimetypes` instead of the unknown `mimeAndMimetypes` key.
+- `Rule::rule()` passes string, object and closure rules through untouched instead of producing `rule.0:required`.
+- `Rule::doesntStartWith()` / `Rule::doesntEndWith()` produce `doesnt_start_with` / `doesnt_end_with` (were `doesnt_starts_with` / `doesnt_ends_with`), including the message keys.
+- `Rule::dateTime()` produces Laravel's `date` rule instead of the non-existent `datetime` rule. This also fixes `RuleSchema::model()` for `datetime` / `timestamp` columns.
+- Custom messages of `acceptedIf`, `activeUrl`, `notRegex`, `macAddress`, `multipleOf`, `missingIf`, `notIn`, `presentWithAll` and `requiredWithoutAll` are registered under the snake_case rule name Laravel looks up (e.g. `field.accepted_if` instead of `field.acceptedIf`). **Message keys changed.**
+- `DefaultRule::phoneNumber()` uses `string` instead of `numeric`, so `min:10` / `max:15` validate the length rather than the numeric value (consistent with `PhoneNumberRule`).
+
+### Internal
+
+- Test suite runs on Pest 4 / PHPUnit 12 (Testbench 9, 10 and 11).
+
 ## v1.3.2 - 2025-02-25
 
 **Full Changelog**: https://github.com/alpayklncrsln/rule-schema/compare/v1.3.1...v1.3.2

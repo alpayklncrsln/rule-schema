@@ -89,9 +89,8 @@ class TableBuilder
     private function createTableSchema(): void
     {
         $this->setTableColumns(collect(Schema::getColumns($this->getTable()))
-            ->filter(function ($column) {
-                return ! in_array($column['name'], $this->getExpectedColumns()) ? $column : null;
-            })->toArray());
+            ->filter(fn (array $column): bool => ! in_array($column['name'], $this->getExpectedColumns()))
+            ->toArray());
     }
 
     private function generateRuleSchema(): void

@@ -19,6 +19,12 @@ Rule Schema is a powerful Laravel package that provides a fluent interface for c
 - Clean and maintainable validation logic
 - Package-specific Form request class generation
 
+## Requirements
+
+| Package | PHP | Laravel |
+|---------|-----|---------|
+| 1.x | 8.3, 8.4 | 11.x, 12.x, 13.x |
+
 ## Installation
 
 You can install the package via composer:
@@ -355,8 +361,7 @@ use \Alpayklncrsln\RuleSchema\Enums\FileMime;
 
 $rules = RuleSchema::create(
     Rule::make('image')->required()->image()
-    ->mimeAndMimetypes(
-    mimes: FileMime::JPEG,FileMime::JPG,FileMime::PNG),
+    ->mimeAndMimetypes(null, FileMime::JPEG, FileMime::JPG, FileMime::PNG),
 )
 ->getRules();
 ```
@@ -382,7 +387,7 @@ The package supports all Laravel validation rules, including:
 - Database validation (unique, exists)
 - Custom validation rules
 
-For a complete list of available rules, refer to the [Laravel Validation Documentation](https://laravel.com/docs/11.x/validation#available-validation-rules).
+For a complete list of available rules, refer to the [Laravel Validation Documentation](https://laravel.com/docs/13.x/validation#available-validation-rules).
 
 ## Testing
 

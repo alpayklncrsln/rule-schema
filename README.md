@@ -14,6 +14,11 @@ Bu dokümantasyon birden fazla dilde mevcuttur. Lütfen tercih ettiğiniz dili s
 - [English](README.en.md)
 - [Türkçe](README.tr.md)
 
+## Requirements / Gereksinimler
+
+- PHP 8.3, 8.4
+- Laravel 11.x, 12.x, 13.x
+
 ## Quick Overview / Hızlı Genel Bakış
 
 Rule Schema is a powerful Laravel package that provides a fluent interface for building validation rules.

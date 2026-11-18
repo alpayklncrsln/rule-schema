@@ -27,6 +27,7 @@ _ide_helper_models.php
 # Tools
 /graft
 /.claude
+/.mcp.json
 /.ignore
 
 # Misc

@@ -2,6 +2,7 @@
 
 use Alpayklncrsln\RuleSchema\Rule;
 use Alpayklncrsln\RuleSchema\RuleSchema;
+use Illuminate\Support\Facades\Auth;
 
 test('create', function () {
     $rule = RuleSchema::create([
@@ -54,7 +55,7 @@ test('existsMerge', function () {
 });
 
 test('auth', function () {
-    \Illuminate\Support\Facades\Auth::shouldReceive('check')->once()->andReturn(true);
+    Auth::shouldReceive('check')->once()->andReturn(true);
     $rule = RuleSchema::create()->auth([
         Rule::make('name')->required(),
         Rule::make('email')->email(true),

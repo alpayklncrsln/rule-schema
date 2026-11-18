@@ -14,6 +14,8 @@ class Rule
 
     protected array $messages = [];
 
+    private const string RAW_RULE_PREFIX = 'rule.';
+
     public function __construct(string $attribute)
     {
         $this->attribute = $attribute;
@@ -53,8 +55,7 @@ class Rule
 
     public function rule(mixed $rule): self
     {
-
-        $this->rule['rule.'.count($this->rule)] = $rule;
+        $this->rule[self::RAW_RULE_PREFIX.count($this->rule)] = $rule;
 
         return $this;
     }
@@ -70,7 +71,7 @@ class Rule
     public function acceptedIf(string $field, string $value, ?string $message = null): self
     {
         $this->rule['accepted_if'] = $field.','.$value;
-        $this->setMessage(__FUNCTION__, $message);
+        $this->setMessage('accepted_if', $message);
 
         return $this;
     }
@@ -261,8 +262,7 @@ class Rule
 
     public function dateTime(?string $message = null): self
     {
-        $this->rule['datetime'] = true;
-        $this->setMessage('datetime', $message);
+        $this->date(true, $message);
 
         return $this;
     }
@@ -359,16 +359,16 @@ class Rule
 
     public function doesntStartWith(array $starts, ?string $message = null): self
     {
-        $this->rule['doesnt_starts_with'] = $starts;
-        $this->setMessage('doesnt_starts_with', $message);
+        $this->rule['doesnt_start_with'] = $starts;
+        $this->setMessage('doesnt_start_with', $message);
 
         return $this;
     }
 
     public function doesntEndWith(array $ends, ?string $message = null): self
     {
-        $this->rule['doesnt_ends_with'] = $ends;
-        $this->setMessage('doesnt_ends_with', $message);
+        $this->rule['doesnt_end_with'] = $ends;
+        $this->setMessage('doesnt_end_with', $message);
 
         return $this;
     }
@@ -376,12 +376,17 @@ class Rule
     public function email(bool $dnsCheck = false, bool $rfcCheck = false, bool $spoofCheck = false, bool $strictCheck = false,
         bool|string $extra = false, ?string $message = null): self
     {
-        if ($dnsCheck || $rfcCheck || $spoofCheck || $strictCheck || $extra) {
-            $this->rule['email'] = ($dnsCheck ? 'dns' : null).($rfcCheck ? 'rfc' : null).($spoofCheck ? 'spoof' : null).
-                ($extra ? ','.$extra : null).($strictCheck ? 'strict' : null);
-        } else {
-            $this->rule['email'] = true;
+        $flags = array_keys(array_filter([
+            'rfc' => $rfcCheck,
+            'strict' => $strictCheck,
+            'dns' => $dnsCheck,
+            'spoof' => $spoofCheck,
+        ]));
+        if (is_string($extra) && $extra !== '') {
+            $flags[] = $extra;
         }
+
+        $this->rule['email'] = $flags === [] ? true : implode(',', $flags);
         $this->setMessage(__FUNCTION__, $message);
 
         return $this;
@@ -475,9 +480,10 @@ class Rule
         return $this;
     }
 
-    public function image(): self
+    public function image(bool $check = true, ?string $message = null): self
     {
-        $this->rule['image'] = true;
+        $this->rule['image'] = $check;
+        $this->setMessage(__FUNCTION__, $message);
 
         return $this;
     }
@@ -493,7 +499,7 @@ class Rule
     public function activeUrl(bool $check = true, ?string $message = null): self
     {
         $this->rule['active_url'] = $check;
-        $this->setMessage(__FUNCTION__, $message);
+        $this->setMessage('active_url', $message);
 
         return $this;
     }
@@ -509,7 +515,7 @@ class Rule
     public function notRegex(string $pattern, ?string $message = null): self
     {
         $this->rule['not_regex'] = $pattern;
-        $this->setMessage(__FUNCTION__, $message);
+        $this->setMessage('not_regex', $message);
 
         return $this;
     }
@@ -565,7 +571,7 @@ class Rule
     public function macAddress(bool $check = true, ?string $message = null): self
     {
         $this->rule['mac_address'] = $check;
-        $this->setMessage(__FUNCTION__, $message);
+        $this->setMessage('mac_address', $message);
 
         return $this;
     }
@@ -620,9 +626,8 @@ class Rule
 
     public function mimeAndMimetypes(?string $message = null, MimeEnumInterface ...$mimes): self
     {
-        $this->mimes(...array_map(fn ($mime) => $mime->getValue(), $mimes));
-        $this->mimetypes(...array_map(fn ($mime) => $mime->type(), $mimes));
-        $this->setMessage(__FUNCTION__, $message);
+        $this->mimes($message, ...array_map(fn ($mime) => $mime->getValue(), $mimes));
+        $this->mimetypes($message, ...array_map(fn ($mime) => $mime->type(), $mimes));
 
         return $this;
     }
@@ -646,7 +651,7 @@ class Rule
     public function multipleOf(string $value, ?string $message = null): self
     {
         $this->rule['multiple_of'] = $value;
-        $this->setMessage(__FUNCTION__, $message);
+        $this->setMessage('multiple_of', $message);
 
         return $this;
     }
@@ -662,7 +667,7 @@ class Rule
     public function missingIf(string $field, string $value, ?string $message = null): self
     {
         $this->rule['missing_if'] = $field.','.$value;
-        $this->setMessage(__FUNCTION__, $message);
+        $this->setMessage('missing_if', $message);
 
         return $this;
     }
@@ -686,7 +691,7 @@ class Rule
     public function notIn(array $values, ?string $message = null): self
     {
         $this->rule['not_in'] = $values;
-        $this->setMessage(__FUNCTION__, $message);
+        $this->setMessage('not_in', $message);
 
         return $this;
     }
@@ -726,7 +731,7 @@ class Rule
     public function presentWithAll(array $value, ?string $message = null): self
     {
         $this->rule['present_with_all'] = $value;
-        $this->setMessage(__FUNCTION__, $message);
+        $this->setMessage('present_with_all', $message);
 
         return $this;
     }
@@ -822,7 +827,7 @@ class Rule
     public function requiredWithoutAll(array $fields, ?string $message = null): self
     {
         $this->rule['required_without_all'] = $fields;
-        $this->setMessage(__FUNCTION__, $message);
+        $this->setMessage('required_without_all', $message);
 
         return $this;
     }
@@ -870,6 +875,7 @@ class Rule
     public function startsWith(array $value, ?string $message = null): self
     {
         $this->rule['starts_with'] = $value;
+        $this->setMessage('starts_with', $message);
 
         return $this;
     }
@@ -957,6 +963,7 @@ class Rule
         foreach ($this->rule as $key => $value) {
 
             $ruleData[] = match (true) {
+                str_starts_with((string) $key, self::RAW_RULE_PREFIX) => $value,
                 is_bool($value) => $value ? $key : null,
                 is_array($value) => "$key:".implode(',', $value),
                 is_string($value) || is_int($value) => "$key:$value",
